@@ -1,36 +1,44 @@
-﻿
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
-
-#include "CudaAdd.h"
-
-#include <stdio.h>
-
+﻿#include <iostream>
+#include <vector>
+#include <stdlib.h>
+#include <time.h>
+#include <cuda_runtime.h>
+#include "matrix_multiplication.h"
+#include "dev_array.h"
+#include <math.h>
 int main()
 {
-    const int arraySize = 5;
-    const int a[arraySize] = { 1, 2, 3, 4, 5 };
-    const int b[arraySize] = { 10, 20, 30, 40, 50 };
-    int c[arraySize] = { 0 };
+    int N = 2;
+    int size = N * N;
+    std::vector<float> h_A(size);
+    std::vector<float> h_B(size);
+    std::vector<float> h_C(size);
 
-    // Add vectors in parallel.
-    auto cudaAdder = new CudaAdder();
-    cudaError_t cudaStatus = cudaAdder->addWithCuda(c, a, b, arraySize);
-    if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "addWithCuda failed!");
-        return 1;
-    }
+    h_A[0] = 1;
+    h_A[1] = 1;
+    h_A[2] = 1;
+    h_A[3] = 1;
 
-    printf("{1,2,3,4,5} + {10,20,30,40,50} = {%d,%d,%d,%d,%d}\n",
-        c[0], c[1], c[2], c[3], c[4]);
 
-    // cudaDeviceReset must be called before exiting in order for profiling and
-    // tracing tools such as Nsight and Visual Profiler to show complete traces.
-    cudaStatus = cudaDeviceReset();
-    if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "cudaDeviceReset failed!");
-        return 1;
-    }
+    h_B[0] = 1;
+    h_B[1] = 1;
+    h_B[2] = 1;
+    h_B[3] = 1;
+
+
+
+    dev_array<float> d_A(size);
+    dev_array<float> d_B(size);
+    dev_array<float> d_C(size);
+
+    d_A.set(&h_A[0], size);
+    d_B.set(&h_B[0], size);
+
+    matrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), N);
+    cudaDeviceSynchronize();
+
+    d_C.get(&h_C[0], size);
+    cudaDeviceSynchronize();
 
     return 0;
 }

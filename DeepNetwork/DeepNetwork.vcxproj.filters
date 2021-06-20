@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CudaCompile Include="kernel.cu" />
+    <CudaCompile Include="matrix_multiplication.cu">
+      <Filter>matrix_multiplication</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dev_array.h">
+      <Filter>dev_array</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix_multiplication.h">
+      <Filter>matrix_multiplication</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="dev_array">
+      <UniqueIdentifier>{e62b1212-f6b5-4bb6-868d-67254e93c052}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="matrix_multiplication">
+      <UniqueIdentifier>{b32141e7-25a3-4b02-839b-19cce7249859}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
