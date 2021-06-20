@@ -69,6 +69,7 @@ public:
 		size_t min = std::min(size, getSize());
 
 		cudaError_t result = cudaMemcpy(dest, start_, min * sizeof(T), cudaMemcpyDeviceToHost);
+		cudaDeviceSynchronize();
 
 		if (result != cudaSuccess) {
 			throw std::runtime_error("Failed to copy to host memory");

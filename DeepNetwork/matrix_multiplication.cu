@@ -38,4 +38,5 @@ void matrixMultiply(float* A, float* B, float* C, float N) {
     }
 
     matrixMultiplicationKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, C, N);
+    cudaDeviceSynchronize();
 }

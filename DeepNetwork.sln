@@ -5,16 +5,30 @@ VisualStudioVersion = 16.0.31402.337
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeepNetwork", "DeepNetwork\DeepNetwork.vcxproj", "{08138C11-B8CE-4A19-9064-EDBFBEDAA2A0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeepNetwork.Tests", "DeepNetwork.Tests\DeepNetwork.Tests.vcxproj", "{5690B47B-D9E2-4FD1-8E87-C02F4E9B4C10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{08138C11-B8CE-4A19-9064-EDBFBEDAA2A0}.Debug|x64.ActiveCfg = Debug|x64
 		{08138C11-B8CE-4A19-9064-EDBFBEDAA2A0}.Debug|x64.Build.0 = Debug|x64
+		{08138C11-B8CE-4A19-9064-EDBFBEDAA2A0}.Debug|x86.ActiveCfg = Debug|x64
 		{08138C11-B8CE-4A19-9064-EDBFBEDAA2A0}.Release|x64.ActiveCfg = Release|x64
 		{08138C11-B8CE-4A19-9064-EDBFBEDAA2A0}.Release|x64.Build.0 = Release|x64
+		{08138C11-B8CE-4A19-9064-EDBFBEDAA2A0}.Release|x86.ActiveCfg = Release|x64
+		{5690B47B-D9E2-4FD1-8E87-C02F4E9B4C10}.Debug|x64.ActiveCfg = Debug|x64
+		{5690B47B-D9E2-4FD1-8E87-C02F4E9B4C10}.Debug|x64.Build.0 = Debug|x64
+		{5690B47B-D9E2-4FD1-8E87-C02F4E9B4C10}.Debug|x86.ActiveCfg = Debug|Win32
+		{5690B47B-D9E2-4FD1-8E87-C02F4E9B4C10}.Debug|x86.Build.0 = Debug|Win32
+		{5690B47B-D9E2-4FD1-8E87-C02F4E9B4C10}.Release|x64.ActiveCfg = Release|x64
+		{5690B47B-D9E2-4FD1-8E87-C02F4E9B4C10}.Release|x64.Build.0 = Release|x64
+		{5690B47B-D9E2-4FD1-8E87-C02F4E9B4C10}.Release|x86.ActiveCfg = Release|Win32
+		{5690B47B-D9E2-4FD1-8E87-C02F4E9B4C10}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

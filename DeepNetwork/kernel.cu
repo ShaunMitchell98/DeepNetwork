@@ -35,10 +35,8 @@ int main()
     d_B.set(&h_B[0], size);
 
     matrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), N);
-    cudaDeviceSynchronize();
 
     d_C.get(&h_C[0], size);
-    cudaDeviceSynchronize();
 
     return 0;
 }
