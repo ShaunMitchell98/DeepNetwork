@@ -1,11 +1,10 @@
-#include "pch.h"
 #include "CppUnitTest.h"
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
 #include <time.h>
-#include "DeepNetwork/matrix_multiplication.h"
-#include "DeepNetwork/dev_array.h"
+#include "DeepNetwork.Infrastructure/matrix_multiplication.h"
+#include "DeepNetwork.Infrastructure/dev_array.h"
 #include <math.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -18,26 +17,18 @@ namespace matrix_multiplication_tests
 	
 		TEST_METHOD(Function_GivenSquareMatrix_CalculatesMatrixMultiple)
 		{
-            int N = 2;
-            int size = N * N;
-            std::vector<float> h_A(size, 1);
-            std::vector<float> h_B(size, 1);
-            std::vector<float> h_C(size);
+			float A[4] = { 1.0, 1.0, 1.0, 1.0 };
+			float B[4] = { 1.0, 1.0, 1.0, 1.0 };
+			float* C = (float*)malloc(4 * sizeof(float));
 
-            dev_array<float> d_A(size);
-            dev_array<float> d_B(size);
-            dev_array<float> d_C(size);
+			matrixMultiply(A, B, C, 2);
 
-            d_A.set(&h_A[0], size);
-            d_B.set(&h_B[0], size);
+            Assert::AreEqual((float)2, C[0]);
+            Assert::AreEqual((float)2, C[1]);
+            Assert::AreEqual((float)2, C[2]);
+            Assert::AreEqual((float)2, C[3]);
 
-            matrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), N);
-            d_C.get(&h_C[0], size);
-
-            Assert::AreEqual((float)2, h_C[0]);
-            Assert::AreEqual((float)2, h_C[1]);
-            Assert::AreEqual((float)2, h_C[2]);
-            Assert::AreEqual((float)2, h_C[3]);
+			free(C);
 		}
 	};
 }
