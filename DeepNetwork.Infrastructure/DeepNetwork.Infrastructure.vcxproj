@@ -83,6 +83,7 @@
     <CudaCompile Include="matrix_multiplication.cu" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="matrix.h" />
     <ClInclude Include="matrix_multiplication.h" />
     <ClInclude Include="dev_array.h" />
   </ItemGroup>

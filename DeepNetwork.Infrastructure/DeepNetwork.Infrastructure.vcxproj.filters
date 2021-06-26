@@ -12,6 +12,7 @@
     <ClInclude Include="matrix_multiplication.h">
       <Filter>matrix_multiplication</Filter>
     </ClInclude>
+    <ClInclude Include="matrix.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dev_array">

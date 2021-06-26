@@ -8,55 +8,50 @@
 #include <vector>
 #include <stdio.h>
 
-using namespace std;
-
-__global__ void matrixMultiplicationKernel(float* A, float* B, float* C, int N) {
-
+__global__ void matrixMultiplicationKernel(float* A, float* B, float* C, int Acols, int Bcols, int Arows) {
     int ROW = blockIdx.y * blockDim.y + threadIdx.y;
     int COL = blockIdx.x * blockDim.x + threadIdx.x;
 
     float tmpSum = 0;
 
-    if (ROW < N && COL < N) {
+    if (ROW < Acols && COL < Acols) {
         // each thread computes one element of the block sub-matrix
-        for (int i = 0; i < N; i++) {
-            tmpSum += A[ROW * N + i] * B[i * N + COL];
+        for (int i = 0; i < Acols; i++) {
+            tmpSum += A[ROW * Acols + i] * B[i * Bcols + COL];
         }
     }
-    C[ROW * N + COL] = tmpSum;
+    C[ROW * Arows + COL] = tmpSum;
+}
+
+void internalMatrixMultiply(float* A, float* B, float* C, int Acols, int Bcols, int Arows) {
+
+    // declare the number of blocks per grid and the number of threads per block
+    // use 1 to 512 threads per block
+    dim3 threadsPerBlock(Arows, Arows);
+    dim3 blocksPerGrid(1, 1);
+    if (Acols * Acols > 512) {
+        threadsPerBlock.x = 512;
+        threadsPerBlock.y = 512;
+        blocksPerGrid.x = ceil(double(Acols) / double(threadsPerBlock.x));
+        blocksPerGrid.y = ceil(double(Acols) / double(threadsPerBlock.y));
+    }
+
+    matrixMultiplicationKernel<<<blocksPerGrid,threadsPerBlock>>>(A, B, C, Acols, Bcols, Arows);
+    cudaDeviceSynchronize();
 }
 
 extern "C"
 {
-    void internalMatrixMultiply(float* A, float* B, float* C, int N) {
+    void matrixMultiply(matrix A, matrix B, matrix C) {
 
-        // declare the number of blocks per grid and the number of threads per block
-        // use 1 to 512 threads per block
-        dim3 threadsPerBlock(N, N);
-        dim3 blocksPerGrid(1, 1);
-        if (N * N > 512) {
-            threadsPerBlock.x = 512;
-            threadsPerBlock.y = 512;
-            blocksPerGrid.x = ceil(double(N) / double(threadsPerBlock.x));
-            blocksPerGrid.y = ceil(double(N) / double(threadsPerBlock.y));
-        }
+        dev_array<float> d_A(A.rows * A.cols);
+        dev_array<float> d_B(B.rows * B.cols);
+        dev_array<float> d_C(C.rows * C.cols);
 
-        matrixMultiplicationKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, C, N);
-        cudaDeviceSynchronize();
-    }
+        d_A.set(A.values, A.rows * A.cols);
+        d_B.set(B.values, B.rows * B.cols);
 
-    void matrixMultiply(float* A, float* B, float* C, int N) {
-
-        int size = N * N;
-
-        dev_array<float> d_A(size);
-        dev_array<float> d_B(size);
-        dev_array<float> d_C(size);
-
-        d_A.set(A, size);
-        d_B.set(B, size);
-
-        internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), N);
-        d_C.get(C, size);
+        internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.cols, B.cols, A.rows);
+        d_C.get(C.values, C.rows * C.cols);
     }
 }
