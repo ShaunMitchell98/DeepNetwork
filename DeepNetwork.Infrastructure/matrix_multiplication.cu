@@ -6,28 +6,30 @@
 #include "dev_array.h"
 #include <stdlib.h>
 #include <vector>
+#include "Log.h"
 #include <stdio.h>
 
-__global__ void matrixMultiplicationKernel(float* A, float* B, float* C, int Acols, int Bcols, int Arows) {
+__global__ void matrixMultiplicationKernel(float* A, float* B, float* C, int Acols, int Bcols) {
     int ROW = blockIdx.y * blockDim.y + threadIdx.y;
     int COL = blockIdx.x * blockDim.x + threadIdx.x;
 
     float tmpSum = 0;
 
-    if (ROW < Acols && COL < Acols) {
+    if (ROW < Acols && COL < Bcols) {
         // each thread computes one element of the block sub-matrix
         for (int i = 0; i < Acols; i++) {
             tmpSum += A[ROW * Acols + i] * B[i * Bcols + COL];
         }
+
+        C[ROW * Bcols + COL] = tmpSum;
     }
-    C[ROW * Arows + COL] = tmpSum;
 }
 
-void internalMatrixMultiply(float* A, float* B, float* C, int Acols, int Bcols, int Arows) {
+void internalMatrixMultiply(float* A, float* B, float* C, int Acols, int Bcols) {
 
     // declare the number of blocks per grid and the number of threads per block
     // use 1 to 512 threads per block
-    dim3 threadsPerBlock(Arows, Arows);
+    dim3 threadsPerBlock(Acols, Acols);
     dim3 blocksPerGrid(1, 1);
     if (Acols * Acols > 512) {
         threadsPerBlock.x = 512;
@@ -36,22 +38,30 @@ void internalMatrixMultiply(float* A, float* B, float* C, int Acols, int Bcols, 
         blocksPerGrid.y = ceil(double(Acols) / double(threadsPerBlock.y));
     }
 
-    matrixMultiplicationKernel<<<blocksPerGrid,threadsPerBlock>>>(A, B, C, Acols, Bcols, Arows);
+    matrixMultiplicationKernel<<<blocksPerGrid,threadsPerBlock>>>(A, B, C, Acols, Bcols);
     cudaDeviceSynchronize();
 }
 
 extern "C"
 {
+    void Log(char* buf, float thing, FILE* fp) {
+        gcvt(thing, 5, buf);
+        fwrite(buf, sizeof(char), 5, fp);
+        fwrite("\n", sizeof(char), 1, fp);
+    }
     void matrixMultiply(matrix A, matrix B, matrix C) {
 
         dev_array<float> d_A(A.rows * A.cols);
         dev_array<float> d_B(B.rows * B.cols);
         dev_array<float> d_C(C.rows * C.cols);
 
-        d_A.set(A.values, A.rows * A.cols);
-        d_B.set(B.values, B.rows * B.cols);
+        LogMatrix(A);
+        LogMatrix(B);
 
-        internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.cols, B.cols, A.rows);
+        d_A.set(A.values, A.rows * A.cols);
+        d_B.set(B.values, B.rows * B.cols);  
+
+        internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.cols, B.cols);
         d_C.get(C.values, C.rows * C.cols);
     }
 }

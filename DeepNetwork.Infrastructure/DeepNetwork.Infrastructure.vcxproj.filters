@@ -13,6 +13,7 @@
       <Filter>matrix_multiplication</Filter>
     </ClInclude>
     <ClInclude Include="matrix.h" />
+    <ClInclude Include="Log.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dev_array">

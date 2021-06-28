@@ -34,8 +34,8 @@ namespace matrix_multiplication_tests
 
 			matrix Cm;
 			Cm.values = C;
-			Cm.rows = Bm.cols;
-			Cm.cols = Am.rows;
+			Cm.rows = Am.rows;
+			Cm.cols = Bm.cols;
 
 			matrixMultiply(Am, Bm, Cm);
 
@@ -65,8 +65,8 @@ namespace matrix_multiplication_tests
 
 			matrix Cm;
 			Cm.values = C;
-			Cm.rows = Bm.cols;
-			Cm.cols = Am.rows;
+			Cm.rows = Am.rows;
+			Cm.cols = Bm.cols;
 
 			matrixMultiply(Am, Bm, Cm);
 
@@ -96,12 +96,41 @@ namespace matrix_multiplication_tests
 
 			matrix Cm;
 			Cm.values = C;
-			Cm.rows = Bm.cols;
-			Cm.cols = Am.rows;
+			Cm.rows = Am.rows;
+			Cm.cols = Bm.cols;
 
 			matrixMultiply(Am, Bm, Cm);
 
 			Assert::AreEqual((float)3, C[0]);
+
+			free(C);
+		}
+
+		TEST_METHOD(Function_GivenMatrixMultiplyingVector_ReturnsResult)
+		{
+			float A[4] = { 1.0, 2.0, 3.0, 4.0 };
+			float B[2] = { 1.0, 1.0 };
+			float* C = (float*)malloc(4 * sizeof(float));
+
+			matrix Am;
+			Am.values = A;
+			Am.rows = 2;
+			Am.cols = 2;
+
+			matrix Bm;
+			Bm.values = B;
+			Bm.rows = 2;
+			Bm.cols = 1;
+
+			matrix Cm;
+			Cm.values = C;
+			Cm.rows = Am.rows;
+			Cm.cols = Bm.cols;
+
+			matrixMultiply(Am, Bm, Cm);
+
+			Assert::AreEqual((float)3, C[0]);
+			Assert::AreEqual((float)7, C[1]);
 
 			free(C);
 		}
