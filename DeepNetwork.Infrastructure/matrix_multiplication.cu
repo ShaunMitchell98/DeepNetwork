@@ -134,13 +134,19 @@ extern "C"
         LogLine("Freed adjustment storage");
     }
 
-    void apply_sigmoid(matrix matrix) {
+    void apply_logistic(matrix matrix) {
 
-        LogLine("Applying sigmoid activation function.");
+        LogLine("Applying logistic activation function.");
         for (int i = 0; i < matrix.rows; i++) {
             float* mi = &matrix.values[i];
             *mi = 1 / (1 + exp(-*mi));
         }
+    }
+
+    float logistic_derivative(float input) {
+
+        LogLine("Calculating logistic derivative.");
+        return exp(input) / (1 + exp(input) * (1 + exp(input)));
     }
 
     void forward_propagate_layer(matrix weights, matrix inputLayer, matrix outputLayer, activation_function activationFunction) {
@@ -148,8 +154,8 @@ extern "C"
 
         matrix_multiply(weights, inputLayer, outputLayer);
 
-        if (activationFunction == sigmoid) {
-            apply_sigmoid(outputLayer);
+        if (activationFunction == logistic) {
+            apply_logistic(outputLayer);
         }
     }
 
@@ -169,7 +175,7 @@ extern "C"
         float error = 0;
         matrix finalLayer = network.layers[network.layerCount - 1];
         for (int b = 0; b < numberOfNeuronsInFinalLayer; b++) {
-            dError_dLast[b] = -(expectedLayer.values[b] - finalLayer.values[b]);
+            dError_dLast[b] = -(expectedLayer.values[b] - finalLayer.values[b]) * logistic_derivative(finalLayer.values[b]);
             error += 0.5 * (expectedLayer.values[b] - finalLayer.values[b]) * (expectedLayer.values[b] - finalLayer.values[b]);
         }
 
@@ -205,7 +211,7 @@ extern "C"
             for (int j = 0; j < weightMatrix.cols; j++) {
                 dError_dOutputCurrent[j] = 0;
                 for (int i = 0; i < weightMatrix.rows; i++) {
-                    dError_dOutputCurrent[j] += dError_dLayerAbove[i] * weightMatrix.values[i * weightMatrix.cols + j];
+                    dError_dOutputCurrent[j] += dError_dLayerAbove[i] * logistic_derivative(outputLayer.values[i]) * weightMatrix.values[i * weightMatrix.cols + j];
                 }
             }
 

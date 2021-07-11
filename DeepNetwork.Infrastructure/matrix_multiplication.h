@@ -14,7 +14,7 @@ extern "C" {
 
 	EXPORT_SYMBOL float train_network(network network, matrix expectedLayer);
 
-	void apply_sigmoid(matrix matrix);
+	void apply_logistic(matrix matrix);
 
 #undef EXPORT_SYMBOL
 }
