@@ -14,6 +14,7 @@
     </ClInclude>
     <ClInclude Include="matrix.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="network.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dev_array">

@@ -5,7 +5,7 @@ def calculate_matrix_multiple(A, B):
 
     deep_network = windll.LoadLibrary(r"..\x64\Release\DeepNetwork.Infrastructure.dll")
 
-    matrix_multiply = deep_network.matrixMultiply
+    matrix_multiply = deep_network.matrix_multiply
     matrix_multiply.argtypes = [matrix, matrix, matrix]
 
     c_count = A.rows * B.cols

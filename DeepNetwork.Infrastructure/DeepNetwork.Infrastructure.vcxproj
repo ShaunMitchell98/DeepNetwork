@@ -87,6 +87,7 @@
     <ClInclude Include="matrix.h" />
     <ClInclude Include="matrix_multiplication.h" />
     <ClInclude Include="dev_array.h" />
+    <ClInclude Include="network.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
