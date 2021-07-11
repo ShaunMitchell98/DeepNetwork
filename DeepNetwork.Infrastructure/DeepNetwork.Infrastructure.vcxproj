@@ -56,7 +56,7 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <AdditionalDeps>%(AdditionalDeps)</AdditionalDeps>
+      <AdditionalDeps>C:\Users\Shaun Mitchell\source\repos\DeepNetwork\DeepNetwork.Infrastructure\Matrix Multiplication;C:\Users\Shaun Mitchell\source\repos\DeepNetwork\DeepNetwork.Infrastructure\Logging;C:\Users\Shaun Mitchell\source\repos\DeepNetwork\DeepNetwork.Infrastructure\Activation Functions;%(AdditionalDeps)</AdditionalDeps>
       <Include>C:\Users\Shaun Mitchell\source\repos\DeepNetwork\DeepNetwork;%(Include)</Include>
     </CudaCompile>
   </ItemDefinitionGroup>
@@ -80,15 +80,24 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="matrix_multiplication.cu" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="activation_function.h" />
-    <ClInclude Include="Log.h" />
+    <ClInclude Include="Activation Functions\activation_function.h" />
+    <ClInclude Include="Activation Functions\logistic_function.h" />
+    <ClInclude Include="Forward Propagation\forward_propagate.h" />
+    <ClInclude Include="Logging\log.h" />
+    <ClInclude Include="Matrix Multiplication\matrix_multiplication.h" />
     <ClInclude Include="matrix.h" />
-    <ClInclude Include="matrix_multiplication.h" />
     <ClInclude Include="dev_array.h" />
     <ClInclude Include="network.h" />
+    <ClInclude Include="Train Network\train_network.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="Matrix Multiplication\matrix_multiplication.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Activation Functions\logistic_function.cpp" />
+    <ClCompile Include="Forward Propagation\forward_propagate.cpp" />
+    <ClCompile Include="Logging\log.cpp" />
+    <ClCompile Include="Train Network\train_network.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

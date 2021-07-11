@@ -3,7 +3,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <time.h>
-#include "DeepNetwork.Infrastructure/matrix_multiplication.h"
+#include "DeepNetwork.Infrastructure/Matrix Multiplication/matrix_multiplication.h"
 #include "DeepNetwork.Infrastructure/dev_array.h"
 #include "DeepNetwork.Infrastructure/matrix.h"
 #include <math.h>
@@ -37,7 +37,7 @@ namespace matrix_multiplication_tests
 			Cm.rows = Am.rows;
 			Cm.cols = Bm.cols;
 
-			matrixMultiply(Am, Bm, Cm);
+			//matrixMultiply(Am, Bm, Cm);
 
             Assert::AreEqual((float)2, C[0]);
             Assert::AreEqual((float)2, C[1]);
@@ -68,7 +68,7 @@ namespace matrix_multiplication_tests
 			Cm.rows = Am.rows;
 			Cm.cols = Bm.cols;
 
-			matrixMultiply(Am, Bm, Cm);
+			//matrixMultiply(Am, Bm, Cm);
 
 			Assert::AreEqual((float)3, C[0]);
 			Assert::AreEqual((float)3, C[1]);
@@ -99,7 +99,7 @@ namespace matrix_multiplication_tests
 			Cm.rows = Am.rows;
 			Cm.cols = Bm.cols;
 
-			matrixMultiply(Am, Bm, Cm);
+			//matrixMultiply(Am, Bm, Cm);
 
 			Assert::AreEqual((float)3, C[0]);
 
@@ -127,7 +127,7 @@ namespace matrix_multiplication_tests
 			Cm.rows = Am.rows;
 			Cm.cols = Bm.cols;
 
-			matrixMultiply(Am, Bm, Cm);
+			//matrixMultiply(Am, Bm, Cm);
 
 			Assert::AreEqual((float)3, C[0]);
 			Assert::AreEqual((float)7, C[1]);

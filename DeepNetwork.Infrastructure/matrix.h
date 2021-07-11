@@ -1,7 +1,10 @@
-#pragma once
+#ifndef KERNEL_MATRIX
+#define KERNEL_MATRIX
 
-struct matrix {
-	float* values; 
+typedef struct {
+	float* values;
 	int rows;
 	int cols;
-};
+} matrix;
+
+#endif

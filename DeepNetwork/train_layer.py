@@ -19,3 +19,4 @@ def train_network(pyNetwork, expectedOutput):
     inputNetwork.weights = (matrix * pyNetwork.weightMatrixCount)(*pyNetwork.weights)
 
     error = network_train_network(inputNetwork, expectedOutput)
+    a = 5
