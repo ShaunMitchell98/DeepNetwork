@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <vector>
 #include "Log.h"
+#include <math.h>
 #include <stdio.h>
 
 __global__ void matrixMultiplicationKernel(float* A, float* B, float* C, int Acols, int Bcols) {
@@ -133,9 +134,27 @@ extern "C"
         LogLine("Freed adjustment storage");
     }
 
+    void apply_sigmoid(matrix matrix) {
+
+        LogLine("Applying sigmoid activation function.");
+        for (int i = 0; i < matrix.rows; i++) {
+            float* mi = &matrix.values[i];
+            *mi = 1 / (1 + exp(-*mi));
+        }
+    }
+
+    void forward_propagate_layer(matrix weights, matrix inputLayer, matrix outputLayer, activation_function activationFunction) {
+        LogLine("Forward propagating layer.");
+
+        matrix_multiply(weights, inputLayer, outputLayer);
+
+        if (activationFunction == sigmoid) {
+            apply_sigmoid(outputLayer);
+        }
+    }
+
     float train_network(network network, matrix expectedLayer) {
 
-        DeleteLogFile();
         int numberOfNeuronsInFinalLayer = network.layers[network.layerCount - 1].rows;
         LogMessage("Number of neurons in final layer: ");
         LogNumber(numberOfNeuronsInFinalLayer);

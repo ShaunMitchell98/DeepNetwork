@@ -1,7 +1,7 @@
 from matrix import matrix
 from ctypes import *
 import numpy as np
-from matrixMultiple import calculate_matrix_multiple
+from forward_propagate_layer import forward_propagate_layer
 from train_layer import train_network
 
 
@@ -29,7 +29,7 @@ class PyNetwork:
         self.layers[0].values = input_layer.ctypes.data_as(POINTER(c_float))
 
         for i in range(0, len(self.layers) - 1):
-            self.layers[i + 1] = calculate_matrix_multiple(self.weights[i], self.layers[i])
+            self.layers[i + 1] = forward_propagate_layer(self.weights[i], self.layers[i])
 
     def train(self, input_layer, expected_output):
         self.run(input_layer)
