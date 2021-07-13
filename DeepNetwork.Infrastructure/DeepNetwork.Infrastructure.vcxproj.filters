@@ -15,12 +15,15 @@
     <ClInclude Include="Activation Functions\logistic_function.h">
       <Filter>Activation Functions</Filter>
     </ClInclude>
-    <ClInclude Include="Logging\log.h" />
+    <ClInclude Include="Logging\logger.h" />
     <ClInclude Include="Train Network\train_network.h">
       <Filter>Train Network</Filter>
     </ClInclude>
     <ClInclude Include="Forward Propagation\forward_propagate.h">
       <Filter>Forward Propagation</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkTrainer.h">
+      <Filter>NetworkTrainer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +42,9 @@
     <Filter Include="Forward Propagation">
       <UniqueIdentifier>{15c7d2ba-9cf3-4fd3-9989-cc2cb4ac08fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NetworkTrainer">
+      <UniqueIdentifier>{19f30609-28d0-451f-8353-0bdd2cc87a61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Matrix Multiplication\matrix_multiplication.cu">
@@ -49,12 +55,15 @@
     <ClCompile Include="Activation Functions\logistic_function.cpp">
       <Filter>Activation Functions</Filter>
     </ClCompile>
-    <ClCompile Include="Logging\log.cpp" />
+    <ClCompile Include="Logging\logger.cpp" />
     <ClCompile Include="Train Network\train_network.cpp">
       <Filter>Train Network</Filter>
     </ClCompile>
     <ClCompile Include="Forward Propagation\forward_propagate.cpp">
       <Filter>Forward Propagation</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkTrainer.cpp">
+      <Filter>NetworkTrainer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

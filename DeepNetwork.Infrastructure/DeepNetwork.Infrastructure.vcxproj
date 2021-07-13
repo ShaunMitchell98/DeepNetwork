@@ -83,11 +83,12 @@
     <ClInclude Include="Activation Functions\activation_function.h" />
     <ClInclude Include="Activation Functions\logistic_function.h" />
     <ClInclude Include="Forward Propagation\forward_propagate.h" />
-    <ClInclude Include="Logging\log.h" />
+    <ClInclude Include="Logging\logger.h" />
     <ClInclude Include="Matrix Multiplication\matrix_multiplication.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="dev_array.h" />
     <ClInclude Include="network.h" />
+    <ClInclude Include="NetworkTrainer\NetworkTrainer.h" />
     <ClInclude Include="Train Network\train_network.h" />
   </ItemGroup>
   <ItemGroup>
@@ -96,7 +97,8 @@
   <ItemGroup>
     <ClCompile Include="Activation Functions\logistic_function.cpp" />
     <ClCompile Include="Forward Propagation\forward_propagate.cpp" />
-    <ClCompile Include="Logging\log.cpp" />
+    <ClCompile Include="Logging\logger.cpp" />
+    <ClCompile Include="NetworkTrainer\NetworkTrainer.cpp" />
     <ClCompile Include="Train Network\train_network.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

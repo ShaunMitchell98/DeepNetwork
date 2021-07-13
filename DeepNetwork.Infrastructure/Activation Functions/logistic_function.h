@@ -4,4 +4,4 @@
 
 void apply_logistic(matrix matrix);
 
-float calculate_logistic_derivative(float input);
+double calculate_logistic_derivative(double input);

@@ -1,5 +1,5 @@
 #pragma once
 
-enum activation_function {
+enum class activation_function {
 	logistic
 };

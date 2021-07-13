@@ -8,7 +8,7 @@
 #include "../Activation Functions/logistic_function.h"
 #include <stdlib.h>
 #include <vector>
-#include "../Logging/log.h"
+#include "../Logging/logger.h"
 #include <stdio.h>
 
 __global__ void matrixMultiplicationKernel(float* A, float* B, float* C, int Acols, int Bcols) {

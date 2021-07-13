@@ -1,16 +1,19 @@
 #include "logistic_function.h"
 #include "math.h"
-#include "../Logging/log.h"
+#include "../Logging/logger.h"
 
 void apply_logistic(matrix matrix) {
 
-    log_line("Applying logistic activation function.");
+    auto logger = new Logger();
+    logger->LogLine("Applying logistic activation function.");
     for (int i = 0; i < matrix.rows; i++) {
         float* mi = &matrix.values[i];
         *mi = 1 / (1 + exp(-*mi));
     }
+
+    delete logger;
 }
 
-float calculate_logistic_derivative(float input) {
+double calculate_logistic_derivative(double input) {
     return exp(input) / (1 + exp(input) * (1 + exp(input)));
 }
