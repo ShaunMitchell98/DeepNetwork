@@ -22,9 +22,9 @@
     <ClInclude Include="Forward Propagation\forward_propagate.h">
       <Filter>Forward Propagation</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkTrainer.h">
-      <Filter>NetworkTrainer</Filter>
-    </ClInclude>
+    <ClInclude Include="NetworkTrainer\NetworkTrainer.h" />
+    <ClInclude Include="NormaliseLayer.h" />
+    <ClInclude Include="WeightMatrixGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dev_array">
@@ -62,8 +62,8 @@
     <ClCompile Include="Forward Propagation\forward_propagate.cpp">
       <Filter>Forward Propagation</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkTrainer.cpp">
-      <Filter>NetworkTrainer</Filter>
-    </ClCompile>
+    <ClCompile Include="NetworkTrainer\NetworkTrainer.cpp" />
+    <ClCompile Include="NormaliseLayer.cpp" />
+    <ClCompile Include="WeightMatrixGenerator.cpp" />
   </ItemGroup>
 </Project>

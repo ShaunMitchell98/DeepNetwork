@@ -4,13 +4,14 @@
 #include <time.h>
 #include <stdlib.h>
 #include "logger.h"
-
+#include <memory>
 
 Logger::Logger() {
 	fp = fopen("C:\\Users\\Shaun Mitchell\\Documents\\deep_network_logs.txt", "a");
 }
 
 Logger::~Logger() {
+	LogMessage("Closing logger...");
 	fclose(fp);
 }
 void Logger::DeleteLogFile() {
@@ -19,34 +20,38 @@ void Logger::DeleteLogFile() {
 
 	if (fp = fopen("C:\\Users\\Shaun Mitchell\\Documents\\deep_network_logs.txt", "r")) {
 		fclose(fp);
-		remove("C:\\Users\\Shaun Mitchell\\Documents\\matrix_multiple.txt");
+		remove("C:\\Users\\Shaun Mitchell\\Documents\\deep_network_logs.txt");
 	}
 }
 
 void Logger::LogMatrix(matrix matrix) {
 
-	for (int i = 0; i < matrix.rows; i++) {
-		for (int j = 0; j < matrix.cols; j++) {
-			char buffer[100];
-			gcvt(matrix.values[matrix.cols * i + j], 20, buffer);
-			fwrite(buffer, sizeof(char), 20, fp);
+	for (auto i = 0; i < matrix.rows; i++) {
+		for (auto j = 0; j < matrix.cols; j++) {
+			int index = matrix.cols * i + j;
+			LogNumber(matrix.values[index]);
 
 			if (j != matrix.cols - 1) {
-				fwrite(", ", sizeof(char), 2, fp);
+				LogMessageWithoutDate(", ");
 			}
 		}
 
-		fwrite("\n", sizeof(char), 1, fp);
+		LogNewline();
 	}
 
-	fwrite("\n", sizeof(char), 1, fp);
-	fwrite("\n", sizeof(char), 1, fp);
-	fwrite("\n", sizeof(char), 1, fp);
-	fwrite("\n", sizeof(char), 1, fp);
+	LogNewline();
+	LogNewline();
+	LogNewline();
+	LogNewline();
 }
+void Logger::LogMessageWithoutDate(const char* message) {
 
-void Logger::LogMessageWithoutDate(const char* message...) {
-	fprintf(fp, message);
+	int count = 0; 
+	while (message[count] != '\0') {
+		count++;
+	}
+
+	fwrite(message, sizeof(char), count, fp);
 }
 
 void Logger::LogMessage(const char* message...) {
@@ -64,20 +69,20 @@ void Logger::LogNewline() {
 	LogMessageWithoutDate("\n");
 }
 
-void Logger::LogNumber(float number) {
-	char buffer[sizeof(float)];
-	LogMessageWithoutDate(gcvt(number, sizeof(float), buffer));
+void Logger::LogNumber(double number) {
+	auto buffer = std::make_unique<char>(sizeof(double));
+	LogMessageWithoutDate(gcvt(number, sizeof(double), buffer.get()));
 }
 
-void Logger::LogFloatArray(float* array, int length) {
-	for (int i = 0; i < length; i++) {
-		LogNumber(array[i]);
-		LogWhitespace();
+void Logger::LogDoubleArray(double* doubleArray, int length) {
+
+	for (auto i = 0; i < length; i++) {
+		LogNumber(doubleArray[i]);
+		LogNewline();
 	}
-	LogNewline();
 }
 
-void Logger::LogLine(const char* message...) {
+void Logger::LogLine(const char* message) {
 	LogMessage(message);
 	LogNewline();
 }

@@ -5,26 +5,44 @@ NetworkTrainer::NetworkTrainer(network network) {
     logger = std::make_unique<Logger>();
 
     for (int i = 0; i < network.weightMatrixCount; i++) {
-        adjustmentsStorage.push_back(std::vector<float>(network.weights[i].rows * network.weights[i].cols));
+        adjustmentsStorage.push_back(std::vector<double>(network.weights[i].rows * network.weights[i].cols));
     }
 }
 
-float NetworkTrainer::TrainNetwork(network network, matrix expectedLayer) {
-    float error = CalculateErrorDerivativeForFinalLayer(network.layers[network.layerCount - 1], expectedLayer);
+double NetworkTrainer::TrainNetwork(network network, matrix expectedLayer) {
+
+    double error = CalculateErrorDerivativeForFinalLayer(network.layers[network.layerCount - 1], expectedLayer);
     GetAdjustments(network);
     UpdateWeights(network);
 
+    logger->LogMessage("I am returning: ");
+    logger->LogNumber(error);
+    logger->LogNewline();
     return error;
 }
 
-float NetworkTrainer::CalculateErrorDerivativeForFinalLayer(matrix finalLayer, matrix expectedLayer) {
+double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(matrix finalLayer, matrix expectedLayer) {
 
-    float error = 0;
+    logger->LogMessage("Expected layer is:");
+    logger->LogDoubleArray(expectedLayer.values, expectedLayer.rows);
+    double error = 0;
     for (int b = 0; b < finalLayer.rows; b++) {
         dError_dLayerAbove.push_back(-(expectedLayer.values[b] - finalLayer.values[b]) * calculate_logistic_derivative(finalLayer.values[b]));
+        logger->LogMessage("Expected value: ");
+        logger->LogNumber(expectedLayer.values[b]);
+        logger->LogNewline();
+        logger->LogMessage("Actual value: ");
+        logger->LogNumber(finalLayer.values[b]);
+        logger->LogNewline();
         error += 0.5 * (expectedLayer.values[b] - finalLayer.values[b]) * (expectedLayer.values[b] - finalLayer.values[b]);
+        logger->LogMessage("Temp error is ");
+        logger->LogNumber(error);
+        logger->LogNewline();
     }
     logger->LogLine("Calculated derivatives for final layer.");
+    logger->LogMessage("Error is: ");
+    logger->LogNumber(error);
+    logger->LogNewline();
 
     return error;
 }
@@ -39,7 +57,7 @@ void NetworkTrainer::GetErrorDerivativeForOutputLayer(matrix weightMatrix, matri
     }
 
     logger->LogMessage("dError_dOutputCurrent: ");
-    logger->LogFloatArray(dError_dOutputCurrent.data(), weightMatrix.cols);
+    logger->LogDoubleArray(dError_dOutputCurrent.data(), weightMatrix.cols);
 }
 
 void NetworkTrainer::UpdateWeights(network network) {
@@ -49,13 +67,7 @@ void NetworkTrainer::UpdateWeights(network network) {
 
         for (int y = 0; y < weightMatrix.rows; y++) {
             for (int p = 0; p < weightMatrix.cols; p++) {
-                //logger->LogLine("row, col: %d, %d", y, p);
-                logger->LogMessage("row, col: ");
-                logger->LogNumber(y);
-                logger->LogMessageWithoutDate(", ");
-                logger->LogNumber(p);
-                logger->LogNewline();
-                float* wij = &weightMatrix.values[weightMatrix.cols * y + p];
+                double* wij = &weightMatrix.values[weightMatrix.cols * y + p];
                 *wij = *wij - 0.01 * adjustmentsStorage[a][weightMatrix.cols * y + p];
             }
         }
@@ -67,16 +79,18 @@ void NetworkTrainer::UpdateErrorDerivativeForLayerAbove(int length) {
     dError_dLayerAbove = dError_dOutputCurrent;
 
     logger->LogMessage("dError_dLayerAbove: ");
-    logger->LogFloatArray(dError_dLayerAbove.data(), length);
+    logger->LogDoubleArray(dError_dLayerAbove.data(), length);
     logger->LogNewline();
 }
 
 void NetworkTrainer::GetAdjustmentsForLayer(network network, int a) {
-    logger->LogLine("Calcuating loop for weight matrix: %d", a);
+    logger->LogMessage("Calcuating loop for weight matrix: ");
+    logger->LogNumber(a);
+    logger->LogNewline();
 
     matrix weightMatrix = network.weights[a];
-    logger->LogLine("Weight Matrix: ");
-    logger->LogMatrix(weightMatrix);
+    //logger->LogLine("Weight Matrix: ");
+    //logger->LogMatrix(weightMatrix);
 
     matrix inputLayer = network.layers[a];
     logger->LogLine("Input Layer: ");
@@ -93,14 +107,8 @@ void NetworkTrainer::GetAdjustmentsForLayer(network network, int a) {
     for (int i = 0; i < weightMatrix.rows; i++) {
         for (int j = 0; j < weightMatrix.cols; j++) {
 
-            //logger->LogLine("row, col: %d, %d", i, j);
-            logger->LogMessage("row, col: ");
-            logger->LogNumber(i);
-            logger->LogMessageWithoutDate(", ");
-            logger->LogNumber(j);
-            logger->LogNewline();
-            float dOutputCurrentJ_dWeightIJ = inputLayer.values[j];
-            float daij = dError_dOutputCurrent[j] * dOutputCurrentJ_dWeightIJ;
+            double dOutputCurrentJ_dWeightIJ = inputLayer.values[j];
+            double daij = dError_dOutputCurrent[j] * dOutputCurrentJ_dWeightIJ;
             adjustmentsStorage[a].push_back(daij);
         }
     }

@@ -13,10 +13,10 @@ public:
 	void DeleteLogFile();
 	void LogMatrix(matrix matrix);
 	void LogMessage(const char* message...);
-	void LogMessageWithoutDate(const char* message...);
-	void LogNumber(float number);
+	void LogMessageWithoutDate(const char* message);
+	void LogNumber(double number);
 	void LogWhitespace();
 	void LogNewline();
-	void LogFloatArray(float* array, int length);
-	void LogLine(const char* message...);
-};
+	void LogDoubleArray(double* array, int length);
+	void LogLine(const char* message);
+}; 

@@ -9,9 +9,9 @@ def calculate_matrix_multiple(A, B):
     matrix_multiply.argtypes = [matrix, matrix, matrix]
 
     c_count = A.rows * B.cols
-    c_values = (c_float * c_count)()
+    c_values = (c_double * c_count)()
 
-    C = matrix(cast(c_values, POINTER(c_float)), A.rows, B.cols)
+    C = matrix(cast(c_values, POINTER(c_double)), A.rows, B.cols)
 
     matrix_multiply(A, B, C)
 

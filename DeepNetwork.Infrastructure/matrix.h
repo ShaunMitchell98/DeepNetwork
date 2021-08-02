@@ -2,7 +2,7 @@
 #define KERNEL_MATRIX
 
 typedef struct {
-	float* values;
+	double* values;
 	int rows;
 	int cols;
 } matrix;
