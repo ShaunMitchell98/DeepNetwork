@@ -2,15 +2,11 @@
 #define KERNEL_CUH_
 
 #include "../matrix.h"
-#include "../network.h"
-#include "../Activation Functions/activation_function.h"
 
 extern "C" {
-#define EXPORT_SYMBOL __declspec(dllexport)
 
-	EXPORT_SYMBOL void matrix_multiply(matrix A, matrix B, matrix C);
+	void matrix_multiply(Matrix* A, Matrix* B, Matrix* C);
 
-#undef EXPORT_SYMBOL
 }
 
 #endif

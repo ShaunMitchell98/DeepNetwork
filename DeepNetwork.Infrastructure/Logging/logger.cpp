@@ -8,6 +8,7 @@
 
 Logger::Logger() {
 	fp = fopen("C:\\Users\\Shaun Mitchell\\Documents\\deep_network_logs.txt", "a");
+	enabled = false;
 }
 
 Logger::~Logger() {
@@ -24,41 +25,47 @@ void Logger::DeleteLogFile() {
 	}
 }
 
-void Logger::LogMatrix(matrix matrix) {
+void Logger::LogMatrix(Matrix* matrix) {
 
-	for (auto i = 0; i < matrix.rows; i++) {
-		for (auto j = 0; j < matrix.cols; j++) {
-			int index = matrix.cols * i + j;
-			LogNumber(matrix.values[index]);
+	if (enabled) {
+		for (auto i = 0; i < matrix->Rows; i++) {
+			for (auto j = 0; j < matrix->Cols; j++) {
+				int index = matrix->Cols * i + j;
+				LogNumber(matrix->Values[index]);
 
-			if (j != matrix.cols - 1) {
-				LogMessageWithoutDate(", ");
+				if (j != matrix->Cols - 1) {
+					LogMessageWithoutDate(", ");
+				}
 			}
+
+			LogNewline();
 		}
 
 		LogNewline();
+		LogNewline();
+		LogNewline();
+		LogNewline();
 	}
-
-	LogNewline();
-	LogNewline();
-	LogNewline();
-	LogNewline();
 }
 void Logger::LogMessageWithoutDate(const char* message) {
 
-	int count = 0; 
-	while (message[count] != '\0') {
-		count++;
-	}
+	if (enabled) {
+		int count = 0;
+		while (message[count] != '\0') {
+			count++;
+		}
 
-	fwrite(message, sizeof(char), count, fp);
+		fwrite(message, sizeof(char), count, fp);
+	}
 }
 
 void Logger::LogMessage(const char* message...) {
-	time_t t = time(NULL);
-	struct tm tm = *localtime(&t);
-	fprintf(fp, "%d-%02d-%02d %02d:%02d:%02d | ", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-	fprintf(fp, message);
+	if (enabled) {
+		time_t t = time(NULL);
+		struct tm tm = *localtime(&t);
+		fprintf(fp, "%d-%02d-%02d %02d:%02d:%02d | ", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+		fprintf(fp, message);
+	}
 }
 
 void Logger::LogWhitespace() {

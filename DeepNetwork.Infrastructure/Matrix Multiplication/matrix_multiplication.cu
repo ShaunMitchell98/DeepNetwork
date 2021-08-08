@@ -3,13 +3,12 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include "../dev_array.h"
-#include "../network.h"
 #include "matrix_multiplication.h"
 #include "../Activation Functions/logistic_function.h"
 #include <stdlib.h>
 #include <vector>
-#include "../Logging/logger.h"
 #include <stdio.h>
+#include <stddef.h>
 
 __global__ void matrixMultiplicationKernel(double* A, double* B, double* C, int Acols, int Bcols) {
     int ROW = blockIdx.y * blockDim.y + threadIdx.y;
@@ -46,16 +45,16 @@ void internalMatrixMultiply(double* A, double* B, double* C, int Acols, int Bcol
 
 extern "C"
 {
-    void matrix_multiply(matrix A, matrix B, matrix C) {  
-
-            for (auto i = 0; i < A.rows; i++) {
-                for (auto j = 0; j < B.cols; j++) {
+    void matrix_multiply(Matrix* A, Matrix* B, Matrix* C) {  
+            
+            for (auto i = 0; i < A->Rows; i++) {
+                for (auto j = 0; j < B->Cols; j++) {
                     double tempValue = 0;
-                    for (auto k = 0; k < A.cols; k++) {
-                        tempValue += A.values[A.cols * i + k] * B.values[k * B.cols + j];
+                    for (auto k = 0; k < A->Cols; k++) {
+                        tempValue += A->Values[(size_t)A->Cols * i + k] * B->Values[(size_t)k * B->Cols + j];
                     }
 
-                    C.values[i * B.cols + j] = tempValue;
+                    C->Values[(size_t)i * B->Cols + j] = tempValue;
                 }
             }
 

@@ -1,11 +1,11 @@
 #include "logistic_function.h"
 #include "math.h"
 
-void apply_logistic(matrix matrix, Logger* logger) {
+void apply_logistic(Matrix* matrix, Logger* logger) {
 
     logger->LogLine("Applying logistic activation function.");
-    for (int i = 0; i < matrix.rows; i++) {
-        double* mi = &matrix.values[i];
+    for (int i = 0; i < matrix->Rows; i++) {
+        double* mi = &matrix->Values[i];
         *mi = 1 / (1 + exp(-*mi));
     }
 }

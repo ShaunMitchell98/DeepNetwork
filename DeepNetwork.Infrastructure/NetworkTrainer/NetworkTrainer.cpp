@@ -1,40 +1,41 @@
 #include "NetworkTrainer.h"
 #include "../Activation Functions/logistic_function.h"
 
-NetworkTrainer::NetworkTrainer(network network) {
+NetworkTrainer::NetworkTrainer(PyNetwork* network) {
     logger = std::make_unique<Logger>();
-
-    for (int i = 0; i < network.weightMatrixCount; i++) {
-        adjustmentsStorage.push_back(std::vector<double>(network.weights[i].rows * network.weights[i].cols));
-    }
 }
 
-double NetworkTrainer::TrainNetwork(network network, matrix expectedLayer) {
+double NetworkTrainer::TrainNetwork(PyNetwork* network, Matrix* expectedLayer) {
 
-    double error = CalculateErrorDerivativeForFinalLayer(network.layers[network.layerCount - 1], expectedLayer);
+    double error = CalculateErrorDerivativeForFinalLayer(network->Layers[network->Layers.size() - 1].get(), expectedLayer);
     GetAdjustments(network);
-    UpdateWeights(network);
+
+    if (network->BatchNumber == network->BatchSize) {
+        UpdateWeights(network);
+        //network.batchNumber = 1;
+    }
 
     logger->LogMessage("I am returning: ");
     logger->LogNumber(error);
     logger->LogNewline();
+
     return error;
 }
 
-double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(matrix finalLayer, matrix expectedLayer) {
+double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(Matrix* finalLayer, Matrix* expectedLayer) {
 
     logger->LogMessage("Expected layer is:");
-    logger->LogDoubleArray(expectedLayer.values, expectedLayer.rows);
+    logger->LogDoubleArray(expectedLayer->Values.data(), expectedLayer->Rows);
     double error = 0;
-    for (int b = 0; b < finalLayer.rows; b++) {
-        dError_dLayerAbove.push_back(-(expectedLayer.values[b] - finalLayer.values[b]) * calculate_logistic_derivative(finalLayer.values[b]));
+    for (int b = 0; b < finalLayer->Rows; b++) {
+        dError_dLayerAbove.push_back(-(expectedLayer->Values[b] - finalLayer->Values[b]) * calculate_logistic_derivative(finalLayer->Values[b]));
         logger->LogMessage("Expected value: ");
-        logger->LogNumber(expectedLayer.values[b]);
+        logger->LogNumber(expectedLayer->Values[b]);
         logger->LogNewline();
         logger->LogMessage("Actual value: ");
-        logger->LogNumber(finalLayer.values[b]);
+        logger->LogNumber(finalLayer->Values[b]);
         logger->LogNewline();
-        error += 0.5 * (expectedLayer.values[b] - finalLayer.values[b]) * (expectedLayer.values[b] - finalLayer.values[b]);
+        error += 0.5 * (expectedLayer->Values[b] - finalLayer->Values[b]) * (expectedLayer->Values[b] - finalLayer->Values[b]);
         logger->LogMessage("Temp error is ");
         logger->LogNumber(error);
         logger->LogNewline();
@@ -47,28 +48,28 @@ double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(matrix finalLayer, 
     return error;
 }
 
-void NetworkTrainer::GetErrorDerivativeForOutputLayer(matrix weightMatrix, matrix outputLayer) {
+void NetworkTrainer::GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Matrix* outputLayer) {
     logger->LogLine("Calculating error derivative with respect to current output layer.");
-    for (int j = 0; j < weightMatrix.cols; j++) {
+    for (int j = 0; j < weightMatrix->Cols; j++) {
         dError_dOutputCurrent.push_back(0);
-        for (int i = 0; i < weightMatrix.rows; i++) {
-            dError_dOutputCurrent[j] += dError_dLayerAbove[i] * calculate_logistic_derivative(outputLayer.values[i]) * weightMatrix.values[i * weightMatrix.cols + j];
+        for (int i = 0; i < weightMatrix->Rows; i++) {
+            dError_dOutputCurrent[j] += dError_dLayerAbove[i] * calculate_logistic_derivative(outputLayer->Values[i]) * weightMatrix->Values[(size_t)i * weightMatrix->Cols + j];
         }
     }
 
     logger->LogMessage("dError_dOutputCurrent: ");
-    logger->LogDoubleArray(dError_dOutputCurrent.data(), weightMatrix.cols);
+    logger->LogDoubleArray(dError_dOutputCurrent.data(), weightMatrix->Cols);
 }
 
-void NetworkTrainer::UpdateWeights(network network) {
+void NetworkTrainer::UpdateWeights(PyNetwork* network) {
     logger->LogLine("Updating weights...");
-    for (int a = network.weightMatrixCount - 1; a >= 0; a--) {
-        matrix weightMatrix = network.weights[a];
+    for (int a = network->Weights.size() - 1; a >= 0; a--) {
+        Matrix* weightMatrix = network->Weights[a].get();
 
-        for (int y = 0; y < weightMatrix.rows; y++) {
-            for (int p = 0; p < weightMatrix.cols; p++) {
-                double* wij = &weightMatrix.values[weightMatrix.cols * y + p];
-                *wij = *wij - 0.01 * adjustmentsStorage[a][weightMatrix.cols * y + p];
+        for (int y = 0; y < weightMatrix->Rows; y++) {
+            for (int p = 0; p < weightMatrix->Cols; p++) {
+                double* wij = &weightMatrix->Values[(size_t)weightMatrix->Cols * y + p];
+                *wij = *wij - 0.1* network->Adjustments[a]->Values[(size_t)weightMatrix->Cols * y + p];
             }
         }
     }
@@ -83,20 +84,20 @@ void NetworkTrainer::UpdateErrorDerivativeForLayerAbove(int length) {
     logger->LogNewline();
 }
 
-void NetworkTrainer::GetAdjustmentsForLayer(network network, int a) {
+void NetworkTrainer::GetAdjustmentsForLayer(PyNetwork* network, int a) {
     logger->LogMessage("Calcuating loop for weight matrix: ");
     logger->LogNumber(a);
     logger->LogNewline();
 
-    matrix weightMatrix = network.weights[a];
+    Matrix* weightMatrix = network->Weights[a].get();
     //logger->LogLine("Weight Matrix: ");
     //logger->LogMatrix(weightMatrix);
 
-    matrix inputLayer = network.layers[a];
+    Matrix* inputLayer = network->Layers[a].get();
     logger->LogLine("Input Layer: ");
     logger->LogMatrix(inputLayer);
 
-    matrix outputLayer = network.layers[a + 1];
+    Matrix* outputLayer = network->Layers[(size_t)a + 1].get();
     logger->LogLine("Output Layer: ");
     logger->LogMatrix(outputLayer);
 
@@ -104,20 +105,20 @@ void NetworkTrainer::GetAdjustmentsForLayer(network network, int a) {
 
     logger->LogLine("Calculating adjustments.");
 
-    for (int i = 0; i < weightMatrix.rows; i++) {
-        for (int j = 0; j < weightMatrix.cols; j++) {
+    for (int i = 0; i < weightMatrix->Rows; i++) {
+        for (int j = 0; j < weightMatrix->Cols; j++) {
 
-            double dOutputCurrentJ_dWeightIJ = inputLayer.values[j];
+            double dOutputCurrentJ_dWeightIJ = inputLayer->Values[j];
             double daij = dError_dOutputCurrent[j] * dOutputCurrentJ_dWeightIJ;
-            adjustmentsStorage[a].push_back(daij);
+            network->AddAdjustment(a, weightMatrix->Cols * i + j, daij);
         }
     }
 
-    UpdateErrorDerivativeForLayerAbove(weightMatrix.cols);
+    UpdateErrorDerivativeForLayerAbove(weightMatrix->Cols);
 }
 
-void NetworkTrainer::GetAdjustments(network network) {
-    for (int a = network.weightMatrixCount - 1; a >= 0; a--) {
+void NetworkTrainer::GetAdjustments(PyNetwork* network) {
+    for (int a = network->Weights.size() - 1; a >= 0; a--) {
         GetAdjustmentsForLayer(network, a);
     }
 }

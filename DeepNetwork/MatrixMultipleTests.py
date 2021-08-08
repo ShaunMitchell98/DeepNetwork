@@ -1,5 +1,5 @@
 import unittest
-from matrixMultiple import *
+from Infrastructure.matrixMultiple import *
 
 
 class MyTestCase(unittest.TestCase):

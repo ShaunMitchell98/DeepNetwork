@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include "../network.h"
+#include "../PyNetwork.h"
 #include "../Logging/logger.h"
 
 class NetworkTrainer
@@ -10,17 +10,16 @@ class NetworkTrainer
 private:
 	std::vector<double> dError_dLayerAbove;
 	std::vector<double> dError_dOutputCurrent;
-	std::vector<std::vector<double>> adjustmentsStorage;
 	std::unique_ptr<Logger> logger;
 
-	double CalculateErrorDerivativeForFinalLayer(matrix finalLayer, matrix expectedLayer);
-	void UpdateWeights(network network);
-	void GetAdjustmentsForLayer(network network, int a);
-	void GetAdjustments(network network);
+	double CalculateErrorDerivativeForFinalLayer(Matrix* finalLayer, Matrix* expectedLayer);
+	void UpdateWeights(PyNetwork* network);
+	void GetAdjustmentsForLayer(PyNetwork* network, int a);
+	void GetAdjustments(PyNetwork* network);
 	void UpdateErrorDerivativeForLayerAbove(int length);
-	void GetErrorDerivativeForOutputLayer(matrix weightMatrix, matrix outputLayer);
+	void GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Matrix* outputLayer);
 public:
-	NetworkTrainer(network network);
-	double TrainNetwork(network network, matrix expectedLayer);
+	NetworkTrainer(PyNetwork* network);
+	double TrainNetwork(PyNetwork* network, Matrix* expectedLayer);
 };
 

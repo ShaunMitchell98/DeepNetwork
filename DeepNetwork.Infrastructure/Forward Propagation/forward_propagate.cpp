@@ -4,13 +4,13 @@
 #include "../Activation Functions/logistic_function.h"
 #include <memory>
 
-void forward_propagate_layer(matrix weights, matrix inputLayer, matrix outputLayer, activation_function activationFunction) {
-    auto logger = std::make_unique<Logger>();
+void forward_propagate_layer(Matrix* weights, Matrix* inputLayer, Matrix* outputLayer, activation_function activationFunction) {
 
-    logger->LogNumber(weights.rows);
-    logger->LogNumber(weights.cols);
+    auto logger = std::make_unique<Logger>();
+    //logger->LogNumber(weights->Rows);
+    //logger->LogNumber(weights->Cols);
     //logger->LogNumber(weights.values);
-    logger->LogLine("Weight Matrix: ");
+    //logger->LogLine("Weight Matrix: ");
     //logger->LogMatrix(weights);
 
     logger->LogLine("Forward propagating layer.");
@@ -18,10 +18,10 @@ void forward_propagate_layer(matrix weights, matrix inputLayer, matrix outputLay
     matrix_multiply(weights, inputLayer, outputLayer);
 
     logger->LogLine("Forward propagation input: ");
-    logger->LogDoubleArray(inputLayer.values, inputLayer.rows);
+    logger->LogDoubleArray(inputLayer->Values.data(), inputLayer->Rows);
 
     logger->LogLine("Forward propagation output: ");
-    logger->LogDoubleArray(outputLayer.values, outputLayer.rows);
+    logger->LogDoubleArray(outputLayer->Values.data(), outputLayer->Rows);
 
     if (activationFunction == activation_function::logistic) {
         apply_logistic(outputLayer, logger.get());

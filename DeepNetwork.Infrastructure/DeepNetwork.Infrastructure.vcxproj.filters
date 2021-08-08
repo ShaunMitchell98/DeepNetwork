@@ -4,8 +4,7 @@
     <ClInclude Include="dev_array.h">
       <Filter>dev_array</Filter>
     </ClInclude>
-    <ClInclude Include="matrix.h" />
-    <ClInclude Include="network.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Matrix Multiplication\matrix_multiplication.h">
       <Filter>matrix_multiplication</Filter>
     </ClInclude>
@@ -25,6 +24,12 @@
     <ClInclude Include="NetworkTrainer\NetworkTrainer.h" />
     <ClInclude Include="NormaliseLayer.h" />
     <ClInclude Include="WeightMatrixGenerator.h" />
+    <ClInclude Include="PyNetwork.h">
+      <Filter>PyNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="PyNetwork_Functions.h">
+      <Filter>PyNetwork</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dev_array">
@@ -44,6 +49,9 @@
     </Filter>
     <Filter Include="NetworkTrainer">
       <UniqueIdentifier>{19f30609-28d0-451f-8353-0bdd2cc87a61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PyNetwork">
+      <UniqueIdentifier>{f186dd4a-54e4-4927-95e9-c1852e33a0c4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,5 +73,12 @@
     <ClCompile Include="NetworkTrainer\NetworkTrainer.cpp" />
     <ClCompile Include="NormaliseLayer.cpp" />
     <ClCompile Include="WeightMatrixGenerator.cpp" />
+    <ClCompile Include="matrix.cpp" />
+    <ClCompile Include="PyNetwork.cpp">
+      <Filter>PyNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="PyNetwork_Functions.cpp">
+      <Filter>PyNetwork</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
-import PyNetwork
-import numpy as np
+from PyNetwork import PyNetwork
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
@@ -15,29 +14,16 @@ train_images = train_images / 255.0
 
 test_images = test_images / 255.0
 
-network = PyNetwork.PyNetwork(784)
+network = PyNetwork(784)
 network.add_layer(128)
 network.add_layer(10)
 
-#network = PyNetwork.PyNetwork(4)
-#network.add_layer(2)
+batch_size = 5
+
 first_image = train_images[0]
 
-#error = network.train(np.array([1, 1, 1, 1]), 5)
-x =list(range(0, 10000))
-errors = list()
+errors = network.train(train_images, train_labels, 10, batch_size)
 
-for i in range(0, 10000):
-   errors.append(network.train(train_images[i].flatten(order = 'C'), train_labels[i]))
-   print(f'Loop {i}')
-
-# print(f'Loop {i}, Error {error:.16f}')
-    #if i % 100 == 0:
-      #  print(f'Loop {i}, Error {error:.16f}')
-
+x = list(range(0, train_images.shape[0]))
 plt.plot(x, errors)
 plt.show()
-#for j in range(0, len(test_images)):
- #   network.evaluate(test_images[i], test_labels[i])
-
-

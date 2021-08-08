@@ -2,21 +2,21 @@
 #include <memory>
 #include "Logging/logger.h"
 
-void normalise_layer(matrix A) {
+void normalise_layer(Matrix* A) {
     auto logger = std::make_unique<Logger>();
     logger->LogLine("Normalising final layer");
-    logger->LogDoubleArray(A.values, A.rows);
+    logger->LogDoubleArray(A->Values.data(), A->Rows);
 
     double sum = 0;
 
-    for (auto i = 0; i < A.rows; i++) {
-        sum += A.values[i];
+    for (auto i = 0; i < A->Rows; i++) {
+        sum += A->Values[i];
     }
 
-    for (auto i = 0; i < A.rows; i++) {
-        A.values[i] = A.values[i] / sum;
+    for (auto i = 0; i < A->Rows; i++) {
+        A->Values[i] = A->Values[i] / sum;
     }
 
     logger->LogLine("Final layer after normalisation: ");
-    logger->LogDoubleArray(A.values, A.rows);
+    logger->LogDoubleArray(A->Values.data(), A->Rows);
 }

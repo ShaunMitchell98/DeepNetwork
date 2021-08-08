@@ -1,10 +1,17 @@
 #ifndef KERNEL_MATRIX
 #define KERNEL_MATRIX
 
-typedef struct {
-	double* values;
-	int rows;
-	int cols;
-} matrix;
+#include <vector>
+
+class Matrix {
+
+public:
+	std::vector<double> Values;
+	int Rows;
+	int Cols;
+
+	Matrix(int rows, int cols);
+	Matrix(int rows, int cols, double* values);
+};
 
 #endif

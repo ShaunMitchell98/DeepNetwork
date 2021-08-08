@@ -85,11 +85,12 @@
     <ClInclude Include="Forward Propagation\forward_propagate.h" />
     <ClInclude Include="Logging\logger.h" />
     <ClInclude Include="Matrix Multiplication\matrix_multiplication.h" />
-    <ClInclude Include="matrix.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="dev_array.h" />
-    <ClInclude Include="network.h" />
     <ClInclude Include="NetworkTrainer\NetworkTrainer.h" />
     <ClInclude Include="NormaliseLayer.h" />
+    <ClInclude Include="PyNetwork.h" />
+    <ClInclude Include="PyNetwork_Functions.h" />
     <ClInclude Include="Train Network\train_network.h" />
     <ClInclude Include="WeightMatrixGenerator.h" />
   </ItemGroup>
@@ -100,8 +101,11 @@
     <ClCompile Include="Activation Functions\logistic_function.cpp" />
     <ClCompile Include="Forward Propagation\forward_propagate.cpp" />
     <ClCompile Include="Logging\logger.cpp" />
+    <ClCompile Include="matrix.cpp" />
     <ClCompile Include="NetworkTrainer\NetworkTrainer.cpp" />
     <ClCompile Include="NormaliseLayer.cpp" />
+    <ClCompile Include="PyNetwork.cpp" />
+    <ClCompile Include="PyNetwork_Functions.cpp" />
     <ClCompile Include="Train Network\train_network.cpp" />
     <ClCompile Include="WeightMatrixGenerator.cpp" />
   </ItemGroup>

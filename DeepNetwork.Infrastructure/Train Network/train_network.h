@@ -1,11 +1,9 @@
 #pragma once
 
-#include "../network.h"
+#include "../PyNetwork.h"
 
 extern "C" {
-#define EXPORT_SYMBOL __declspec(dllexport)
 
-	EXPORT_SYMBOL double train_network(network network, matrix expectedLayer);
+	double train_network(PyNetwork* network, Matrix* expectedLayer);
 
-#undef EXPORT_SYMBOL
 }
