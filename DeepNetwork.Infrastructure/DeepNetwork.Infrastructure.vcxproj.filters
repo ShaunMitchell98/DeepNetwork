@@ -4,32 +4,30 @@
     <ClInclude Include="dev_array.h">
       <Filter>dev_array</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Models\Matrix.h" />
     <ClInclude Include="Matrix Multiplication\matrix_multiplication.h">
       <Filter>matrix_multiplication</Filter>
     </ClInclude>
-    <ClInclude Include="Activation Functions\activation_function.h">
+    <ClInclude Include="Activation Functions\Logistic.h">
       <Filter>Activation Functions</Filter>
     </ClInclude>
-    <ClInclude Include="Activation Functions\logistic_function.h">
-      <Filter>Activation Functions</Filter>
-    </ClInclude>
-    <ClInclude Include="Logging\logger.h" />
-    <ClInclude Include="Train Network\train_network.h">
-      <Filter>Train Network</Filter>
-    </ClInclude>
-    <ClInclude Include="Forward Propagation\forward_propagate.h">
+    <ClInclude Include="Logging\Logger.h" />
+    <ClInclude Include="Forward Propagation\LayerPropagator.h">
       <Filter>Forward Propagation</Filter>
     </ClInclude>
     <ClInclude Include="NetworkTrainer\NetworkTrainer.h" />
     <ClInclude Include="NormaliseLayer.h" />
     <ClInclude Include="WeightMatrixGenerator.h" />
-    <ClInclude Include="PyNetwork.h">
+    <ClInclude Include="PyNetwork\PyNetwork.h">
       <Filter>PyNetwork</Filter>
     </ClInclude>
-    <ClInclude Include="PyNetwork_Functions.h">
+    <ClInclude Include="PyNetwork\PyNetwork_Functions.h">
       <Filter>PyNetwork</Filter>
     </ClInclude>
+    <ClInclude Include="Models\Vector.h" />
+    <ClInclude Include="Activation Functions\Activation.h" />
+    <ClInclude Include="Adjustments\AdjustmentCalculator.h" />
+    <ClInclude Include="Logging\ILogger.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="dev_array">
@@ -60,25 +58,24 @@
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Activation Functions\logistic_function.cpp">
+    <ClCompile Include="Activation Functions\Logistic.cpp">
       <Filter>Activation Functions</Filter>
     </ClCompile>
-    <ClCompile Include="Logging\logger.cpp" />
-    <ClCompile Include="Train Network\train_network.cpp">
-      <Filter>Train Network</Filter>
-    </ClCompile>
-    <ClCompile Include="Forward Propagation\forward_propagate.cpp">
+    <ClCompile Include="Logging\Logger.cpp" />
+    <ClCompile Include="Forward Propagation\LayerPropagator.cpp">
       <Filter>Forward Propagation</Filter>
     </ClCompile>
     <ClCompile Include="NetworkTrainer\NetworkTrainer.cpp" />
     <ClCompile Include="NormaliseLayer.cpp" />
     <ClCompile Include="WeightMatrixGenerator.cpp" />
-    <ClCompile Include="matrix.cpp" />
-    <ClCompile Include="PyNetwork.cpp">
+    <ClCompile Include="Models\Matrix.cpp" />
+    <ClCompile Include="PyNetwork\PyNetwork.cpp">
       <Filter>PyNetwork</Filter>
     </ClCompile>
-    <ClCompile Include="PyNetwork_Functions.cpp">
+    <ClCompile Include="PyNetwork\PyNetwork_Functions.cpp">
       <Filter>PyNetwork</Filter>
     </ClCompile>
+    <ClCompile Include="Models\Vector.cpp" />
+    <ClCompile Include="Adjustments\AdjustmentCalculator.cpp" />
   </ItemGroup>
 </Project>

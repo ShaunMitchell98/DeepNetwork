@@ -67,6 +67,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -80,33 +82,36 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Activation Functions\activation_function.h" />
-    <ClInclude Include="Activation Functions\logistic_function.h" />
-    <ClInclude Include="Forward Propagation\forward_propagate.h" />
-    <ClInclude Include="Logging\logger.h" />
+    <ClInclude Include="Activation Functions\Activation.h" />
+    <ClInclude Include="Activation Functions\Logistic.h" />
+    <ClInclude Include="Adjustments\AdjustmentCalculator.h" />
+    <ClInclude Include="Forward Propagation\LayerPropagator.h" />
+    <ClInclude Include="Logging\ILogger.h" />
+    <ClInclude Include="Logging\Logger.h" />
     <ClInclude Include="Matrix Multiplication\matrix_multiplication.h" />
-    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Models\Matrix.h" />
     <ClInclude Include="dev_array.h" />
     <ClInclude Include="NetworkTrainer\NetworkTrainer.h" />
     <ClInclude Include="NormaliseLayer.h" />
-    <ClInclude Include="PyNetwork.h" />
-    <ClInclude Include="PyNetwork_Functions.h" />
-    <ClInclude Include="Train Network\train_network.h" />
+    <ClInclude Include="PyNetwork\PyNetwork.h" />
+    <ClInclude Include="PyNetwork\PyNetwork_Functions.h" />
+    <ClInclude Include="Models\Vector.h" />
     <ClInclude Include="WeightMatrixGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Matrix Multiplication\matrix_multiplication.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Activation Functions\logistic_function.cpp" />
-    <ClCompile Include="Forward Propagation\forward_propagate.cpp" />
-    <ClCompile Include="Logging\logger.cpp" />
-    <ClCompile Include="matrix.cpp" />
+    <ClCompile Include="Activation Functions\Logistic.cpp" />
+    <ClCompile Include="Adjustments\AdjustmentCalculator.cpp" />
+    <ClCompile Include="Forward Propagation\LayerPropagator.cpp" />
+    <ClCompile Include="Logging\Logger.cpp" />
+    <ClCompile Include="Models\Matrix.cpp" />
     <ClCompile Include="NetworkTrainer\NetworkTrainer.cpp" />
     <ClCompile Include="NormaliseLayer.cpp" />
-    <ClCompile Include="PyNetwork.cpp" />
-    <ClCompile Include="PyNetwork_Functions.cpp" />
-    <ClCompile Include="Train Network\train_network.cpp" />
+    <ClCompile Include="PyNetwork\PyNetwork.cpp" />
+    <ClCompile Include="PyNetwork\PyNetwork_Functions.cpp" />
+    <ClCompile Include="Models\Vector.cpp" />
     <ClCompile Include="WeightMatrixGenerator.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

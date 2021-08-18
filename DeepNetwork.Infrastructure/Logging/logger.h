@@ -1,17 +1,19 @@
 #pragma once
 
-#include "../matrix.h"
+#include "../Models/Matrix.h"
+#include "ILogger.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-class Logger {
+using namespace Models;
+
+class Logger : public ILogger {
 private:
-	FILE* fp;
-	bool enabled;
+	FILE* _fp;
+	bool _enabled;
 public:
 	Logger();
 	~Logger();
-	void DeleteLogFile();
 	void LogMatrix(Matrix* matrix);
 	void LogMessage(const char* message...);
 	void LogMessageWithoutDate(const char* message);

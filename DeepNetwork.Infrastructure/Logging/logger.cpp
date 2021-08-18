@@ -1,5 +1,3 @@
-#pragma once
-
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -7,33 +5,29 @@
 #include <memory>
 
 Logger::Logger() {
-	fp = fopen("C:\\Users\\Shaun Mitchell\\Documents\\deep_network_logs.txt", "a");
-	enabled = false;
+	_enabled = true;
+	_fp = NULL;
+
+	if (_enabled) {
+		fopen_s(&_fp, "C:\\Users\\Shaun Mitchell\\Documents\\deep_network_logs.txt", "a");
+	}
 }
 
 Logger::~Logger() {
-	LogMessage("Closing logger...");
-	fclose(fp);
-}
-void Logger::DeleteLogFile() {
-
-	FILE* fp;
-
-	if (fp = fopen("C:\\Users\\Shaun Mitchell\\Documents\\deep_network_logs.txt", "r")) {
-		fclose(fp);
-		remove("C:\\Users\\Shaun Mitchell\\Documents\\deep_network_logs.txt");
+	if (_enabled) {
+		LogMessage("Closing logger...");
+		fclose(_fp);
 	}
 }
 
 void Logger::LogMatrix(Matrix* matrix) {
 
-	if (enabled) {
-		for (auto i = 0; i < matrix->Rows; i++) {
-			for (auto j = 0; j < matrix->Cols; j++) {
-				int index = matrix->Cols * i + j;
-				LogNumber(matrix->Values[index]);
+	if (_enabled) {
+		for (auto row = 0; row < matrix->Rows; row++) {
+			for (auto col = 0; col < matrix->Cols; col++) {
+				LogNumber(matrix->GetValue(row, col));
 
-				if (j != matrix->Cols - 1) {
+				if (col != matrix->Cols - 1) {
 					LogMessageWithoutDate(", ");
 				}
 			}
@@ -49,22 +43,23 @@ void Logger::LogMatrix(Matrix* matrix) {
 }
 void Logger::LogMessageWithoutDate(const char* message) {
 
-	if (enabled) {
-		int count = 0;
+	if (_enabled) {
+		auto count = 0;
 		while (message[count] != '\0') {
 			count++;
 		}
 
-		fwrite(message, sizeof(char), count, fp);
+		fwrite(message, sizeof(char), count, _fp);
 	}
 }
 
 void Logger::LogMessage(const char* message...) {
-	if (enabled) {
-		time_t t = time(NULL);
-		struct tm tm = *localtime(&t);
-		fprintf(fp, "%d-%02d-%02d %02d:%02d:%02d | ", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-		fprintf(fp, message);
+	if (_enabled) {
+		auto t = time(NULL);
+		struct tm tm;
+		localtime_s(&tm, &t);
+		fprintf(_fp, "%d-%02d-%02d %02d:%02d:%02d | ", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+		fprintf(_fp, message);
 	}
 }
 
@@ -77,8 +72,10 @@ void Logger::LogNewline() {
 }
 
 void Logger::LogNumber(double number) {
-	auto buffer = std::make_unique<char>(sizeof(double));
-	LogMessageWithoutDate(gcvt(number, sizeof(double), buffer.get()));
+	int size = 64;
+	auto buffer = std::make_unique<char>(size);
+	_gcvt_s(buffer.get(), size, number, sizeof(double));
+	LogMessageWithoutDate(buffer.get());
 }
 
 void Logger::LogDoubleArray(double* doubleArray, int length) {

@@ -1,12 +1,7 @@
-﻿#ifndef KERNEL_CUH_
-#define KERNEL_CUH_
+﻿#pragma once
 
-#include "../matrix.h"
+#include "../Models/Matrix.h"
 
-extern "C" {
+using namespace Models;
 
-	void matrix_multiply(Matrix* A, Matrix* B, Matrix* C);
-
-}
-
-#endif
+void matrix_multiply(Matrix* A, Matrix* B, Matrix* C);

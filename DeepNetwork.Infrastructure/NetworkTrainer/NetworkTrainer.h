@@ -2,24 +2,28 @@
 
 #include <memory>
 #include <vector>
-#include "../PyNetwork.h"
 #include "../Logging/logger.h"
+#include "../Models/Vector.h"
+#include "../Adjustments/AdjustmentCalculator.h"
+
+using namespace Models;
 
 class NetworkTrainer
 {
 private:
 	std::vector<double> dError_dLayerAbove;
 	std::vector<double> dError_dOutputCurrent;
-	std::unique_ptr<Logger> logger;
+	std::shared_ptr<Logger> _logger;
+	std::unique_ptr<AdjustmentCalculator> _adjustmentCalculator;
 
-	double CalculateErrorDerivativeForFinalLayer(Matrix* finalLayer, Matrix* expectedLayer);
-	void UpdateWeights(PyNetwork* network);
-	void GetAdjustmentsForLayer(PyNetwork* network, int a);
-	void GetAdjustments(PyNetwork* network);
+	double CalculateErrorDerivativeForFinalLayer(Models::Vector* finalLayer, Models::Vector* expectedLayer);
+	void GetAdjustmentsForWeightMatrix(Matrix* weightMatrix, Vector* inputLayer, Vector* outputLayer, int weightMatrixIndex);
+	void GetAdjustments(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers);
 	void UpdateErrorDerivativeForLayerAbove(int length);
-	void GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Matrix* outputLayer);
+	void GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Models::Vector* outputLayer);
 public:
-	NetworkTrainer(PyNetwork* network);
-	double TrainNetwork(PyNetwork* network, Matrix* expectedLayer);
+	NetworkTrainer(std::shared_ptr<Logger> logger, int batchSize, int layerCount);
+	double TrainNetwork(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers, Models::Vector* expectedLayer);
+	void UpdateWeights(std::vector<Matrix*> weightMatrices, double learningRate);
 };
 

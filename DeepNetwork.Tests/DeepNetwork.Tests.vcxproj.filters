@@ -7,8 +7,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="matrix_multiplication_tests.cpp">
+    <ClCompile Include="Models\MatrixTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Models\VectorTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Activation Functions\LogisticTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Forward Propagation\LayerPropagatorTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Forward Propagation\FakeLogger.h" />
   </ItemGroup>
 </Project>
