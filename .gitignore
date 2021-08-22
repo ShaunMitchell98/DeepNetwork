@@ -361,5 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/DeepNetwork/.idea
-/DeepNetwork/venv
+/PyNet/.idea
+/PyNet/venv
