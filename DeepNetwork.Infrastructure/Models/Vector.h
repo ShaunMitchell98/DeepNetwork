@@ -29,6 +29,7 @@ namespace Models {
 
 		double GetValue(int row);
 		double* GetAddress(int row);
+		double* GetEnd();
 		void SetValue(int row, double value);
 		void ApplyActivation();
 		double CalculateActivationDerivative(double input);

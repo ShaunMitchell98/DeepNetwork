@@ -1,9 +1,7 @@
 #include "NormaliseLayer.h"
 #include <memory>
-#include "Logging/logger.h"
 
-void normalise_layer(Models::Vector* A) {
-    auto logger = std::make_unique<Logger>();
+void normalise_layer(Models::Vector* A, ILogger* logger) {
     logger->LogLine("Normalising final layer");
     logger->LogDoubleArray(A->GetAddress(0), A->Rows);
 

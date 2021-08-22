@@ -6,12 +6,15 @@
 #include "../Models/Vector.h"
 #include "../NetworkTrainer/NetworkTrainer.h"
 #include "../Forward Propagation/LayerPropagator.h"
+#include "../Logging/ILogger.h"
 
 class PyNetwork
 {
 private:
 	std::unique_ptr<LayerPropagator> _layerPropagator;
-	std::shared_ptr<Logger> _logger;
+	std::shared_ptr<ILogger> _logger;
+	std::shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
+	std::unique_ptr<NetworkTrainer> _networkTrainer;
 public:
 	std::vector<std::unique_ptr<Models::Vector>> Layers;
 	std::vector<std::unique_ptr<Matrix>> Weights;
@@ -22,9 +25,9 @@ public:
 	int NumberOfExamples;
 	int CurrentIteration;
 
-	PyNetwork(int);
+	PyNetwork(int, std::shared_ptr<ILogger> logger);
 	void AddLayer(int, ActivationFunctionType);
-	void Run(double*);
+	void Run(double*, double*);
 	double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate);
 	//void AddAdjustment(int matrixIndex, int row, int col, double adjustment);
 };

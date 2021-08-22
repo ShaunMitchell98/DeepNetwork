@@ -106,7 +106,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\Users\Shaun Mitchell\source\repos\DeepNetwork\DeepNetwork.Infrastructure\x64\Debug;$(VCInstallDir)UnitTest\lib;$(CUDA_PATH)\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cudart_static.lib;$(TargetDir)DeepNetwork.Infrastructure.lib;Matrix.obj;WeightMatrixGenerator.obj;Vector.obj;Logistic.obj;LayerPropagator.obj;matrix_multiplication.cu.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cudart_static.lib;$(TargetDir)DeepNetwork.Infrastructure.lib;Matrix.obj;WeightMatrixGenerator.obj;Vector.obj;Logistic.obj;LayerPropagator.obj;matrix_multiplication.cu.obj;PyNetwork.obj;NetworkTrainer.obj;Logger.obj;NormaliseLayer.obj;AdjustmentCalculator.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -171,6 +171,8 @@
     <ClCompile Include="Forward Propagation\LayerPropagatorTests.cpp" />
     <ClCompile Include="Models\MatrixTests.cpp" />
     <ClCompile Include="Models\VectorTests.cpp" />
+    <ClCompile Include="NetworkTrainer\NetworkTrainerTests.cpp" />
+    <ClCompile Include="PyNetwork\PyNetworkTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DeepNetwork.Infrastructure\DeepNetwork.Infrastructure.vcxproj">
@@ -178,7 +180,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Forward Propagation\FakeLogger.h" />
+    <ClInclude Include="FakeLogger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

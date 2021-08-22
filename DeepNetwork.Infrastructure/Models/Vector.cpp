@@ -15,10 +15,19 @@ namespace Models {
 	}
 
 	void Vector::ApplyActivation() {
+
+		if (_activation == NULL) {
+			throw "Canot apply activation to vector, Activation is NULL";
+		}
+		
 		_activation->Apply(this->Values);
 	}
 
 	double Vector::CalculateActivationDerivative(double input) {
 		return _activation->CalculateDerivative(input);
+	}
+
+	double* Vector::GetEnd() {
+		return ((Matrix*)(this))->GetAddress(Rows - 1, 0);
 	}
 }

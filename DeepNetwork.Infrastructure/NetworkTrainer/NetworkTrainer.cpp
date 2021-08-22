@@ -3,15 +3,16 @@
 
 using namespace Models;
 
-NetworkTrainer::NetworkTrainer(std::shared_ptr<Logger> logger, int batchSize, int layerCount) {
+NetworkTrainer::NetworkTrainer(std::shared_ptr<ILogger> logger, std::shared_ptr<AdjustmentCalculator> adjustmentCalculator) {
     _logger = logger;
-    _adjustmentCalculator = std::make_unique<AdjustmentCalculator>(batchSize, layerCount);
+    _adjustmentCalculator = adjustmentCalculator;
 }
 
 double NetworkTrainer::TrainNetwork(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers, Models::Vector* expectedLayer) {
 
     double error = CalculateErrorDerivativeForFinalLayer(layers[layers.size() - 1], expectedLayer);
     GetAdjustments(weightMatrices, layers);
+    _adjustmentCalculator->IncrementBatchNumber();
 
     _logger->LogMessage("I am returning: ");
     _logger->LogNumber(error);
@@ -80,7 +81,7 @@ void NetworkTrainer::UpdateErrorDerivativeForLayerAbove(int length) {
 
     dError_dLayerAbove.clear();
     dError_dLayerAbove = std::vector<double>(dError_dOutputCurrent.size());
-    std::copy(&dError_dOutputCurrent[0], &dError_dOutputCurrent[dError_dOutputCurrent.size()], dError_dLayerAbove.begin());
+    std::copy(&dError_dOutputCurrent[0], &dError_dOutputCurrent[dError_dOutputCurrent.size() -1], dError_dLayerAbove.begin());
 
     _logger->LogMessage("dError_dLayerAbove: ");
     _logger->LogDoubleArray(dError_dLayerAbove.data(), length);

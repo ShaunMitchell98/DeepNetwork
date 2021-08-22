@@ -1,10 +1,13 @@
 #include "AdjustmentCalculator.h"
 
-AdjustmentCalculator::AdjustmentCalculator(int batchSize, int layerCount) {
+AdjustmentCalculator::AdjustmentCalculator() {
 	_batchNumber = 1;
-	_batchSize = batchSize;
 
-	_adjustments = std::vector<std::unique_ptr<Models::Matrix>>(layerCount - 1);
+	_adjustments = std::vector<std::unique_ptr<Models::Matrix>>();
+}
+
+void AdjustmentCalculator::AddMatrix(int rows, int cols) {
+	_adjustments.push_back(std::make_unique<Models::Matrix>(rows, cols));
 }
 
 void AdjustmentCalculator::AddAdjustment(int matrixIndex, int row, int col, double adjustment) {
@@ -21,4 +24,8 @@ void AdjustmentCalculator::AddAdjustment(int matrixIndex, int row, int col, doub
 
 double AdjustmentCalculator::GetAdjustment(int matrixIndex, int row, int col) {
 	return _adjustments[matrixIndex]->GetValue(row, col);
+}
+
+void AdjustmentCalculator::IncrementBatchNumber() {
+	_batchNumber++;
 }

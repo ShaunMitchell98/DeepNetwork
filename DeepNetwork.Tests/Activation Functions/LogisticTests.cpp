@@ -26,7 +26,7 @@ namespace DeepNetworkTests
 			
 
 			for (int j = 0; j < 5; j++) {
-				Assert::AreEqual(0.0, values[j]);
+				Assert::AreEqual(0.5, values[j]);
 			}
 		}
 	};

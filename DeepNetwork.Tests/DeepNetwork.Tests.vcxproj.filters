@@ -19,8 +19,14 @@
     <ClCompile Include="Forward Propagation\LayerPropagatorTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NetworkTrainer\NetworkTrainerTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PyNetwork\PyNetworkTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Forward Propagation\FakeLogger.h" />
+    <ClInclude Include="FakeLogger.h" />
   </ItemGroup>
 </Project>

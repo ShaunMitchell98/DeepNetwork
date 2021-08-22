@@ -77,5 +77,6 @@
     </ClCompile>
     <ClCompile Include="Models\Vector.cpp" />
     <ClCompile Include="Adjustments\AdjustmentCalculator.cpp" />
+    <ClCompile Include="Activation Functions\Activation.cpp" />
   </ItemGroup>
 </Project>

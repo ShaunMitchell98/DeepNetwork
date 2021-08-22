@@ -1,6 +1,6 @@
 #include "CppUnitTest.h"
 #include "../DeepNetwork.Infrastructure/Forward Propagation/LayerPropagator.h"
-#include "FakeLogger.h"
+#include "../FakeLogger.h"
 #include <memory>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -24,8 +24,8 @@ namespace DeepNetworkTests
 			auto layerPropagator = std::make_unique<LayerPropagator>(std::make_shared<FakeLogger>());
 			layerPropagator->PropagateLayer(weightMatrix.get(), inputLayerVector.get(), outputLayerVector.get());
 
-			Assert::AreEqual(0.9525741268, outputLayerVector->GetValue(0));
-			Assert::AreEqual(0.9990889488, outputLayerVector->GetValue(1));
+			Assert::AreEqual(0.95257412682243336, outputLayerVector->GetValue(0));
+			Assert::AreEqual(0.99908894880559940, outputLayerVector->GetValue(1));
 		}
 	};
 }

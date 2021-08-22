@@ -11,7 +11,7 @@ namespace ActivationFunctions {
 	class Activation {
 	protected:
 	public:
-		virtual void Apply(std::vector<double> values) = 0;
+		virtual void Apply(std::vector<double>& values) = 0;
 		virtual double CalculateDerivative(double input) = 0;
 	};
 }

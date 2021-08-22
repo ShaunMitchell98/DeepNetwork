@@ -1,5 +1,6 @@
-from NumpyArrayConversion import *
-
+import numpy as np
+import ctypes
+from  PyNet.PyNet.NumpyArrayConversion import convert_numpy_array_to_2d_double_array
 
 class PyNetwork:
 
@@ -9,7 +10,7 @@ class PyNetwork:
         self.lib.PyNetwork_New.argtypes = [ctypes.c_int]
         self.lib.PyNetwork_New.restype = ctypes.c_void_p
 
-        self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
         self.lib.PyNetwork_AddLayer.restype = ctypes.c_void_p
 
         self.lib.PyNetwork_Run.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double),
@@ -25,8 +26,8 @@ class PyNetwork:
 
         self.obj = self.lib.PyNetwork_New(count)
 
-    def add_layer(self, count: int):
-        self.lib.PyNetwork_AddLayer(self.obj, count)
+    def add_layer(self, count: int, activationFunctionType: int):
+        self.lib.PyNetwork_AddLayer(self.obj, count, activationFunctionType)
 
     def run(self, input_layer: np.ndarray):
         output_memory = np.ndarray([])
