@@ -5,7 +5,7 @@
 
 void normalise_layer(Models::Vector* A, ILogger* logger) {
     logger->LogLine("Normalising final layer");
-    logger->LogDoubleArray(A->GetAddress(0), A->Rows);
+    logger->LogVector(A->Values);
 
     double sum = 0;
 
@@ -18,5 +18,5 @@ void normalise_layer(Models::Vector* A, ILogger* logger) {
     }
 
     logger->LogLine("Final layer after normalisation: ");
-    logger->LogDoubleArray(A->GetAddress(0), A->Rows);
+    logger->LogVector(A->Values);
 }

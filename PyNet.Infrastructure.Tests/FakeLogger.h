@@ -11,6 +11,6 @@ public:
 	void LogNumber(double number) {}
 	void LogWhitespace() {}
 	void LogNewline() {}
-	void LogDoubleArray(double* array, int length) {}
+	void LogVector(std::vector<double> values) {}
 	void LogLine(const char* message) {}
 };

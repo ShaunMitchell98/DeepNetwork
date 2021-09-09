@@ -4,15 +4,16 @@
 #include "ILogger.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <fstream>
 
 using namespace Models;
 
 class Logger : public ILogger {
 private:
-	FILE* _fp;
 	bool _enabled;
+	std::ofstream _stream;
 public:
-	Logger();
+	Logger(bool log);
 	~Logger();
 	void LogMatrix(Matrix* matrix);
 	void LogMessage(const char* message...);
@@ -20,6 +21,6 @@ public:
 	void LogNumber(double number);
 	void LogWhitespace();
 	void LogNewline();
-	void LogDoubleArray(double* array, int length);
+	void LogVector(std::vector<double> values);
 	void LogLine(const char* message);
 }; 

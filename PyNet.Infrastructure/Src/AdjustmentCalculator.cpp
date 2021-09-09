@@ -1,7 +1,7 @@
 #include "AdjustmentCalculator.h"
 
 AdjustmentCalculator::AdjustmentCalculator() {
-	_batchNumber = 1;
+	_newBatch = true;
 
 	_adjustments = std::vector<std::unique_ptr<Models::Matrix>>();
 }
@@ -14,7 +14,7 @@ void AdjustmentCalculator::AddAdjustment(int matrixIndex, int row, int col, doub
 
 	double* currentAdjustment = _adjustments[matrixIndex]->GetAddress(row, col);
 	
-	if (_batchNumber == 1) {
+	if (_newBatch) {
 		*currentAdjustment = adjustment;
 	}
 	else {
@@ -26,6 +26,6 @@ double AdjustmentCalculator::GetAdjustment(int matrixIndex, int row, int col) {
 	return _adjustments[matrixIndex]->GetValue(row, col);
 }
 
-void AdjustmentCalculator::IncrementBatchNumber() {
-	_batchNumber++;
+void AdjustmentCalculator::SetNewBatch(bool newBatch) {
+	_newBatch = newBatch;
 }

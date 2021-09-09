@@ -15,6 +15,6 @@ public:
 	virtual void LogNumber(double number) = 0;
 	virtual void LogWhitespace() = 0;
 	virtual void LogNewline() = 0;
-	virtual void LogDoubleArray(double* array, int length) = 0;
+	virtual void LogVector(std::vector<double> values) = 0;
 	virtual void LogLine(const char* message) = 0;
 };

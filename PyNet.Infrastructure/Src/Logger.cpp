@@ -1,22 +1,19 @@
-#include <stdio.h>
 #include <time.h>
-#include <stdlib.h>
 #include "Logger.h"
 #include <memory>
 
-Logger::Logger() {
-	_enabled = true;
-	_fp = NULL;
+Logger::Logger(bool log) {
+	_enabled = log;
 
 	if (_enabled) {
-		fopen_s(&_fp, "C:\\Users\\Shaun Mitchell\\Documents\\PyNet_Logs.txt", "a");
+		_stream = std::ofstream("C:\\Users\\Shaun Mitchell\\Documents\\PyNet_Logs.txt");
 	}
 }
 
 Logger::~Logger() {
 	if (_enabled) {
 		LogMessage("Closing logger...");
-		fclose(_fp);
+		_stream.close();
 	}
 }
 
@@ -49,17 +46,18 @@ void Logger::LogMessageWithoutDate(const char* message) {
 			count++;
 		}
 
-		fwrite(message, sizeof(char), count, _fp);
+		_stream << message;
 	}
 }
 
 void Logger::LogMessage(const char* message...) {
 	if (_enabled) {
-		auto t = time(NULL);
-		struct tm tm;
-		localtime_s(&tm, &t);
-		fprintf(_fp, "%d-%02d-%02d %02d:%02d:%02d | ", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-		fprintf(_fp, message);
+		time_t _time = time(NULL);
+
+		char buffer[26];
+		ctime_s(buffer, 26, &_time);
+		_stream << buffer;
+		_stream << message;
 	}
 }
 
@@ -72,16 +70,13 @@ void Logger::LogNewline() {
 }
 
 void Logger::LogNumber(double number) {
-	int size = 64;
-	auto buffer = std::make_unique<char>(size);
-	_gcvt_s(buffer.get(), size, number, sizeof(double));
-	LogMessageWithoutDate(buffer.get());
+	_stream << number;
 }
 
-void Logger::LogDoubleArray(double* doubleArray, int length) {
+void Logger::LogVector(std::vector<double> values) {
 
-	for (auto i = 0; i < length; i++) {
-		LogNumber(doubleArray[i]);
+	for (auto& value : values) {
+		LogNumber(value);
 		LogNewline();
 	}
 }

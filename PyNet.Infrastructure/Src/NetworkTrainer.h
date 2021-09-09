@@ -19,7 +19,7 @@ private:
 	double CalculateErrorDerivativeForFinalLayer(Models::Vector* finalLayer, Models::Vector* expectedLayer);
 	void GetAdjustmentsForWeightMatrix(Matrix* weightMatrix, Vector* inputLayer, Vector* outputLayer, int weightMatrixIndex);
 	void GetAdjustments(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers);
-	void UpdateErrorDerivativeForLayerAbove(int length);
+	void UpdateErrorDerivativeForLayerAbove();
 	void GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Models::Vector* outputLayer);
 public:
 	NetworkTrainer(std::shared_ptr<ILogger> logger, std::shared_ptr<AdjustmentCalculator> adjustmentCalculator);

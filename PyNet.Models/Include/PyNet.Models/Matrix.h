@@ -6,12 +6,10 @@ namespace Models {
 
 	class Matrix {
 
-	protected:
-		std::vector<double> Values;
-
 	public:
 		int Rows;
 		int Cols;
+		std::vector<double> Values;
 
 		Matrix(int rows, int cols);
 		Matrix(int rows, int cols, double* values);

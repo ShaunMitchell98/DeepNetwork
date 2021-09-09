@@ -5,10 +5,10 @@ from PyNet.PyNet.NumpyArrayConversion import convert_numpy_array_to_2d_double_ar
 
 class PyNetwork:
 
-    def __init__(self, count: int):
+    def __init__(self, count: int, log: bool):
 
         self.lib = ctypes.windll.LoadLibrary(r"..\x64\Release\PyNet.Infrastructure.dll")
-        self.lib.PyNetwork_New.argtypes = [ctypes.c_int]
+        self.lib.PyNetwork_New.argtypes = [ctypes.c_int, ctypes.c_bool]
         self.lib.PyNetwork_New.restype = ctypes.c_void_p
 
         self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
@@ -25,7 +25,7 @@ class PyNetwork:
 
         self.lib.PyNetwork_Train.restype = ctypes.POINTER(ctypes.c_double)
 
-        self.obj = self.lib.PyNetwork_New(count)
+        self.obj = self.lib.PyNetwork_New(count, log)
 
     def add_layer(self, count: int, activationFunctionType: int):
         self.lib.PyNetwork_AddLayer(self.obj, count, activationFunctionType)

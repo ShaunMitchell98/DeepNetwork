@@ -59,6 +59,7 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 	BatchNumber = 1;
 	NumberOfExamples = numberOfExamples;
 	CurrentIteration = 1;
+	LearningRate = learningRate;
 
 	try {
 		for (auto i = 0; i < numberOfExamples; i++) {

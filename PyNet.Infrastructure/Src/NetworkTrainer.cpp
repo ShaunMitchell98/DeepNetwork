@@ -12,7 +12,7 @@ double NetworkTrainer::TrainNetwork(std::vector<Matrix*> weightMatrices, std::ve
 
     double error = CalculateErrorDerivativeForFinalLayer(layers[layers.size() - 1], expectedLayer);
     GetAdjustments(weightMatrices, layers);
-    _adjustmentCalculator->IncrementBatchNumber();
+    _adjustmentCalculator->SetNewBatch(false);
 
     _logger->LogMessage("I am returning: ");
     _logger->LogNumber(error);
@@ -23,8 +23,9 @@ double NetworkTrainer::TrainNetwork(std::vector<Matrix*> weightMatrices, std::ve
 
 double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(Models::Vector* finalLayer, Models::Vector* expectedLayer) {
 
+    dError_dLayerAbove.clear();
     _logger->LogMessage("Expected layer is:");
-    _logger->LogDoubleArray(expectedLayer->GetAddress(1), expectedLayer->Rows);
+    _logger->LogVector(expectedLayer->Values);
     double error = 0;
     for (int b = 0; b < finalLayer->Rows; b++) {
         dError_dLayerAbove.push_back(-(expectedLayer->GetValue(b) - finalLayer->GetValue(b)));
@@ -60,7 +61,7 @@ void NetworkTrainer::GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Mode
     }
 
     _logger->LogMessage("dError_dOutputCurrent: ");
-    _logger->LogDoubleArray(dError_dOutputCurrent.data(), static_cast<int>(dError_dOutputCurrent.size()));
+    _logger->LogVector(dError_dOutputCurrent);
 }
 
 void NetworkTrainer::UpdateWeights(std::vector<Matrix*> weightMatrices, double learningRate) {
@@ -75,16 +76,18 @@ void NetworkTrainer::UpdateWeights(std::vector<Matrix*> weightMatrices, double l
             }
         }
     }
+
+    _adjustmentCalculator->SetNewBatch(true);
 }
 
-void NetworkTrainer::UpdateErrorDerivativeForLayerAbove(int length) {
+void NetworkTrainer::UpdateErrorDerivativeForLayerAbove() {
 
     dError_dLayerAbove.clear();
-    dError_dLayerAbove = std::vector<double>(dError_dOutputCurrent.size());
+    dError_dLayerAbove.resize(dError_dOutputCurrent.size());
     std::copy(&dError_dOutputCurrent[0], &dError_dOutputCurrent[dError_dOutputCurrent.size() -1], dError_dLayerAbove.begin());
 
     _logger->LogMessage("dError_dLayerAbove: ");
-    _logger->LogDoubleArray(dError_dLayerAbove.data(), length);
+    _logger->LogVector(dError_dLayerAbove);
     _logger->LogNewline();
 }
 
@@ -101,16 +104,18 @@ void NetworkTrainer::GetAdjustmentsForWeightMatrix(Matrix* weightMatrix, Vector*
         for (auto col = 0; col < weightMatrix->Cols; col++) {
 
             double dActivation_dWeightIJ = inputLayer->GetValue(col);
-            double daij = dError_dOutputCurrent[col] * outputLayer->CalculateActivationDerivative(outputLayer->GetValue(col)) * dActivation_dWeightIJ;
+            double daij = dError_dOutputCurrent[col] * outputLayer->CalculateActivationDerivative(outputLayer->GetValue(row)) * dActivation_dWeightIJ;
             _adjustmentCalculator->AddAdjustment(weightMatrixIndex, row, col, daij);
         }
     }
 
-    UpdateErrorDerivativeForLayerAbove(weightMatrix->Cols);
+    UpdateErrorDerivativeForLayerAbove();
 }
 
 void NetworkTrainer::GetAdjustments(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers) {
     for (int a = static_cast<int>(weightMatrices.size() - 1); a >= 0; a--) {
         GetAdjustmentsForWeightMatrix(weightMatrices[a], layers[a], layers[(size_t)a+1], a);
     }
+
+    _logger->LogLine("End of GetAdjustments");
 }

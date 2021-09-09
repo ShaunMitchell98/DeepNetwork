@@ -15,11 +15,14 @@ void LayerPropagator::PropagateLayer(Matrix* weights, Models::Vector* inputLayer
 
     matrix_multiply(weights, inputLayer, outputLayer);
 
+    _logger->LogLine("Weight Matrix");
+    //_logger->LogMatrix(weights);
+
     _logger->LogLine("Forward propagation input: ");
-    _logger->LogDoubleArray(inputLayer->GetAddress(0), inputLayer->Rows);
+    _logger->LogVector(inputLayer->Values);
 
     _logger->LogLine("Forward propagation output: ");
-    _logger->LogDoubleArray(outputLayer->GetAddress(0), outputLayer->Rows);
+    _logger->LogVector(outputLayer->Values);
 
     outputLayer->ApplyActivation();
     _logger->LogLine("Output after activation");
