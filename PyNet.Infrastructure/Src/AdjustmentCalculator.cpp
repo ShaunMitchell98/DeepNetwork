@@ -2,28 +2,46 @@
 
 AdjustmentCalculator::AdjustmentCalculator() {
 	_newBatch = true;
+	_batchSize = 0;
+	_weightAdjustments = std::vector<std::unique_ptr<Models::Matrix>>();
+	_biasAdjustments = std::vector<std::unique_ptr<Models::Vector>>();
+}
 
-	_adjustments = std::vector<std::unique_ptr<Models::Matrix>>();
+void AdjustmentCalculator::SetBatchSize(int batchSize) {
+	_batchSize = batchSize;
 }
 
 void AdjustmentCalculator::AddMatrix(int rows, int cols) {
-	_adjustments.push_back(std::make_unique<Models::Matrix>(rows, cols));
+	_weightAdjustments.push_back(std::make_unique<Models::Matrix>(rows, cols));
+	_biasAdjustments.push_back(std::make_unique<Models::Vector>(rows));
 }
 
-void AdjustmentCalculator::AddAdjustment(int matrixIndex, int row, int col, double adjustment) {
-
-	double* currentAdjustment = _adjustments[matrixIndex]->GetAddress(row, col);
+void AdjustmentCalculator::AddWeightAdjustment(int matrixIndex, int row, int col, double adjustment) {
 	
 	if (_newBatch) {
-		*currentAdjustment = adjustment;
+		_weightAdjustments[matrixIndex]->SetValue(row, col, adjustment);
 	}
 	else {
-		*currentAdjustment += adjustment;
+		_weightAdjustments[matrixIndex]->SetValue(row, col, _weightAdjustments[matrixIndex]->GetValue(row, col) + adjustment);
+	}
+}
+void AdjustmentCalculator::AddBiasAdjustment(int matrixIndex, int row, double adjustment) {
+
+	if (_newBatch) {
+		_biasAdjustments[matrixIndex]->SetValue(row, adjustment);
+	}
+	else {
+		_biasAdjustments[matrixIndex]->SetValue(row, _biasAdjustments[matrixIndex]->GetValue(row) + adjustment);
 	}
 }
 
-double AdjustmentCalculator::GetAdjustment(int matrixIndex, int row, int col) {
-	return _adjustments[matrixIndex]->GetValue(row, col);
+
+double AdjustmentCalculator::GetWeightAdjustment(int matrixIndex, int row, int col) {
+	return _weightAdjustments[matrixIndex]->GetValue(row, col) / _batchSize;
+}
+
+double AdjustmentCalculator::GetBiasAdjustment(int matrixIndex, int row) {
+	return _biasAdjustments[matrixIndex]->GetValue(row) / _batchSize;
 }
 
 void AdjustmentCalculator::SetNewBatch(bool newBatch) {

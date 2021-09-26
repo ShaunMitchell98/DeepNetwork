@@ -21,9 +21,9 @@ network.add_layer(500, ActivationFunctionType.LOGISTIC)
 network.add_layer(129, ActivationFunctionType.LOGISTIC)
 network.add_layer(10,  ActivationFunctionType.LOGISTIC)
 
-batch_size: int = 100
-learning_rate: float = 1
-number: int = 10000
+batch_size: int = 20
+learning_rate: float = 0.1
+number: int = 60000
 
 errors = network.train(train_images[1:number], train_labels[1:number], 10, batch_size, learning_rate)
 x = list(range(0, train_images[1:number].shape[0]))

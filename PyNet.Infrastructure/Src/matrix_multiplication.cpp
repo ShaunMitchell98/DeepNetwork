@@ -13,3 +13,9 @@ void matrix_multiply(Matrix* A, Matrix* B, Matrix* C) {
         }
     }
 }
+
+void vector_add(Vector* A, Vector* B, Vector* C) {
+    for (auto i = 0; i < A->Rows; i++) {
+        C->SetValue(i, A->GetValue(i) + B->GetValue(i));
+    }
+}

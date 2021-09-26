@@ -18,6 +18,7 @@ private:
 public:
 	std::vector<std::unique_ptr<Models::Vector>> Layers;
 	std::vector<std::unique_ptr<Matrix>> Weights;
+	std::vector<std::unique_ptr<Models::Vector>> Biases;
 	std::vector<double> Errors;
 	int BatchSize;
 	int BatchNumber;

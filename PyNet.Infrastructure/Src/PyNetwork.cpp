@@ -11,6 +11,7 @@
 PyNetwork::PyNetwork(int rows, std::shared_ptr<ILogger> logger) {
 	Layers = std::vector<std::unique_ptr<Models::Vector>>();
 	Weights = std::vector<std::unique_ptr<Matrix>>();
+	Biases = std::vector<std::unique_ptr<Models::Vector>>();
 	Errors = std::vector<double>();
 
 	Layers.push_back(std::make_unique<Models::Vector>(rows));
@@ -33,6 +34,7 @@ void PyNetwork::AddLayer(int rows, ActivationFunctionType activationFunctionType
 
 	Layers.push_back(std::make_unique<Models::Vector>(rows, activationFunctionType));
 	Weights.push_back(std::make_unique<Matrix>(rows, cols));
+	Biases.push_back(std::make_unique<Models::Vector>(rows));
 	_adjustmentCalculator->AddMatrix(rows, cols);
 }
 
@@ -40,7 +42,7 @@ void PyNetwork::Run(double* input_layer, double* output_layer) {
 	Layers[0].reset(new Models::Vector(Layers[0]->Rows, input_layer, ActivationFunctionType::Logistic));
 
 	for (auto i = 0; i < Weights.size(); i++) {
-		_layerPropagator->PropagateLayer(Weights[i].get(), Layers[i].get(), Layers[(size_t)(i + 1)].get());
+		_layerPropagator->PropagateLayer(Weights[i].get(), Layers[i].get(), Biases[i].get(), Layers[(size_t)(i + 1)].get());
 	}
 
 	normalise_layer(Layers[Layers.size() - 1].get(), _logger.get());
@@ -61,6 +63,8 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 	CurrentIteration = 1;
 	LearningRate = learningRate;
 
+	_adjustmentCalculator->SetBatchSize(batchSize);
+
 	try {
 		for (auto i = 0; i < numberOfExamples; i++) {
 
@@ -70,6 +74,7 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 
 			auto weights = std::vector<Matrix*>();
 			auto layers = std::vector<Vector*>();
+			auto biases = std::vector<Vector*>();
 
 			for (auto i = 0; i < this->Weights.size(); i++) {
 				weights.push_back(this->Weights[i].get());
@@ -79,12 +84,16 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 				layers.push_back(this->Layers[j].get());
 			}
 
+			for (auto k = 0; k < this->Biases.size(); k++) {
+				biases.push_back(this->Biases[k].get());
+			}
+
 			auto error = _networkTrainer->TrainNetwork(weights, layers, expectedVector.get());
 			Errors.push_back(error);
 
 			if (BatchNumber == BatchSize) {
-				auto learningRate = this->LearningRate * (static_cast<double>(this->NumberOfExamples) / this->CurrentIteration);
-				_networkTrainer->UpdateWeights(weights, learningRate);
+				//auto learningRate = this->LearningRate * (static_cast<double>(this->NumberOfExamples) / this->CurrentIteration);
+				_networkTrainer->UpdateWeights(weights, biases, this->LearningRate);
 
 				printf("Iteration %d, Error is %f\n", i, error);
 				BatchNumber = 1;

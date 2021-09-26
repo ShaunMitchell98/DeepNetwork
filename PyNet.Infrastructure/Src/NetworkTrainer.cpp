@@ -48,7 +48,7 @@ double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(Models::Vector* fin
     return error;
 }
 
-void NetworkTrainer::GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Models::Vector* outputLayer) {
+void NetworkTrainer::GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Models::Vector* inputLayer, Models::Vector* outputLayer) {
     dError_dOutputCurrent.clear();
     _logger->LogLine("Calculating error derivative with respect to current output layer.");
     _logger->LogNumber(weightMatrix->Cols);
@@ -56,7 +56,7 @@ void NetworkTrainer::GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Mode
     for (auto col = 0; col < weightMatrix->Cols; col++) {
         dError_dOutputCurrent.push_back(0);
         for (auto row = 0; row < weightMatrix->Rows; row++) {
-            dError_dOutputCurrent[col] += dError_dLayerAbove[row] * outputLayer->CalculateActivationDerivative(outputLayer->GetValue(row)) * weightMatrix->GetValue(row, col);
+            dError_dOutputCurrent[col] += dError_dLayerAbove[row] * outputLayer->CalculateActivationDerivative(inputLayer->GetValue(row)) * weightMatrix->GetValue(row, col);
         }
     }
 
@@ -64,16 +64,18 @@ void NetworkTrainer::GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Mode
     _logger->LogVector(dError_dOutputCurrent);
 }
 
-void NetworkTrainer::UpdateWeights(std::vector<Matrix*> weightMatrices, double learningRate) {
+void NetworkTrainer::UpdateWeights(std::vector<Matrix*> weightMatrices, std::vector<Vector*> biases, double learningRate) {
     _logger->LogLine("Updating weights...");
     for (int weightMatrixIndex = static_cast<int>(weightMatrices.size() - 1); weightMatrixIndex >= 0; weightMatrixIndex--) {
         Matrix* weightMatrix = weightMatrices[weightMatrixIndex];
+        Vector* bias = biases[weightMatrixIndex];
 
         for (int row = 0; row < weightMatrix->Rows; row++) {
             for (int col = 0; col < weightMatrix->Cols; col++) {
-                double* wij = weightMatrix->GetAddress(row, col);
-                *wij = *wij - learningRate * _adjustmentCalculator->GetAdjustment(weightMatrixIndex, row, col);
+                weightMatrix->SetValue(row, col, weightMatrix->GetValue(row, col) - learningRate * _adjustmentCalculator->GetWeightAdjustment(weightMatrixIndex, row, col));
             }
+
+            bias->SetValue(row, bias->GetValue(row) - learningRate * _adjustmentCalculator->GetBiasAdjustment(weightMatrixIndex, row));
         }
     }
 
@@ -96,7 +98,7 @@ void NetworkTrainer::GetAdjustmentsForWeightMatrix(Matrix* weightMatrix, Vector*
     _logger->LogNumber(weightMatrixIndex);
     _logger->LogNewline();
 
-    GetErrorDerivativeForOutputLayer(weightMatrix, outputLayer);
+    GetErrorDerivativeForOutputLayer(weightMatrix, inputLayer, outputLayer);
 
     _logger->LogLine("Calculating adjustments.");
 
@@ -104,9 +106,12 @@ void NetworkTrainer::GetAdjustmentsForWeightMatrix(Matrix* weightMatrix, Vector*
         for (auto col = 0; col < weightMatrix->Cols; col++) {
 
             double dActivation_dWeightIJ = inputLayer->GetValue(col);
-            double daij = dError_dOutputCurrent[col] * outputLayer->CalculateActivationDerivative(outputLayer->GetValue(row)) * dActivation_dWeightIJ;
-            _adjustmentCalculator->AddAdjustment(weightMatrixIndex, row, col, daij);
+            double daij = dError_dOutputCurrent[row] * outputLayer->CalculateActivationDerivative(outputLayer->GetValue(row)) * dActivation_dWeightIJ;
+            _adjustmentCalculator->AddWeightAdjustment(weightMatrixIndex, row, col, daij);
         }
+
+        double dbij = dError_dOutputCurrent[row] * outputLayer->CalculateActivationDerivative(outputLayer->GetValue(row));
+        _adjustmentCalculator->AddBiasAdjustment(weightMatrixIndex, row, dbij);
     }
 
     UpdateErrorDerivativeForLayerAbove();
