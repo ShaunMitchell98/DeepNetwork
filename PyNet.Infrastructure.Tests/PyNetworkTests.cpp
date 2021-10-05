@@ -6,7 +6,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace DeepNetworkTests
+namespace PyNet::Infrastructure::Tests
 {
 	TEST_CLASS(PyNetworkTests)
 	{
@@ -20,13 +20,12 @@ namespace DeepNetworkTests
 			auto network = std::make_unique<PyNetwork>(2, logger);
 			network->AddLayer(2, ActivationFunctionType::Logistic);
 
-			network->Weights = std::vector<std::unique_ptr<Matrix>>();
+			network->Weights = std::vector<std::unique_ptr<PyNet::Models::Matrix>>();
 
 			double weights[4] = { 1, 2, 3, 4 };
-			network->Weights.push_back(std::make_unique<Matrix>(2, 2, weights));
+			network->Weights.push_back(std::make_unique<PyNet::Models::Matrix>(2, 2, weights));
 
-			auto output = std::vector<double>(2);
-			network->Run(input, output.data());
+			auto output = network->Run(input);
 
 			Assert::AreEqual(0.48808328584886568, output[0]);
 			Assert::AreEqual(0.51191671415113438, output[1]);

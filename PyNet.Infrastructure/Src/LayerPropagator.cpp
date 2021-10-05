@@ -1,5 +1,4 @@
 #include "LayerPropagator.h"
-#include "matrix_multiplication.h"
 #include "PyNet.Models/Logistic.h"
 #include <memory>
 
@@ -9,19 +8,19 @@ LayerPropagator::LayerPropagator(std::shared_ptr<ILogger> logger) {
     _logger = logger;
 }
 
-void LayerPropagator::PropagateLayer(Matrix* weights, Models::Vector* inputLayer, Models::Vector* biases, Models::Vector* outputLayer) {
+void LayerPropagator::PropagateLayer(Matrix* weights, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* biases, PyNet::Models::Vector* outputLayer) {
 
     _logger->LogLine("Forward propagating layer.");
 
     _logger->LogLine("Forward propagation input: ");
     _logger->LogVector(inputLayer->Values);
 
-    matrix_multiply(weights, inputLayer, outputLayer);
+    *outputLayer = *(Vector*)(&(*weights * *inputLayer));
 
     _logger->LogLine("Forward propagation output: ");
     _logger->LogVector(outputLayer->Values);
 
-    vector_add(outputLayer, biases, outputLayer);
+    *outputLayer += *biases;
 
     _logger->LogLine("Output after adding biases: ");
     _logger->LogVector(outputLayer->Values);

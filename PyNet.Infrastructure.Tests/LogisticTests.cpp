@@ -5,7 +5,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace DeepNetworkTests
+namespace PyNet::Infrastructure::Tests
 {
 	TEST_CLASS(LogisticTests)
 	{

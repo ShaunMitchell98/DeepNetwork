@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <fstream>
 
-using namespace Models;
-
 class Logger : public ILogger {
 private:
 	bool _enabled;
@@ -15,7 +13,7 @@ private:
 public:
 	Logger(bool log);
 	~Logger();
-	void LogMatrix(Matrix* matrix);
+	void LogMatrix(PyNet::Models::Matrix* matrix);
 	void LogMessage(const char* message...);
 	void LogMessageWithoutDate(const char* message);
 	void LogNumber(double number);

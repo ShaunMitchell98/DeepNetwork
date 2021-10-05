@@ -9,12 +9,12 @@
 #include <numeric>
 
 PyNetwork::PyNetwork(int rows, std::shared_ptr<ILogger> logger) {
-	Layers = std::vector<std::unique_ptr<Models::Vector>>();
+	Layers = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
 	Weights = std::vector<std::unique_ptr<Matrix>>();
-	Biases = std::vector<std::unique_ptr<Models::Vector>>();
+	Biases = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
 	Errors = std::vector<double>();
 
-	Layers.push_back(std::make_unique<Models::Vector>(rows));
+	Layers.push_back(std::make_unique<PyNet::Models::Vector>(rows));
 
 	BatchNumber = 0;
 	BatchSize = 0;
@@ -32,14 +32,14 @@ void PyNetwork::AddLayer(int rows, ActivationFunctionType activationFunctionType
 
 	auto cols = Layers[Layers.size() - 1]->Rows;
 
-	Layers.push_back(std::make_unique<Models::Vector>(rows, activationFunctionType));
+	Layers.push_back(std::make_unique<PyNet::Models::Vector>(rows, activationFunctionType));
 	Weights.push_back(std::make_unique<Matrix>(rows, cols));
-	Biases.push_back(std::make_unique<Models::Vector>(rows));
+	Biases.push_back(std::make_unique<PyNet::Models::Vector>(rows));
 	_adjustmentCalculator->AddMatrix(rows, cols);
 }
 
-void PyNetwork::Run(double* input_layer, double* output_layer) {
-	Layers[0].reset(new Models::Vector(Layers[0]->Rows, input_layer, ActivationFunctionType::Logistic));
+double* PyNetwork::Run(double* input_layer) {
+	Layers[0].reset(new PyNet::Models::Vector(Layers[0]->Rows, input_layer, ActivationFunctionType::Logistic));
 
 	for (auto i = 0; i < Weights.size(); i++) {
 		_layerPropagator->PropagateLayer(Weights[i].get(), Layers[i].get(), Biases[i].get(), Layers[(size_t)(i + 1)].get());
@@ -47,13 +47,7 @@ void PyNetwork::Run(double* input_layer, double* output_layer) {
 
 	normalise_layer(Layers[Layers.size() - 1].get(), _logger.get());
 
-	if (output_layer != NULL) {
-		auto lastLayer = Layers[Layers.size() - 1].get();
-
-		for (auto i = 0; i < lastLayer->Rows; i++) {
-			*(output_layer + i) = lastLayer->GetValue(i);
-		}
-	}
+	return Layers[Layers.size() - 1].get()->GetAddress(0);
 }
 
 double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate) {
@@ -68,9 +62,9 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 	try {
 		for (auto i = 0; i < numberOfExamples; i++) {
 
-			Run(inputLayers[i], NULL);
+			Run(inputLayers[i]);
 
-			auto expectedVector = std::make_unique<Models::Vector>(Layers[Layers.size() - 1]->Rows, expectedOutputs[i], ActivationFunctionType::Logistic);
+			auto expectedVector = std::make_unique<PyNet::Models::Vector>(Layers[Layers.size() - 1]->Rows, expectedOutputs[i], ActivationFunctionType::Logistic);
 
 			auto weights = std::vector<Matrix*>();
 			auto layers = std::vector<Vector*>();
@@ -93,6 +87,9 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 
 			if (BatchNumber == BatchSize) {
 				//auto learningRate = this->LearningRate * (static_cast<double>(this->NumberOfExamples) / this->CurrentIteration);
+				_logger->LogLine("The learning rate is: ");
+				_logger->LogNumber(this->LearningRate);
+				_logger->LogNewline();
 				_networkTrainer->UpdateWeights(weights, biases, this->LearningRate);
 
 				printf("Iteration %d, Error is %f\n", i, error);

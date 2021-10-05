@@ -1,14 +1,12 @@
 #include "NetworkTrainer.h"
 #include "PyNet.Models/Logistic.h"
 
-using namespace Models;
-
 NetworkTrainer::NetworkTrainer(std::shared_ptr<ILogger> logger, std::shared_ptr<AdjustmentCalculator> adjustmentCalculator) {
     _logger = logger;
     _adjustmentCalculator = adjustmentCalculator;
 }
 
-double NetworkTrainer::TrainNetwork(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers, Models::Vector* expectedLayer) {
+double NetworkTrainer::TrainNetwork(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers, PyNet::Models::Vector* expectedLayer) {
 
     double error = CalculateErrorDerivativeForFinalLayer(layers[layers.size() - 1], expectedLayer);
     GetAdjustments(weightMatrices, layers);
@@ -21,7 +19,7 @@ double NetworkTrainer::TrainNetwork(std::vector<Matrix*> weightMatrices, std::ve
     return error;
 }
 
-double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(Models::Vector* finalLayer, Models::Vector* expectedLayer) {
+double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(PyNet::Models::Vector* finalLayer, PyNet::Models::Vector* expectedLayer) {
 
     dError_dLayerAbove.clear();
     _logger->LogMessage("Expected layer is:");
@@ -48,7 +46,7 @@ double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(Models::Vector* fin
     return error;
 }
 
-void NetworkTrainer::GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Models::Vector* inputLayer, Models::Vector* outputLayer) {
+void NetworkTrainer::GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* outputLayer) {
     dError_dOutputCurrent.clear();
     _logger->LogLine("Calculating error derivative with respect to current output layer.");
     _logger->LogNumber(weightMatrix->Cols);

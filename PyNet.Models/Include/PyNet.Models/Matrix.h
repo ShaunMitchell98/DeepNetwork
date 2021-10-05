@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace Models {
+namespace PyNet::Models {
 
 	class Matrix {
 
@@ -13,8 +13,10 @@ namespace Models {
 
 		Matrix(int rows, int cols);
 		Matrix(int rows, int cols, double* values);
-		double GetValue(int row, int col);
+		double GetValue(int row, int col) const;
 		void SetValue(int row, int col, double value);
 		double* GetAddress(int row, int col);
+		Matrix& operator*(const Matrix& m);
 	};
 }
+

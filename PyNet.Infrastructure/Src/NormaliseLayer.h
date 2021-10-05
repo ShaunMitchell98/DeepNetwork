@@ -3,7 +3,7 @@
 #include "PyNet.Models/Vector.h"
 #include "ILogger.h"
 
-void normalise_layer(Models::Vector* A, ILogger* logger) {
+void normalise_layer(PyNet::Models::Vector* A, ILogger* logger) {
     logger->LogLine("Normalising final layer");
     logger->LogVector(A->Values);
 

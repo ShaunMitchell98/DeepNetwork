@@ -6,7 +6,7 @@
 #include "PyNet.Models/Vector.h"
 #include "AdjustmentCalculator.h"
 
-using namespace Models;
+using namespace PyNet::Models;
 
 class NetworkTrainer
 {
@@ -16,14 +16,14 @@ private:
 	std::shared_ptr<ILogger> _logger;
 	std::shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
 
-	double CalculateErrorDerivativeForFinalLayer(Models::Vector* finalLayer, Models::Vector* expectedLayer);
+	double CalculateErrorDerivativeForFinalLayer(PyNet::Models::Vector* finalLayer, PyNet::Models::Vector* expectedLayer);
 	void GetAdjustmentsForWeightMatrix(Matrix* weightMatrix, Vector* inputLayer, Vector* outputLayer, int weightMatrixIndex);
 	void GetAdjustments(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers);
 	void UpdateErrorDerivativeForLayerAbove();
-	void GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, Models::Vector* inputLayer, Models::Vector* outputLayer);
+	void GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* outputLayer);
 public:
 	NetworkTrainer(std::shared_ptr<ILogger> logger, std::shared_ptr<AdjustmentCalculator> adjustmentCalculator);
-	double TrainNetwork(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers, Models::Vector* expectedLayer);
+	double TrainNetwork(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers, PyNet::Models::Vector* expectedLayer);
 	void UpdateWeights(std::vector<Matrix*> weightMatrices, std::vector<Vector*> biases, double learningRate);
 };
 

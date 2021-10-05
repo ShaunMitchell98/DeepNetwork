@@ -9,7 +9,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace std;
 
-namespace PyNetInfrastructureFunctionalTests
+namespace PyNet::Infrastructure::FunctionalTests
 {
 	TEST_CLASS(TrainingTests)
 	{

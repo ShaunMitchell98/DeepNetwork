@@ -5,7 +5,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace DeepNetworkTests
+namespace PyNet::Models::Tests
 {
 	TEST_CLASS(MatrixTests)
 	{
@@ -15,7 +15,7 @@ namespace DeepNetworkTests
 		{
 			double testArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 
-			auto myMatrix = std::make_unique<Models::Matrix>(10, 1, testArray);
+			auto myMatrix = std::make_unique<PyNet::Models::Matrix>(10, 1, testArray);
 
 			for (auto i = 0; i < 10; i++) {
 				Assert::AreEqual(testArray[i], myMatrix->GetValue(i, 0));

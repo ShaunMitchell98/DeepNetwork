@@ -2,10 +2,11 @@
 #include <iostream>
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include "dev_array.h"
-#include "PyNet.Models/Matrix.h"
+#include "cuda_array.h"
+#include <vector>
 #include <stdlib.h>
 #include <stddef.h>
+#include "../Include/PyNet.Infrastructure.Cuda/Matrix_Multiplication.h"
 
 __global__ void matrixMultiplicationKernel(double* A, double* B, double* C, int Acols, int Bcols) {
     int ROW = blockIdx.y * blockDim.y + threadIdx.y;
@@ -36,20 +37,19 @@ void internalMatrixMultiply(double* A, double* B, double* C, int Acols, int Bcol
         blocksPerGrid.y = static_cast<int>(ceil(double(Acols) / double(threadsPerBlock.y)));
     }
 
-    matrixMultiplicationKernel << <blocksPerGrid, threadsPerBlock >> > (A, B, C, Acols, Bcols);
+    matrixMultiplicationKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, C, Acols, Bcols);
     cudaDeviceSynchronize();
 }
 
-void matrix_multiply(Models::Matrix* A, Models::Matrix* B, Models::Matrix* C) {
+void cuda_matrix_multiply(std::vector<double> A, std::vector<double> B, std::vector<double> C, int Acols, int Bcols) {
 
-    for (auto i = 0; i < A->Rows; i++) {
-        for (auto j = 0; j < B->Cols; j++) {
-            double tempValue = 0;
-            for (auto k = 0; k < A->Cols; k++) {
-                tempValue += A->GetValue(i, k) * B->GetValue(k, j);
-            }
+    cuda_array<double> d_A(A.size());
+    cuda_array<double> d_B(B.size());
+    cuda_array<double> d_C(C.size());
 
-            C->SetValue(j, i, tempValue);
-        }
-    }
+    d_A.set(A);
+    d_B.set(B);
+
+    internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), Acols, Bcols);
+    d_C.get(C.data(), C.size());
 }

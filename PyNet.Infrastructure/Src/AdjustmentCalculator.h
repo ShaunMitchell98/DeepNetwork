@@ -8,8 +8,8 @@
 class AdjustmentCalculator
 {
 private:
-	std::vector<std::unique_ptr<Models::Matrix>> _weightAdjustments;
-	std::vector<std::unique_ptr<Models::Vector>> _biasAdjustments;
+	std::vector<std::unique_ptr<PyNet::Models::Matrix>> _weightAdjustments;
+	std::vector<std::unique_ptr<PyNet::Models::Vector>> _biasAdjustments;
 	bool _newBatch;
 	int _batchSize;
 public:

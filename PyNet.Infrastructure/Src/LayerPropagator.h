@@ -10,5 +10,5 @@ private:
 	std::shared_ptr<ILogger> _logger;
 public:
 	LayerPropagator(std::shared_ptr<ILogger> logger);
-	void PropagateLayer(Matrix* weights, Models::Vector* inputLayer, Models::Vector* biases, Models::Vector* outputLayer);
+	void PropagateLayer(Matrix* weights, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* biases, PyNet::Models::Vector* outputLayer);
 };

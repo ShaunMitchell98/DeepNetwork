@@ -1,20 +1,14 @@
-#ifndef KERNEL_PYNETWORK_FUNCTIONS
-#define KERNEL_PYNETWORK_FUNCTIONS
+#pragma once
 
-#include "../Src/PyNetwork.h"
-#include "../Src/Logger.h"
+#include "PyNet.Models/Activation.h"
 
 extern "C" {
 #define EXPORT_SYMBOL __declspec(dllexport)
 
-	EXPORT_SYMBOL PyNetwork* PyNetwork_New(int count, bool log) { return new PyNetwork(count, std::make_shared<Logger>(log)); }
-	EXPORT_SYMBOL void PyNetwork_AddLayer(PyNetwork* pyNetwork, int count, ActivationFunctionType activationFunctionType) { pyNetwork->AddLayer(count, activationFunctionType); }
-	EXPORT_SYMBOL void PyNetwork_Run(PyNetwork* pyNetwork, double* input_layer, double* output_layer) { pyNetwork->Run(input_layer, output_layer); }
-	EXPORT_SYMBOL void PyNetwork_Train(PyNetwork* pyNetwork, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate) {
-		pyNetwork->Train(inputLayers, expectedOutputs, numberOfExamples, batchSize, learningRate);
-	}
+	EXPORT_SYMBOL void* PyNetwork_New(int count, bool log);
+	EXPORT_SYMBOL void PyNetwork_AddLayer(void* pyNetwork, int count, ActivationFunctionType activationFunctionType);
+	EXPORT_SYMBOL double* PyNetwork_Run(void* pyNetwork, double* input_layer);
+	EXPORT_SYMBOL void PyNetwork_Train(void* pyNetwork, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate);
 
 #undef EXPORT_SYMBOL
 }
-
-#endif

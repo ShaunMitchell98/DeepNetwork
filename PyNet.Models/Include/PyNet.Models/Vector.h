@@ -7,7 +7,7 @@
 
 using namespace ActivationFunctions;
 
-namespace Models {
+namespace PyNet::Models {
 
 	class Vector : public Matrix
 	{
@@ -27,12 +27,14 @@ namespace Models {
 
 		Vector(int rows) : Matrix(rows, 1) {}
 
-		double GetValue(int row);
-		double* GetAddress(int row);
-		double* GetEnd();
+		double GetValue(int row) const;
+		double* GetAddress(int row) const;
+		double* GetEnd() const;
 		void SetValue(int row, double value);
 		void ApplyActivation();
 		double CalculateActivationDerivative(double input);
+		void operator=(Vector& v);
+		void operator+=(const Vector& v);
 	};
 }
 

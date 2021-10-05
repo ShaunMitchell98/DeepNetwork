@@ -16,9 +16,9 @@ private:
 	std::shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
 	std::unique_ptr<NetworkTrainer> _networkTrainer;
 public:
-	std::vector<std::unique_ptr<Models::Vector>> Layers;
-	std::vector<std::unique_ptr<Matrix>> Weights;
-	std::vector<std::unique_ptr<Models::Vector>> Biases;
+	std::vector<std::unique_ptr<PyNet::Models::Vector>> Layers;
+	std::vector<std::unique_ptr<PyNet::Models::Matrix>> Weights;
+	std::vector<std::unique_ptr<PyNet::Models::Vector>> Biases;
 	std::vector<double> Errors;
 	int BatchSize;
 	int BatchNumber;
@@ -28,7 +28,6 @@ public:
 
 	PyNetwork(int, std::shared_ptr<ILogger> logger);
 	void AddLayer(int, ActivationFunctionType);
-	void Run(double*, double*);
+	double* Run(double* input_layer);
 	double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate);
-	//void AddAdjustment(int matrixIndex, int row, int col, double adjustment);
 };

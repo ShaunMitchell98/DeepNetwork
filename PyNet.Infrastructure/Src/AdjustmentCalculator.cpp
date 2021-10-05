@@ -3,8 +3,8 @@
 AdjustmentCalculator::AdjustmentCalculator() {
 	_newBatch = true;
 	_batchSize = 0;
-	_weightAdjustments = std::vector<std::unique_ptr<Models::Matrix>>();
-	_biasAdjustments = std::vector<std::unique_ptr<Models::Vector>>();
+	_weightAdjustments = std::vector<std::unique_ptr<PyNet::Models::Matrix>>();
+	_biasAdjustments = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
 }
 
 void AdjustmentCalculator::SetBatchSize(int batchSize) {
@@ -12,8 +12,8 @@ void AdjustmentCalculator::SetBatchSize(int batchSize) {
 }
 
 void AdjustmentCalculator::AddMatrix(int rows, int cols) {
-	_weightAdjustments.push_back(std::make_unique<Models::Matrix>(rows, cols));
-	_biasAdjustments.push_back(std::make_unique<Models::Vector>(rows));
+	_weightAdjustments.push_back(std::make_unique<PyNet::Models::Matrix>(rows, cols));
+	_biasAdjustments.push_back(std::make_unique<PyNet::Models::Vector>(rows));
 }
 
 void AdjustmentCalculator::AddWeightAdjustment(int matrixIndex, int row, int col, double adjustment) {

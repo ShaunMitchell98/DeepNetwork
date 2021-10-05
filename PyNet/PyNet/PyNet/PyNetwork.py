@@ -14,9 +14,8 @@ class PyNetwork:
         self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
         self.lib.PyNetwork_AddLayer.restype = ctypes.c_void_p
 
-        self.lib.PyNetwork_Run.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double),
-                                           ctypes.POINTER(ctypes.c_double)]
-        self.lib.PyNetwork_Run.restype = ctypes.c_void_p
+        self.lib.PyNetwork_Run.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double)]
+        self.lib.PyNetwork_Run.restype = ctypes.POINTER(ctypes.c_double)
 
         self.lib.PyNetwork_Train.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.POINTER(ctypes.c_double)),
                                              ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.c_int,
@@ -26,14 +25,15 @@ class PyNetwork:
         self.lib.PyNetwork_Train.restype = ctypes.POINTER(ctypes.c_double)
 
         self.obj = self.lib.PyNetwork_New(count, log)
+        self.counts = []
 
     def add_layer(self, count: int, activationFunctionType: int):
         self.lib.PyNetwork_AddLayer(self.obj, count, activationFunctionType)
+        self.counts.append(count)
 
-    def run(self, input_layer: np.ndarray):
-        output_memory = np.ndarray([])
-        self.lib.PyNetwork_Run(self.obj, input_layer.ctypes.data_as(ctypes.POINTER(ctypes.c_double)),
-                               output_memory.ctypes.data_as(ctypes.POINTER(ctypes.c_double)))
+    def run(self, input_layer: np.ndarray) -> np.ndarray:
+        results = self.lib.PyNetwork_Run(self.obj, input_layer.ctypes.data_as(ctypes.POINTER(ctypes.c_double)))
+        return np.ctypeslib.as_array(results, shape=(self.counts[self.counts.__len__() -1],))
 
     def train(self, input_layers: np.ndarray,
               expected_outputs: np.ndarray, numberOfOutputOptions: int, batch_size: int, learning_rate: float):

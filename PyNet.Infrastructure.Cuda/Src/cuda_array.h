@@ -1,11 +1,12 @@
-﻿#pragma once
+#pragma once
 
 #include <stdexcept>
 #include <algorithm>
 #include <cuda_runtime.h>
+#include <vector>
 
 template <class T>
-class dev_array {
+class cuda_array {
 private:
 	T* start_;
 	T* end_;
@@ -34,16 +35,16 @@ private:
 
 public:
 
-	explicit dev_array()
+	explicit cuda_array()
 		: start_(0),
 		end_(0)
 	{}
 
-	explicit dev_array(size_t size) {
+	explicit cuda_array(size_t size) {
 		allocate(size);
 	}
 
-	~dev_array() {
+	~cuda_array() {
 		free();
 	}
 
@@ -56,9 +57,9 @@ public:
 		allocate(size);
 	}
 
-	void set(const T* src, size_t size) {
-		size_t min = std::min(size, getSize());
-		cudaError_t result = cudaMemcpy(start_, src, min * sizeof(T), cudaMemcpyHostToDevice);
+	void set(const std::vector<T> vec) {
+		size_t min = std::min(vec.size(), getSize());
+		cudaError_t result = cudaMemcpy(start_, vec.data(), min * sizeof(T), cudaMemcpyHostToDevice);
 
 		if (result != cudaSuccess) {
 			throw std::runtime_error("Failed to copy to device memory.");
