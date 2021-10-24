@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PyNet.Models/Matrix.h"
-#include "ILogger.h"
+#include "PyNet.Models/ILogger.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>

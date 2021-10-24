@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PyNet.Models/Vector.h"
-#include "ILogger.h"
+#include "PyNet.Models/ILogger.h"
 
 void normalise_layer(PyNet::Models::Vector* A, ILogger* logger) {
     logger->LogLine("Normalising final layer");

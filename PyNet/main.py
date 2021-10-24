@@ -3,6 +3,7 @@ from PyNet.PyNet import ActivationFunctionType
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
+import timeit
 
 fashion_mnist = tf.keras.datasets.fashion_mnist
 
@@ -11,23 +12,26 @@ fashion_mnist = tf.keras.datasets.fashion_mnist
 class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 
-
 train_images = train_images / 255.0
 
 test_images = test_images / 255.0
 
-batch_sizes = [1, 2, 5, 10, 20]
-learning_rates = [1, 2]
-number: int = 50000
+batch_sizes = [20]
+learning_rates = [1]
+number: int = 5
 
 for learning_rate in learning_rates:
     for batch_size in batch_sizes:
-        network = PyNetwork(784, False)
+        network = PyNetwork(784, True, False)
         network.add_layer(500, ActivationFunctionType.LOGISTIC)
         network.add_layer(129, ActivationFunctionType.LOGISTIC)
         network.add_layer(10, ActivationFunctionType.LOGISTIC)
 
+        start = timeit.default_timer()
         errors = network.train(train_images[1:number], train_labels[1:number], 10, batch_size, learning_rate)
+        stop = timeit.default_timer()
+
+        print('Time: ', stop - start)
         x = list(range(0, train_images[1:number].shape[0]))
         plt.figure()
         plt.title("Change in Error")
@@ -35,7 +39,7 @@ for learning_rate in learning_rates:
         plt.ylabel("Error")
         plt.plot(x, errors)
         plt.savefig(f"C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet\\Images\\Learning Rate {learning_rate}"
-            f" Batch Size {batch_size}.jpg")
+                    f" Batch Size {batch_size}.jpg")
         plt.close()
 
         success_count: int = 0

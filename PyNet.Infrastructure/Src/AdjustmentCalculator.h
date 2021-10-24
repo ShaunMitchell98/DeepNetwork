@@ -12,8 +12,9 @@ private:
 	std::vector<std::unique_ptr<PyNet::Models::Vector>> _biasAdjustments;
 	bool _newBatch;
 	int _batchSize;
+	bool _cudaEnabled;
 public:
-	AdjustmentCalculator();
+	AdjustmentCalculator(bool cudaEnabled);
 	void AddMatrix(int rows, int cols);
 	void SetBatchSize(int batchSize);
 	void AddWeightAdjustment(int matrixIndex, int row, int col, double adjustment);

@@ -8,13 +8,13 @@
 #include <iterator>
 #include <numeric>
 
-PyNetwork::PyNetwork(int rows, std::shared_ptr<ILogger> logger) {
+PyNetwork::PyNetwork(int rows, std::shared_ptr<ILogger> logger, bool cudaEnabled) {
 	Layers = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
 	Weights = std::vector<std::unique_ptr<Matrix>>();
 	Biases = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
 	Errors = std::vector<double>();
 
-	Layers.push_back(std::make_unique<PyNet::Models::Vector>(rows));
+	Layers.push_back(std::make_unique<PyNet::Models::Vector>(rows, cudaEnabled));
 
 	BatchNumber = 0;
 	BatchSize = 0;
@@ -24,22 +24,26 @@ PyNetwork::PyNetwork(int rows, std::shared_ptr<ILogger> logger) {
 
 	_logger = logger;
 	_layerPropagator = std::make_unique<LayerPropagator>(_logger);
-	_adjustmentCalculator = std::make_shared<AdjustmentCalculator>();
+	_adjustmentCalculator = std::make_shared<AdjustmentCalculator>(cudaEnabled);
 	_networkTrainer = std::make_unique<NetworkTrainer>(_logger, _adjustmentCalculator);
+	_cudaEnabled = cudaEnabled;
+	_context = std::make_unique<di::Context>();
+	auto a = _context->get<PyNet::Models::Matrix>();
+	auto b = 5;
 }
 
 void PyNetwork::AddLayer(int rows, ActivationFunctionType activationFunctionType) {
 
 	auto cols = Layers[Layers.size() - 1]->Rows;
 
-	Layers.push_back(std::make_unique<PyNet::Models::Vector>(rows, activationFunctionType));
-	Weights.push_back(std::make_unique<Matrix>(rows, cols));
-	Biases.push_back(std::make_unique<PyNet::Models::Vector>(rows));
+	Layers.push_back(std::make_unique<PyNet::Models::Vector>(rows, activationFunctionType, _cudaEnabled));
+	Weights.push_back(std::make_unique<Matrix>(rows, cols, _cudaEnabled));
+	Biases.push_back(std::make_unique<PyNet::Models::Vector>(rows, _cudaEnabled));
 	_adjustmentCalculator->AddMatrix(rows, cols);
 }
 
 double* PyNetwork::Run(double* input_layer) {
-	Layers[0].reset(new PyNet::Models::Vector(Layers[0]->Rows, input_layer, ActivationFunctionType::Logistic));
+	Layers[0].reset(new PyNet::Models::Vector(Layers[0]->Rows, input_layer, ActivationFunctionType::Logistic, _cudaEnabled));
 
 	for (auto i = 0; i < Weights.size(); i++) {
 		_layerPropagator->PropagateLayer(Weights[i].get(), Layers[i].get(), Biases[i].get(), Layers[(size_t)(i + 1)].get());
@@ -64,7 +68,7 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 
 			Run(inputLayers[i]);
 
-			auto expectedVector = std::make_unique<PyNet::Models::Vector>(Layers[Layers.size() - 1]->Rows, expectedOutputs[i], ActivationFunctionType::Logistic);
+			auto expectedVector = std::make_unique<PyNet::Models::Vector>(Layers[Layers.size() - 1]->Rows, expectedOutputs[i], ActivationFunctionType::Logistic, _cudaEnabled);
 
 			auto weights = std::vector<Matrix*>();
 			auto layers = std::vector<Vector*>();

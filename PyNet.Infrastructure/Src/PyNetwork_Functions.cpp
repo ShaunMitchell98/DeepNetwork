@@ -5,11 +5,11 @@
 
 extern "C" {
 
-	void* PyNetwork_New(int count, bool log) { 
-		return new PyNetwork(count, std::make_shared<Logger>(log));
+	void* PyNetwork_New(int count, bool log, bool cudaEnabled) { 
+		return new PyNetwork(count, std::make_shared<Logger>(log), cudaEnabled);
 	}
 
-	void PyNetwork_AddLayer(void* pyNetwork, int count, ActivationFunctionType activationFunctionType) { 
+	void PyNetwork_AddLayer(void* pyNetwork, int count, ActivationFunctions::ActivationFunctionType activationFunctionType) {
 		((PyNetwork*)pyNetwork)->AddLayer(count, activationFunctionType); 
 	}
 

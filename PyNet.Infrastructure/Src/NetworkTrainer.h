@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include "ILogger.h"
+#include "PyNet.Models/ILogger.h"
 #include "PyNet.Models/Vector.h"
 #include "AdjustmentCalculator.h"
 

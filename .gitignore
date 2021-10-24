@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /PyNet/.idea
 /PyNet/venv
+
+/PyNet/PyNet.Infrastructure/build

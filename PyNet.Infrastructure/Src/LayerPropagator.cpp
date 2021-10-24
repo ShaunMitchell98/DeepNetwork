@@ -1,14 +1,10 @@
 #include "LayerPropagator.h"
-#include "PyNet.Models/Logistic.h"
-#include <memory>
-
-using namespace ActivationFunctions;
 
 LayerPropagator::LayerPropagator(std::shared_ptr<ILogger> logger) {
     _logger = logger;
 }
 
-void LayerPropagator::PropagateLayer(Matrix* weights, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* biases, PyNet::Models::Vector* outputLayer) {
+void LayerPropagator::PropagateLayer(PyNet::Models::Matrix* weights, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* biases, PyNet::Models::Vector* outputLayer) {
 
     _logger->LogLine("Forward propagating layer.");
 
@@ -25,7 +21,7 @@ void LayerPropagator::PropagateLayer(Matrix* weights, PyNet::Models::Vector* inp
     _logger->LogLine("Output after adding biases: ");
     _logger->LogVector(outputLayer->Values);
 
-    _logger->LogLine("Weight Matrix");
+    //_logger->LogLine("Weight Matrix");
     //_logger->LogMatrix(weights);
 
     outputLayer->ApplyActivation();
