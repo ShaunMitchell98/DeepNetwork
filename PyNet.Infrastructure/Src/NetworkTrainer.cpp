@@ -1,7 +1,7 @@
 #include "NetworkTrainer.h"
 #include "PyNet.Models/Logistic.h"
 
-NetworkTrainer::NetworkTrainer(std::shared_ptr<ILogger> logger, std::shared_ptr<AdjustmentCalculator> adjustmentCalculator) {
+NetworkTrainer::NetworkTrainer(ILogger* logger, AdjustmentCalculator* adjustmentCalculator) {
     _logger = logger;
     _adjustmentCalculator = adjustmentCalculator;
 }

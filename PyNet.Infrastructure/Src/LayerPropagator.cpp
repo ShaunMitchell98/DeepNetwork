@@ -1,6 +1,6 @@
 #include "LayerPropagator.h"
 
-LayerPropagator::LayerPropagator(std::shared_ptr<ILogger> logger) {
+LayerPropagator::LayerPropagator(ILogger* logger) {
     _logger = logger;
 }
 

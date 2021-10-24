@@ -67,7 +67,7 @@ namespace di {
 
         // Factory signature
         template <class InstanceType, class... Args>
-        using FactoryFunction = InstanceType * (*)(Args&...);
+        using FactoryFunction = InstanceType * (*)(Args*...);
 
 
 
@@ -141,10 +141,10 @@ namespace di {
         }
 
         template <typename T>
-        void addFactoryPriv(T)
+        void addFactoryPriv(T*)
         {
             // Use a dummy is_void type trait to force GCC to display instantiation type in error message
-            static_assert(std::is_void<T>::value, "Factory has incorrect signature, should take (const) references and return a pointer! Examlpe: Foo* Foo::factory(Bar& bar); ");
+            static_assert(std::is_void<T*>::value, "Factory has incorrect signature, should take (const) pointers and return a pointer! Example: Foo* Foo::factory(Bar* bar); ");
         }
 
 
@@ -173,28 +173,6 @@ namespace di {
         }
 
 
-
-        // Add an already instantiated object to the context
-        template <typename T>
-        void addInstance(T* instance, bool takeOwnership = false)
-        {
-            if (instance == nullptr)
-                throw std::runtime_error(std::string("Trying to add nullptr instance for type: ") + typeid(T).name());
-
-            CtxItem& item = items[std::type_index(typeid(T))];
-
-            if (item.instancePtr != nullptr)
-                throw std::runtime_error(std::string("Instance already in Context for type: ") + typeid(T).name());
-
-            item.instancePtr = static_cast<void*>(instance);
-
-            if (takeOwnership)
-            {
-                item.deleter = [](void* ptr) { delete(static_cast<T*>(ptr)); };
-                constructionOrder.push_back(&item);
-            }
-        }
-
     public:
         Context()
         {
@@ -219,7 +197,7 @@ namespace di {
 
         // Get an instance from the context, runs factories recursively to satisfy all dependencies
         template <class T>
-        T& get()
+        T* get()
         {
             CtxItem& item = getItem<T>(); // may return derived type
 
@@ -233,7 +211,7 @@ namespace di {
                 item.marker = false;
             }
 
-            return *(static_cast<T*>(item.instancePtr));
+            return (static_cast<T*>(item.instancePtr));
         }
 
 
@@ -260,6 +238,27 @@ namespace di {
         {
             addFactoryPriv(InstanceType1::factory);
             addClass<InstanceType2, ITs...>();
+        }
+
+        // Add an already instantiated object to the context
+        template <typename T>
+        void addInstance(T* instance, bool takeOwnership = false)
+        {
+            if (instance == nullptr)
+                throw std::runtime_error(std::string("Trying to add nullptr instance for type: ") + typeid(T).name());
+
+            CtxItem& item = items[std::type_index(typeid(T))];
+
+            if (item.instancePtr != nullptr)
+                throw std::runtime_error(std::string("Instance already in Context for type: ") + typeid(T).name());
+
+            item.instancePtr = static_cast<void*>(instance);
+
+            if (takeOwnership)
+            {
+                item.deleter = [](void* ptr) { delete(static_cast<T*>(ptr)); };
+                constructionOrder.push_back(&item);
+            }
         }
 
         template <typename InstanceTypeLast>

@@ -2,6 +2,7 @@
 
 #include "PyNet.Models/Matrix.h"
 #include "PyNet.Models/ILogger.h"
+#include "Settings.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
@@ -11,6 +12,13 @@ private:
 	bool _enabled;
 	std::ofstream _stream;
 public:
+
+	typedef ILogger base;
+
+	static auto factory(Settings* settings) {
+		return new Logger(settings->LoggingEnabled);
+	}
+
 	Logger(bool log);
 	~Logger();
 	void LogMatrix(PyNet::Models::Matrix* matrix);

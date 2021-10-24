@@ -4,6 +4,7 @@
 #include <vector>
 #include "PyNet.Models/Matrix.h"
 #include "PyNet.Models/Vector.h"
+#include "Settings.h"
 
 class AdjustmentCalculator
 {
@@ -12,9 +13,14 @@ private:
 	std::vector<std::unique_ptr<PyNet::Models::Vector>> _biasAdjustments;
 	bool _newBatch;
 	int _batchSize;
-	bool _cudaEnabled;
+	Settings* _settings;
 public:
-	AdjustmentCalculator(bool cudaEnabled);
+
+	static auto factory(Settings* settings) {
+		return new AdjustmentCalculator(settings);
+	}
+
+	AdjustmentCalculator(Settings* settings);
 	void AddMatrix(int rows, int cols);
 	void SetBatchSize(int batchSize);
 	void AddWeightAdjustment(int matrixIndex, int row, int col, double adjustment);

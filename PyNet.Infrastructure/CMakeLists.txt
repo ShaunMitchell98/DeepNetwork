@@ -30,6 +30,7 @@ include_directories( ./include ./libs/PyNet.Models/include ./tests )
 # target
 add_library(PyNet.Infrastructure SHARED
 	./include/PyNetwork_Functions.h
+	./src/Settings.h
 	./src/Context.h
 	./src/AdjustmentCalculator.h
 	./src/AdjustmentCalculator.cpp 

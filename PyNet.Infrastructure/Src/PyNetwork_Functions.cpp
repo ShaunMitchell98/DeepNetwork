@@ -2,11 +2,17 @@
 
 #include "PyNetwork.h"
 #include "Logger.h"
+#include "Settings.h"
 
 extern "C" {
 
 	void* PyNetwork_New(int count, bool log, bool cudaEnabled) { 
-		return new PyNetwork(count, std::make_shared<Logger>(log), cudaEnabled);
+		auto context = new di::ContextTmpl<Logger>();
+		Settings* settings = new Settings();
+		settings->CudaEnabled = cudaEnabled;
+		settings->LoggingEnabled = log;
+		context->addInstance<Settings>(settings, true);
+		return context->get<PyNetwork>();
 	}
 
 	void PyNetwork_AddLayer(void* pyNetwork, int count, ActivationFunctions::ActivationFunctionType activationFunctionType) {

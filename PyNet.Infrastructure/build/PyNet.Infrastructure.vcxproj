@@ -327,6 +327,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\include\PyNetwork_Functions.h" />
+    <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\Settings.h" />
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\Context.h" />
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\AdjustmentCalculator.h" />
     <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\AdjustmentCalculator.cpp" />

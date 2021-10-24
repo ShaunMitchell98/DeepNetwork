@@ -1,11 +1,11 @@
 #include "AdjustmentCalculator.h"
 
-AdjustmentCalculator::AdjustmentCalculator(bool cudaEnabled) {
+AdjustmentCalculator::AdjustmentCalculator(Settings* settings) {
 	_newBatch = true;
 	_batchSize = 0;
 	_weightAdjustments = std::vector<std::unique_ptr<PyNet::Models::Matrix>>();
 	_biasAdjustments = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
-	_cudaEnabled = cudaEnabled;
+	_settings = settings;
 }
 
 void AdjustmentCalculator::SetBatchSize(int batchSize) {
@@ -13,8 +13,8 @@ void AdjustmentCalculator::SetBatchSize(int batchSize) {
 }
 
 void AdjustmentCalculator::AddMatrix(int rows, int cols) {
-	_weightAdjustments.push_back(std::make_unique<PyNet::Models::Matrix>(rows, cols, _cudaEnabled));
-	_biasAdjustments.push_back(std::make_unique<PyNet::Models::Vector>(rows, _cudaEnabled));
+	_weightAdjustments.push_back(std::make_unique<PyNet::Models::Matrix>(rows, cols, _settings->CudaEnabled));
+	_biasAdjustments.push_back(std::make_unique<PyNet::Models::Vector>(rows, _settings->CudaEnabled));
 }
 
 void AdjustmentCalculator::AddWeightAdjustment(int matrixIndex, int row, int col, double adjustment) {

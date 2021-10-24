@@ -27,6 +27,9 @@
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\include\PyNetwork_Functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\Context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
