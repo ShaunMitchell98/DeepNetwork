@@ -17,32 +17,33 @@ void AdjustmentCalculator::AddMatrix(int rows, int cols) {
 	_biasAdjustments.push_back(std::make_unique<PyNet::Models::Vector>(rows, _settings->CudaEnabled));
 }
 
-void AdjustmentCalculator::AddWeightAdjustment(int matrixIndex, int row, int col, double adjustment) {
+void AdjustmentCalculator::AddWeightAdjustment(int matrixIndex, PyNet::Models::Matrix* adjustments) {
 	
 	if (_newBatch) {
-		_weightAdjustments[matrixIndex]->SetValue(row, col, adjustment);
+		*_weightAdjustments[matrixIndex] = *adjustments;
 	}
 	else {
-		_weightAdjustments[matrixIndex]->SetValue(row, col, _weightAdjustments[matrixIndex]->GetValue(row, col) + adjustment);
+		*_weightAdjustments[matrixIndex] += *adjustments;
 	}
 }
-void AdjustmentCalculator::AddBiasAdjustment(int matrixIndex, int row, double adjustment) {
+
+void AdjustmentCalculator::AddBiasAdjustment(int matrixIndex, double adjustment) {
 
 	if (_newBatch) {
-		_biasAdjustments[matrixIndex]->SetValue(row, adjustment);
+		_biasAdjustments[matrixIndex]->SetValue(adjustment);
 	}
 	else {
-		_biasAdjustments[matrixIndex]->SetValue(row, _biasAdjustments[matrixIndex]->GetValue(row) + adjustment);
+		_biasAdjustments[matrixIndex]->AddValue(adjustment);
 	}
 }
 
 
-double AdjustmentCalculator::GetWeightAdjustment(int matrixIndex, int row, int col) {
-	return _weightAdjustments[matrixIndex]->GetValue(row, col) / _batchSize;
+PyNet::Models::Matrix* AdjustmentCalculator::GetWeightAdjustment(int matrixIndex) {
+	return &(*_weightAdjustments[matrixIndex] / _batchSize);
 }
 
-double AdjustmentCalculator::GetBiasAdjustment(int matrixIndex, int row) {
-	return _biasAdjustments[matrixIndex]->GetValue(row) / _batchSize;
+PyNet::Models::Vector* AdjustmentCalculator::GetBiasAdjustment(int matrixIndex) {
+	return &(*_biasAdjustments[matrixIndex] / _batchSize);
 }
 
 void AdjustmentCalculator::SetNewBatch(bool newBatch) {

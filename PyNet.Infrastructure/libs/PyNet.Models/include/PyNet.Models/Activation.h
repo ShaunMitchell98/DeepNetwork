@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Matrix.h"
 
 namespace ActivationFunctions {
 
@@ -12,6 +13,6 @@ namespace ActivationFunctions {
 	protected:
 	public:
 		virtual void Apply(std::vector<double>& values) = 0;
-		virtual double CalculateDerivative(double input) = 0;
+		virtual void CalculateDerivative(PyNet::Models::Matrix* input, PyNet::Models::Matrix* output) = 0;
 	};
 }

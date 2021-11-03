@@ -32,9 +32,18 @@ namespace PyNet::Models {
 		double* GetEnd() const;
 		void SetValue(int row, double value);
 		void ApplyActivation();
-		double CalculateActivationDerivative(double input);
-		void operator=(Vector& v);
+		void CalculateActivationDerivative(Vector* output);
+		void SetValue(double value);
+		void AddValue(double value);
+		void operator=(const Matrix& m);
+		void operator=(const Vector& v);
 		void operator+=(const Vector& v);
+		Vector& operator-(const Vector& v);
+		double operator|(const Vector& v);
+		Vector& operator^(const Vector& v);
+		Vector& operator*(const double d);
+		Vector& operator/(const double d);
+
 	};
 }
 

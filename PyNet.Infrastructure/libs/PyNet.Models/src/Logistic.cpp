@@ -11,8 +11,16 @@ namespace ActivationFunctions {
         }
     }
 
-    double Logistic::CalculateDerivative(double input) {
-        return exp(input) / ((1 + exp(input)) * (1 + exp(input)));
+    void Logistic::CalculateDerivative(PyNet::Models::Matrix* input, PyNet::Models::Matrix* output) {
+
+        if (input->Rows != output->Rows) {
+            throw "Invalid output vector provided.";
+        }
+
+        for (auto i = 0; i < input->Rows; i++) {
+            for (auto j = 0; j < input->Cols; j++) {
+                output->SetValue(i, j, exp(input->GetValue(i, j)) / ((1 + exp(input->GetValue(i, j)) * (1 + exp(input->GetValue(i, j))))));
+            }
+        }
     }
 }
-

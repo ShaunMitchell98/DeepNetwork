@@ -15,5 +15,5 @@ public:
 
 	LayerPropagator(ILogger* logger);
 
-	void PropagateLayer(PyNet::Models::Matrix* weights, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* biases, PyNet::Models::Vector* outputLayer);
+	void PropagateLayer(PyNet::Models::Matrix* weights, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* bias, PyNet::Models::Vector* outputLayer);
 };

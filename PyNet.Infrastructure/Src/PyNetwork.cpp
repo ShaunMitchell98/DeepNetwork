@@ -36,7 +36,7 @@ void PyNetwork::AddLayer(int rows, ActivationFunctionType activationFunctionType
 
 	Layers.push_back(std::make_shared<PyNet::Models::Vector>(rows, activationFunctionType, _settings->CudaEnabled));
 	Weights.push_back(std::make_shared<Matrix>(rows, cols, _settings->CudaEnabled));
-	Biases.push_back(std::make_shared<PyNet::Models::Vector>(rows, _settings->CudaEnabled));
+	Biases.push_back(std::make_shared<PyNet::Models::Vector>(rows, activationFunctionType, _settings->CudaEnabled));
 	_adjustmentCalculator->AddMatrix(rows, cols);
 }
 

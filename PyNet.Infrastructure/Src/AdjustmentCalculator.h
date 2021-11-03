@@ -23,10 +23,10 @@ public:
 	AdjustmentCalculator(Settings* settings);
 	void AddMatrix(int rows, int cols);
 	void SetBatchSize(int batchSize);
-	void AddWeightAdjustment(int matrixIndex, int row, int col, double adjustment);
-	void AddBiasAdjustment(int matrixIndex, int row, double adjustment);
-	double GetWeightAdjustment(int matrixIndex, int row, int col);
-	double GetBiasAdjustment(int matrixIndex, int row);
+	void AddWeightAdjustment(int matrixIndex, PyNet::Models::Matrix* adjustments);
+	void AddBiasAdjustment(int matrixIndex, double adjustment);
+	PyNet::Models::Matrix* GetWeightAdjustment(int matrixIndex);
+	PyNet::Models::Vector* GetBiasAdjustment(int matrixIndex);
 	void SetNewBatch(bool newBatch);
 };
 

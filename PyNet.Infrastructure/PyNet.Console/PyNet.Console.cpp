@@ -15,9 +15,9 @@ void GetData(string folderPath, string fileName, vector<double*> inputs) {
 	for (auto i = 0; i < 10; i++) {
 
 		inputValues.push_back(vector<double>());
-		string filePath = folderPath + fileName + to_string(i) + ".txt";
+		auto filePath = folderPath + fileName + to_string(i) + ".txt";
 
-		ifstream ifs(filePath);
+		ifstream ifs(filePath, ifstream::in);
 
 		if (!ifs.bad()) {
 			auto pBuf = ifs.rdbuf();
@@ -90,7 +90,7 @@ int main()
 	PyNetwork_AddLayer(network, 129, ActivationFunctions::ActivationFunctionType::Logistic);
 	PyNetwork_AddLayer(network, 10, ActivationFunctions::ActivationFunctionType::Logistic);
 
-	string folderPath = "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet.Infrastructure.FunctionalTests\\Examples\\Mnist_Fashion\\";
+	string folderPath = "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet.Infrastructure\\tests\\Resources\\";
 	string trainingExamplesFileName = "Training_Example";
 	string trainingLabelsFileName = "Training_Labels";
 

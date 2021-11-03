@@ -11,23 +11,23 @@ using namespace PyNet::Models;
 class NetworkTrainer
 {
 private:
-	std::vector<double> dError_dLayerAbove;
-	std::vector<double> dError_dOutputCurrent;
+	Vector* dError_dActivatedLayerAbove;
+	Vector* dError_dActivatedOutput;
 	ILogger* _logger;
 	AdjustmentCalculator* _adjustmentCalculator;
+	Settings* _settings;
 
-	double CalculateErrorDerivativeForFinalLayer(PyNet::Models::Vector* finalLayer, PyNet::Models::Vector* expectedLayer);
+	double CalculateErrorDerivativeForFinalLayer(Vector* finalLayer, Vector* expectedLayer);
 	void GetAdjustmentsForWeightMatrix(Matrix* weightMatrix, Vector* inputLayer, Vector* outputLayer, int weightMatrixIndex);
 	void GetAdjustments(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers);
-	void UpdateErrorDerivativeForLayerAbove();
-	void GetErrorDerivativeForOutputLayer(Matrix* weightMatrix, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* outputLayer);
+	void GetdError_dActivatedOutput(Matrix* weightMatrix, PyNet::Models::Vector* inputLayer, PyNet::Models::Vector* outputLayer);
 public:
 
-	static auto factory(ILogger* logger, AdjustmentCalculator* adjustmentCalculator) {
-		return new NetworkTrainer(logger, adjustmentCalculator);
+	static auto factory(ILogger* logger, AdjustmentCalculator* adjustmentCalculator, Settings* settings) {
+		return new NetworkTrainer(logger, adjustmentCalculator, settings);
 	}
 
-	NetworkTrainer(ILogger* logger, AdjustmentCalculator* adjustmentCalculator);
+	NetworkTrainer(ILogger* logger, AdjustmentCalculator* adjustmentCalculator, Settings* settings);
 	double TrainNetwork(std::vector<Matrix*> weightMatrices, std::vector<Vector*> layers, PyNet::Models::Vector* expectedLayer);
 	void UpdateWeights(std::vector<Matrix*> weightMatrices, std::vector<Vector*> biases, double learningRate);
 };

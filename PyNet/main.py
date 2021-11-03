@@ -18,11 +18,11 @@ test_images = test_images / 255.0
 
 batch_sizes = [20]
 learning_rates = [1]
-number: int = 5
+number: int = 30000
 
 for learning_rate in learning_rates:
     for batch_size in batch_sizes:
-        network = PyNetwork(784, True, False)
+        network = PyNetwork(784, False, True)
         network.add_layer(500, ActivationFunctionType.LOGISTIC)
         network.add_layer(129, ActivationFunctionType.LOGISTIC)
         network.add_layer(10, ActivationFunctionType.LOGISTIC)

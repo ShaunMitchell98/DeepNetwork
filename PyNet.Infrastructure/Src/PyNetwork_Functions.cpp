@@ -6,12 +6,17 @@
 
 extern "C" {
 
-	void* PyNetwork_New(int count, bool log, bool cudaEnabled) { 
+	di::ContextTmpl<Logger>* GetContext(bool cudaEnabled, bool log) {
 		auto context = new di::ContextTmpl<Logger>();
 		Settings* settings = new Settings();
 		settings->CudaEnabled = cudaEnabled;
 		settings->LoggingEnabled = log;
 		context->addInstance<Settings>(settings, true);
+		return context;
+	}
+
+	void* PyNetwork_New(int count, bool log, bool cudaEnabled) { 
+		auto context = GetContext(cudaEnabled, log);
 		return context->get<PyNetwork>();
 	}
 

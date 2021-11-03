@@ -41,6 +41,14 @@ namespace PyNet::Models {
 		return &Values[(size_t)(row * Cols + col)];
 	}
 
+	Matrix* Matrix::operator~() {
+
+		auto m = new Matrix(*this);
+		m->Rows = Cols;
+		m->Cols = Rows;
+		return m;
+	}
+
 	Matrix& Matrix::operator*(const Matrix& m) {
 
 		auto c = new Matrix(this->Rows, m.Cols, _cudaEnabled);
@@ -64,6 +72,51 @@ namespace PyNet::Models {
 		}
 
 		return *c;
+	}
+
+	Matrix& Matrix::operator*(const double d) {
+
+		auto c = new Matrix(Rows, Cols, _cudaEnabled);
+
+		for (auto i = 0; i < this->Rows; i++) {
+			for (auto j = 0; j < this->Cols; j++) {
+				c->SetValue(i, j, this->GetValue(i, j) * d);
+			}
+		}
+
+		return *c;
+	}
+
+	Matrix& Matrix::operator-(const Matrix& m) {
+
+		auto c = new Matrix(Rows, Cols, _cudaEnabled);
+
+		for (auto i = 0; i < this->Rows; i++) {
+			for (auto j = 0; j < this->Cols; j++) {
+				c->SetValue(i, j, this->GetValue(i, j) - m.GetValue(i, j));
+			}
+		}
+
+		return *c;
+	}
+
+	Matrix& Matrix::operator/(const double d) {
+
+		return (*this) * (1 / d);
+	}
+
+	void Matrix::operator=(const Matrix& m) {
+		Rows = m.Rows;
+		Cols = m.Cols;
+		Values = m.Values;
+	}
+
+	void Matrix::operator+=(const Matrix& m) {
+		for (auto i = 0; i < m.Rows; i++) {
+			for (auto j = 0; j < m.Cols; j++) {
+				this->SetValue(i, j, this->GetValue(i, j) + m.GetValue(i, j));
+			}
+		}
 	}
 }
 
