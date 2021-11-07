@@ -7,26 +7,30 @@
 #include <stdlib.h>
 #include <fstream>
 
-class Logger : public ILogger {
-private:
-	bool _enabled;
-	std::ofstream _stream;
-public:
+namespace PyNet::Infrastructure {
 
-	typedef ILogger base;
+	class Logger : public ILogger {
+	private:
+		bool _enabled;
+		std::ofstream _stream;
+	public:
 
-	static auto factory(Settings* settings) {
-		return new Logger(settings->LoggingEnabled);
-	}
+		typedef ILogger base;
 
-	Logger(bool log);
-	~Logger();
-	void LogMatrix(PyNet::Models::Matrix* matrix);
-	void LogMessage(const char* message...);
-	void LogMessageWithoutDate(const char* message);
-	void LogNumber(double number);
-	void LogWhitespace();
-	void LogNewline();
-	void LogVector(std::vector<double> values);
-	void LogLine(const char* message);
-}; 
+		static auto factory(Settings* settings) {
+			return new Logger(settings->LoggingEnabled);
+		}
+
+		Logger(bool log);
+		~Logger();
+		void LogMatrix(PyNet::Models::Matrix* matrix);
+		void LogMessage(const char* message...);
+		void LogMessageWithoutDate(const char* message);
+		void LogNumber(double number);
+		void LogWhitespace();
+		void LogNewline();
+		void LogVector(std::vector<double> values);
+		void LogLine(const char* message);
+	};
+}
+

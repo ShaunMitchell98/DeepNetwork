@@ -7,6 +7,7 @@
 #include "PyNet.Models/Activation.h"
 
 using namespace std;
+using namespace PyNet::Infrastructure;
 
 void GetData(string folderPath, string fileName, vector<double*> inputs) {
 

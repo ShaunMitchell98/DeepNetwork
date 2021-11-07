@@ -1,29 +1,30 @@
 #include "CppUnitTest.h"
 #include <vector>
 #include "PyNetwork.h"
-#include "FakeLogger.h"
+#include "Logger.h"
 #include <memory>
+#include "UnitTest.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace PyNet::Infrastructure::Tests
 {
-	TEST_CLASS(PyNetworkTests)
+	TEST_CLASS(PyNetworkTests), public UnitTest
 	{
 	public:
 
 		TEST_METHOD(Run_WhenCalled_ReturnsOutput)
 		{
 			double input[4] = { 1, 1, 1, 1 };
-
-			auto logger = std::make_shared<FakeLogger>();
-			auto network = std::make_unique<PyNetwork>(2, logger);
+			auto context = GetContext(false, false);
+			auto network = context->get<PyNetwork>();
+		
 			network->AddLayer(2, ActivationFunctions::ActivationFunctionType::Logistic);
 
-			network->Weights = std::vector<std::unique_ptr<PyNet::Models::Matrix>>();
+			network->Weights = std::vector<std::shared_ptr<PyNet::Models::Matrix>>();
 
 			double weights[4] = { 1, 2, 3, 4 };
-			network->Weights.push_back(std::make_unique<PyNet::Models::Matrix>(2, 2, weights));
+			network->Weights.push_back(std::make_shared<PyNet::Models::Matrix>(2, 2, weights));
 
 			auto output = network->Run(input);
 
@@ -38,8 +39,8 @@ namespace PyNet::Infrastructure::Tests
 				input[i] = 1;
 			}
 
-			auto logger = std::make_shared<FakeLogger>();
-			auto network = std::make_unique<PyNetwork>(2, logger);
+			auto context = GetContext(false, false);
+			auto network = context->get<PyNetwork>();
 			network->AddLayer(2, ActivationFunctions::ActivationFunctionType::Logistic);
 
 			auto output = new double[2];
