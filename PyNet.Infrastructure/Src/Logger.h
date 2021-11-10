@@ -23,13 +23,11 @@ namespace PyNet::Infrastructure {
 
 		Logger(bool log);
 		~Logger();
-		void LogMatrix(PyNet::Models::Matrix* matrix);
-		void LogMessage(const char* message...);
+		void LogMessage(std::string message);
 		void LogMessageWithoutDate(const char* message);
 		void LogNumber(double number);
 		void LogWhitespace();
 		void LogNewline();
-		void LogVector(std::vector<double> values);
 		void LogLine(const char* message);
 	};
 }

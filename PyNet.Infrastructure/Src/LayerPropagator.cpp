@@ -9,22 +9,22 @@ void LayerPropagator::PropagateLayer(PyNet::Models::Matrix* weights, PyNet::Mode
     _logger->LogLine("Forward propagating layer.");
 
     _logger->LogLine("Forward propagation input: ");
-    _logger->LogVector(inputLayer->Values);
+    _logger->LogMessage(inputLayer->ToString());
 
     *outputLayer = *weights * *inputLayer;
 
     _logger->LogLine("Forward propagation output: ");
-    _logger->LogVector(outputLayer->Values);
+    _logger->LogMessage(outputLayer->ToString());
 
     *outputLayer += *bias;
 
     _logger->LogLine("Output after adding biases: ");
-    _logger->LogVector(outputLayer->Values);
+    _logger->LogMessage(outputLayer->ToString());
 
     //_logger->LogLine("Weight Matrix");
     //_logger->LogMatrix(weights);
 
     outputLayer->ApplyActivation();
     _logger->LogLine("Output after activation");
-    _logger->LogMatrix(outputLayer);
+    _logger->LogMessage(outputLayer->ToString());
 }

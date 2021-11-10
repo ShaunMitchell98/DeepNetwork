@@ -33,16 +33,35 @@ namespace PyNet::Models {
 		Values[(size_t)row * Cols + col] = value;
 	}
 
-	int Matrix::GetRows() {
+	int Matrix::GetRows() const {
 		return Rows;
 	}
 
-	int Matrix::GetCols() {
+	int Matrix::GetCols() const {
 		return Cols;
 	}
 
 	double* Matrix::GetAddress(int row, int col) {
 		return &Values[(size_t)(row * Cols + col)];
+	}
+
+	std::string Matrix::ToString() {
+
+		auto text = new std::string();
+
+		for (auto row = 0; row < Rows; row++) {
+			for (auto col = 0; col < Cols; col++) {
+				*text += std::to_string(GetValue(row, col));
+
+				if (col != Cols - 1) {
+					*text += ", ";
+				}
+			}
+
+			*text += "\n";
+		}
+
+		return *text;
 	}
 
 	Matrix* Matrix::operator~() {

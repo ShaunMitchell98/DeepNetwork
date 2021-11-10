@@ -20,7 +20,7 @@ namespace PyNet::Models {
 			throw "Canot apply activation to vector, Activation is NULL";
 		}
 		
-		_activation->Apply(this->Values);
+		_activation->Apply(this);
 	}
 
 	void Vector::CalculateActivationDerivative(Vector* output) {

@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "PyNet.Models.Cuda/CudaMatrix.h"
 #include "PyNet.Models.Cpu/CpuMatrix.h"
+#include "PyNet.Models.Cpu/ActivationProvider.h"
 #include "Settings.h"
 
 namespace PyNet::Infrastructure {
@@ -16,6 +17,7 @@ namespace PyNet::Infrastructure {
 			else
 			{
 				context->addClass<CpuMatrix>();
+				context->addFactory(ActivationFunctions::factory);
 			}
 		}
 

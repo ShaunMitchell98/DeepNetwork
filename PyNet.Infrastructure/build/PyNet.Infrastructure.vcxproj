@@ -52,7 +52,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.4.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.5.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -87,7 +87,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -103,10 +103,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";PyNet_Infrastructure_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -114,7 +114,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>libs\PyNet.Models\Debug\PyNet.Models.lib;libs\PyNet.Models.Cuda\Debug\PyNet.Models.Cuda.lib;libs\PyNet.Models.Cpu\Debug\PyNet.Models.Cpu.lib;libs\PyNet.Models\Debug\PyNet.Models.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>libs\PyNet.Models\Debug\PyNet.Models.lib;libs\PyNet.Models\Debug\PyNet.Models.lib;libs\PyNet.Models.Cuda\Debug\PyNet.Models.Cuda.lib;libs\PyNet.Models.Cpu\Debug\PyNet.Models.Cpu.lib;libs\PyNet.Models\Debug\PyNet.Models.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -133,7 +133,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -149,10 +149,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";PyNet_Infrastructure_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -160,7 +160,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>libs\PyNet.Models\Release\PyNet.Models.lib;libs\PyNet.Models.Cuda\Release\PyNet.Models.Cuda.lib;libs\PyNet.Models.Cpu\Release\PyNet.Models.Cpu.lib;libs\PyNet.Models\Release\PyNet.Models.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>libs\PyNet.Models\Release\PyNet.Models.lib;libs\PyNet.Models\Release\PyNet.Models.lib;libs\PyNet.Models.Cuda\Release\PyNet.Models.Cuda.lib;libs\PyNet.Models.Cpu\Release\PyNet.Models.Cpu.lib;libs\PyNet.Models\Release\PyNet.Models.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -179,7 +179,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
@@ -195,10 +195,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";PyNet_Infrastructure_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -206,7 +206,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>libs\PyNet.Models\MinSizeRel\PyNet.Models.lib;libs\PyNet.Models.Cuda\MinSizeRel\PyNet.Models.Cuda.lib;libs\PyNet.Models.Cpu\MinSizeRel\PyNet.Models.Cpu.lib;libs\PyNet.Models\MinSizeRel\PyNet.Models.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>libs\PyNet.Models\MinSizeRel\PyNet.Models.lib;libs\PyNet.Models\MinSizeRel\PyNet.Models.lib;libs\PyNet.Models.Cuda\MinSizeRel\PyNet.Models.Cuda.lib;libs\PyNet.Models.Cpu\MinSizeRel\PyNet.Models.Cpu.lib;libs\PyNet.Models\MinSizeRel\PyNet.Models.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -225,7 +225,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -240,10 +240,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";PyNet_Infrastructure_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cuda\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\libs\PyNet.Models.Cpu\include;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\tests;C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\.\src;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -251,7 +251,7 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>libs\PyNet.Models\RelWithDebInfo\PyNet.Models.lib;libs\PyNet.Models.Cuda\RelWithDebInfo\PyNet.Models.Cuda.lib;libs\PyNet.Models.Cpu\RelWithDebInfo\PyNet.Models.Cpu.lib;libs\PyNet.Models\RelWithDebInfo\PyNet.Models.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>libs\PyNet.Models\RelWithDebInfo\PyNet.Models.lib;libs\PyNet.Models\RelWithDebInfo\PyNet.Models.lib;libs\PyNet.Models.Cuda\RelWithDebInfo\PyNet.Models.Cuda.lib;libs\PyNet.Models.Cpu\RelWithDebInfo\PyNet.Models.Cpu.lib;libs\PyNet.Models\RelWithDebInfo\PyNet.Models.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -339,6 +339,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\NetworkTrainer.cpp" />
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\PyNetwork.h" />
     <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\PyNetwork.cpp" />
+    <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\Module.h" />
     <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\PyNetwork_Functions.cpp" />
     <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\tests\LayerPropagatorTests.cpp" />
     <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\tests\NetworkTrainerTests.cpp" />
@@ -367,6 +368,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.4.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.5.targets" />
   </ImportGroup>
 </Project>

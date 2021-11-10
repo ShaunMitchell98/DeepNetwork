@@ -3,7 +3,6 @@
 #include "Matrix.h"
 #include "Activation.h"
 #include <memory>
-#include "Logistic.h"
 
 using namespace ActivationFunctions;
 

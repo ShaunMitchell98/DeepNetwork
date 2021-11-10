@@ -4,9 +4,6 @@
     <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\libs\PyNet.Models\src\Activation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\libs\PyNet.Models\src\Logistic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\libs\PyNet.Models\src\Matrix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -19,9 +16,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\libs\PyNet.Models\include\PyNet.Models\Activation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\libs\PyNet.Models\include\PyNet.Models\Logistic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\libs\PyNet.Models\include\PyNet.Models\Matrix.h">

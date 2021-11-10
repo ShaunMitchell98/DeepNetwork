@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace PyNet::Models {
 
@@ -10,15 +11,17 @@ namespace PyNet::Models {
 		int Rows;
 		int Cols;
 		std::vector<double> Values;
+
 	public:
 
 		Matrix(int rows, int cols);
 		Matrix(int rows, int cols, double* values);
 		double GetValue(int row, int col) const;
 		void SetValue(int row, int col, double value);
-		int GetCols();
-		int GetRows();
+		int GetCols() const;
+		int GetRows() const;
 		double* GetAddress(int row, int col);
+		std::string ToString();
 		void operator=(const Matrix& m);
 		Matrix* operator~();
 		Matrix& operator/(const double d);

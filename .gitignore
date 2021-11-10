@@ -364,6 +364,8 @@ FodyWeavers.xsd
 /PyNet/.idea
 /PyNet/venv
 
-/PyNet/PyNet.Infrastructure/build
-/PyNet/Images/Learning Rate 1 Batch Size 20.jpg
+build/
+build/CMakeFiles/
+build/libs/PyNet.Models/
+/PyNet/Images/
 /PyNet/successes.txt

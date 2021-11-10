@@ -19,27 +19,6 @@ namespace PyNet::Infrastructure {
 		}
 	}
 
-	void Logger::LogMatrix(Matrix* matrix) {
-
-		if (_enabled) {
-			for (auto row = 0; row < matrix->Rows; row++) {
-				for (auto col = 0; col < matrix->Cols; col++) {
-					LogNumber(matrix->GetValue(row, col));
-
-					if (col != matrix->Cols - 1) {
-						LogMessageWithoutDate(", ");
-					}
-				}
-
-				LogNewline();
-			}
-
-			LogNewline();
-			LogNewline();
-			LogNewline();
-			LogNewline();
-		}
-	}
 	void Logger::LogMessageWithoutDate(const char* message) {
 
 		if (_enabled) {
@@ -52,7 +31,7 @@ namespace PyNet::Infrastructure {
 		}
 	}
 
-	void Logger::LogMessage(const char* message...) {
+	void Logger::LogMessage(std::string message) {
 		if (_enabled) {
 			time_t _time = time(NULL);
 
@@ -73,14 +52,6 @@ namespace PyNet::Infrastructure {
 
 	void Logger::LogNumber(double number) {
 		_stream << number;
-	}
-
-	void Logger::LogVector(std::vector<double> values) {
-
-		for (auto& value : values) {
-			LogNumber(value);
-			LogNewline();
-		}
 	}
 
 	void Logger::LogLine(const char* message) {

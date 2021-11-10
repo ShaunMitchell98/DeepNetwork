@@ -30,7 +30,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.4.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.5.props" />
   </ImportGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
@@ -66,6 +66,6 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.4.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.5.targets" />
   </ImportGroup>
 </Project>

@@ -1,13 +1,12 @@
 #pragma once
 
-#include "Activation.h"
+#include "PyNet.Models/Activation.h"
 
 namespace ActivationFunctions {
 
-	class Logistic : public Activation {
+	class CpuLogistic : public Activation {
 	public:
-		void Apply(std::vector<double>& values);
+		void Apply(PyNet::Models::Matrix* input);
 		void CalculateDerivative(PyNet::Models::Matrix* input, PyNet::Models::Matrix* output);
 	};
-
 }
