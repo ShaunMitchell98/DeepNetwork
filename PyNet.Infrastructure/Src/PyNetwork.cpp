@@ -14,7 +14,7 @@ PyNetwork::PyNetwork(int rows, ILogger* logger, LayerPropagator* layerPropagator
 	Biases = std::vector<std::shared_ptr<PyNet::Models::Vector>>();
 	Errors = std::vector<double>();
 
-	Layers.push_back(std::make_shared<PyNet::Models::Vector>(rows, settings->CudaEnabled));
+	Layers.push_back(std::make_shared<PyNet::Models::Vector>(rows));
 
 	BatchNumber = 0;
 	BatchSize = 0;
@@ -32,16 +32,16 @@ PyNetwork::PyNetwork(int rows, ILogger* logger, LayerPropagator* layerPropagator
 
 void PyNetwork::AddLayer(int rows, ActivationFunctionType activationFunctionType) {
 
-	auto cols = Layers[Layers.size() - 1]->Rows;
+	auto cols = Layers[Layers.size() - 1]->GetRows();
 
-	Layers.push_back(std::make_shared<PyNet::Models::Vector>(rows, activationFunctionType, _settings->CudaEnabled));
-	Weights.push_back(std::make_shared<Matrix>(rows, cols, _settings->CudaEnabled));
-	Biases.push_back(std::make_shared<PyNet::Models::Vector>(rows, activationFunctionType, _settings->CudaEnabled));
+	Layers.push_back(std::make_shared<PyNet::Models::Vector>(rows, activationFunctionType));
+	Weights.push_back(std::make_shared<Matrix>(rows, cols));
+	Biases.push_back(std::make_shared<PyNet::Models::Vector>(rows, activationFunctionType));
 	_adjustmentCalculator->AddMatrix(rows, cols);
 }
 
 double* PyNetwork::Run(double* input_layer) {
-	Layers[0].reset(new PyNet::Models::Vector(Layers[0]->Rows, input_layer, ActivationFunctionType::Logistic, _settings->CudaEnabled));
+	Layers[0].reset(new PyNet::Models::Vector(Layers[0]->GetRows(), input_layer, ActivationFunctionType::Logistic));
 
 	for (auto i = 0; i < Weights.size(); i++) {
 		_layerPropagator->PropagateLayer(Weights[i].get(), Layers[i].get(), Biases[i].get(), Layers[(size_t)(i + 1)].get());
@@ -66,8 +66,7 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 
 			Run(inputLayers[i]);
 
-			auto expectedVector = std::make_shared<PyNet::Models::Vector>(Layers[Layers.size() - 1]->Rows, expectedOutputs[i], ActivationFunctionType::Logistic, 
-				_settings->CudaEnabled);
+			auto expectedVector = std::make_shared<PyNet::Models::Vector>(Layers[Layers.size() - 1]->GetRows(), expectedOutputs[i], ActivationFunctionType::Logistic);
 
 			auto weights = std::vector<Matrix*>();
 			auto layers = std::vector<Vector*>();

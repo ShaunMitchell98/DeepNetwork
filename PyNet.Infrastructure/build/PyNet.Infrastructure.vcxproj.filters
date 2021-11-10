@@ -22,6 +22,12 @@
     <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\tests\LayerPropagatorTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\tests\NetworkTrainerTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\tests\PyNetworkTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\include\PyNetwork_Functions.h">
@@ -46,6 +52,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\src\PyNetwork.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Shaun Mitchell\source\repos\PyNet\PyNet.Infrastructure\tests\UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -103,10 +103,10 @@ namespace di {
 
 
         // Add factory method automatically if present in class
-        template <typename T, typename std::enable_if< std::is_function<decltype(T::factory)>::value >::type* = nullptr>
+        template <typename T, typename std::enable_if< std::is_function<decltype(T::nameof(T))>::value >::type* = nullptr>
         void addClassAuto(void*) // argument only used to disambiguate from vararg version
         {
-            addFactoryPriv(T::factory);
+            addFactoryPriv(T::nameof(T));
         }
 
         template<typename T>
@@ -236,7 +236,7 @@ namespace di {
         template <typename InstanceType1, typename InstanceType2, typename... ITs>
         void addClass()
         {
-            addFactoryPriv(InstanceType1::factory);
+            addFactoryPriv(InstanceType1::nameof(InstanceType1);
             addClass<InstanceType2, ITs...>();
         }
 
@@ -264,7 +264,7 @@ namespace di {
         template <typename InstanceTypeLast>
         void addClass()
         {
-            addFactoryPriv(InstanceTypeLast::factory);
+            addFactoryPriv(InstanceTypeLast::nameof(InstanceTypeLast));
         }
     };
 

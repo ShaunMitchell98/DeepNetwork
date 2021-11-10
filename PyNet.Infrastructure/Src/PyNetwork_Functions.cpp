@@ -2,15 +2,29 @@
 
 #include "PyNetwork.h"
 #include "Logger.h"
+#include "PyNet.Models.Cuda/CudaMatrix.h"
+#include "PyNet.Models.Cpu/CpuMatrix.h"
 #include "Settings.h"
 
 namespace PyNet::Infrastructure {
 	extern "C" {
 
-		di::ContextTmpl<Logger>* GetContext(bool cudaEnabled, bool log) {
-			auto context = new di::ContextTmpl<Logger>();
+		void AddMatrix(di::Context* context, bool cudaEnabled) {
+			if (cudaEnabled) {
+				context->addClass<CudaMatrix>();
+			}
+			else
+			{
+				context->addClass<CpuMatrix>();
+			}
+		}
+
+		di::Context* GetContext(bool cudaEnabled, bool log) {
+			auto context = new di::Context();
+			context->addClass<Settings>();
+			
+			AddMatrix(context, cudaEnabled);
 			Settings* settings = new Settings();
-			settings->CudaEnabled = cudaEnabled;
 			settings->LoggingEnabled = log;
 			context->addInstance<Settings>(settings, true);
 			return context;

@@ -66,4 +66,4 @@ set(CMAKE_CUDA_RUNTIME_LIBRARY_DEFAULT "STATIC")
 
 set(CMAKE_LINKER "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/link.exe")
 set(CMAKE_AR "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/lib.exe")
-set(CMAKE_MT "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x86/mt.exe")
+set(CMAKE_MT "C:/Program Files (x86)/Windows Kits/10/bin/10.0.22000.0/x86/mt.exe")

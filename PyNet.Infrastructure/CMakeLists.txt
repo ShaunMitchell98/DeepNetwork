@@ -14,9 +14,12 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 # include files
 include_directories( ./include 
 	./libs/PyNet.Models/include
+	./libs/PyNet.Models.Cuda/include
+	./libs/PyNet.Models.Cpu/include
 	 ./tests
 	 ./src
-	"C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/VS/UnitTest/include"
+	./libs/di/src
+	"C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/include"
 )
 
 # target
@@ -34,6 +37,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/NetworkTrainer.cpp
 	./src/PyNetwork.h 
 	./src/PyNetwork.cpp 
+	./src/Module.h
 	./src/PyNetwork_Functions.cpp
 	./tests/LayerPropagatorTests.cpp
 	./tests/NetworkTrainerTests.cpp
@@ -46,5 +50,9 @@ target_link_libraries(PyNet.Console PyNet.Infrastructure )
 
 # 3rd party libs
 add_subdirectory( ./libs/PyNet.Models )
+add_subdirectory( ./libs/PyNet.Models.Cuda )
+add_subdirectory( ./libs/PyNet.Models.Cpu )
 target_link_libraries( PyNet.Infrastructure PyNet.Models )
+target_link_libraries( PyNet.Infrastructure PyNet.Models.Cuda )
+target_link_libraries( PyNet.Infrastructure PyNet.Models.Cpu )
 link_directories("C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/VS/UnitTest/lib/x64/Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib")

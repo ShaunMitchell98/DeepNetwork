@@ -16,7 +16,7 @@ namespace PyNet::Infrastructure::Tests
 		TEST_METHOD(Run_WhenCalled_ReturnsOutput)
 		{
 			double input[4] = { 1, 1, 1, 1 };
-			auto context = GetContext(false, false);
+			auto context = GetContext(false);
 			auto network = context->get<PyNetwork>();
 		
 			network->AddLayer(2, ActivationFunctions::ActivationFunctionType::Logistic);
@@ -39,7 +39,7 @@ namespace PyNet::Infrastructure::Tests
 				input[i] = 1;
 			}
 
-			auto context = GetContext(false, false);
+			auto context = GetContext(false);
 			auto network = context->get<PyNetwork>();
 			network->AddLayer(2, ActivationFunctions::ActivationFunctionType::Logistic);
 

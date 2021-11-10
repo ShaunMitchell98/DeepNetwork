@@ -23,7 +23,7 @@ namespace PyNet::Infrastructure::Tests
 			auto outputLayerVector = std::make_unique<PyNet::Models::Vector>(2, ActivationFunctions::ActivationFunctionType::Logistic, true);
 			auto biasesVector = std::make_unique<PyNet::Models::Vector>(2, true);
 
-			auto context = GetContext(false, false);
+			auto context = GetContext(false);
 			auto layerPropagator = context->get<LayerPropagator>();
 			layerPropagator->PropagateLayer(weightMatrix.get(), inputLayerVector.get(), biasesVector.get(), outputLayerVector.get());
 

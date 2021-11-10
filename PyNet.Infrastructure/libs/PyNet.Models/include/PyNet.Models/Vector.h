@@ -14,18 +14,18 @@ namespace PyNet::Models {
 	private:
 		std::unique_ptr<Activation> _activation;
 	public:
-		Vector(int rows, ActivationFunctionType activationFunctionType, bool cudaEnabled) : Vector(rows, cudaEnabled) {
+		Vector(int rows, ActivationFunctionType activationFunctionType) : Vector(rows) {
 			if (activationFunctionType == ActivationFunctionType::Logistic) {
 				_activation = std::make_unique<Logistic>();
 			}
 		}
-		Vector(int rows, double* values, ActivationFunctionType activationFunctionType, bool cudaEnabled) : Matrix(rows, 1, values, cudaEnabled) {
+		Vector(int rows, double* values, ActivationFunctionType activationFunctionType) : Matrix(rows, 1, values) {
 			if (activationFunctionType == ActivationFunctionType::Logistic) {
 				_activation = std::make_unique<Logistic>();
 			}
 		}
 
-		Vector(int rows, bool cudaEnabled) : Matrix(rows, 1, cudaEnabled) {}
+		Vector(int rows) : Matrix(rows, 1) {}
 
 		double GetValue(int row) const;
 		double* GetAddress(int row) const;
