@@ -1,8 +1,0 @@
-C:/Users/Shaun Mitchell/source/repos/PyNet/PyNet.Infrastructure/build/CMakeFiles/PyNet.Infrastructure.dir
-C:/Users/Shaun Mitchell/source/repos/PyNet/PyNet.Infrastructure/build/CMakeFiles/PyNet.Console.dir
-C:/Users/Shaun Mitchell/source/repos/PyNet/PyNet.Infrastructure/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/Shaun Mitchell/source/repos/PyNet/PyNet.Infrastructure/build/CMakeFiles/ZERO_CHECK.dir
-C:/Users/Shaun Mitchell/source/repos/PyNet/PyNet.Infrastructure/build/libs/PyNet.Models/CMakeFiles/PyNet.Models.dir
-C:/Users/Shaun Mitchell/source/repos/PyNet/PyNet.Infrastructure/build/libs/PyNet.Models/CMakeFiles/ALL_BUILD.dir
-C:/Users/Shaun Mitchell/source/repos/PyNet/PyNet.Infrastructure/build/libs/PyNet.Models/libs/PyNet.Infrastructure.Cuda/CMakeFiles/PyNet.Infrastructure.Cuda.dir
-C:/Users/Shaun Mitchell/source/repos/PyNet/PyNet.Infrastructure/build/libs/PyNet.Models/libs/PyNet.Infrastructure.Cuda/CMakeFiles/ALL_BUILD.dir
