@@ -7,7 +7,12 @@ using namespace PyNet::Models;
 class CpuMatrix : public Matrix
 {
 public:
-	CpuMatrix(int rows, int cols) : Matrix(rows, cols) {}
+
+	static auto factory(di::Context& context) {
+		return new CpuMatrix{ context };
+	}
+
+	CpuMatrix(di::Context& context) : Matrix(context) {}
 	Matrix& operator*(const Matrix& m);
 	Matrix& operator*(const double d);
 	Matrix& operator-(const Matrix& m);

@@ -2,7 +2,7 @@
 
 #include "Matrix.h"
 
-namespace ActivationFunctions {
+namespace PyNet::Models {
 
 	enum class ActivationFunctionType {
 		Logistic
@@ -11,7 +11,7 @@ namespace ActivationFunctions {
 	class Activation {
 	protected:
 	public:
-		virtual void Apply(PyNet::Models::Matrix* input) = 0;
-		virtual void CalculateDerivative(PyNet::Models::Matrix* input, PyNet::Models::Matrix* output) = 0;
+		virtual void Apply(PyNet::Models::Matrix& input) = 0;
+		virtual void CalculateDerivative(PyNet::Models::Matrix& input, PyNet::Models::Matrix& output) = 0;
 	};
 }

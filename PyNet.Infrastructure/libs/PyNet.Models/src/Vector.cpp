@@ -2,6 +2,12 @@
 
 namespace PyNet::Models {
 
+	Vector::Vector(di::Context& context, Activation& activation) : Matrix(context), _activation{ activation } {}
+
+	void Vector::SetActivationFunction(ActivationFunctionType activationFunctionType) {
+		_activation = Context.get<Activation>();
+	}
+
 	double Vector::GetValue(int row) const {
 		return ((Matrix*)(this))->GetValue(row, 0);
 	}
@@ -16,15 +22,15 @@ namespace PyNet::Models {
 
 	void Vector::ApplyActivation() {
 
-		if (_activation == NULL) {
-			throw "Canot apply activation to vector, Activation is NULL";
-		}
+		//if (_activation == NULL) {
+		//	throw "Canot apply activation to vector, Activation is NULL";
+		//}
 		
-		_activation->Apply(this);
+		_activation.Apply(*this);
 	}
 
-	void Vector::CalculateActivationDerivative(Vector* output) {
-		_activation->CalculateDerivative(this, output);
+	void Vector::CalculateActivationDerivative(Vector& output) {
+		_activation.CalculateDerivative(*this, output);
 	}
 
 	double* Vector::GetEnd() const {
@@ -65,24 +71,23 @@ namespace PyNet::Models {
 
 	Vector& Vector::operator^(const Vector& v) {
 
-		auto c = new Vector(this->Rows, _cudaEnabled);
+		auto c = Context.get<Vector>();
+		c.Initialise(v.Rows);
 
 		for (auto i = 0; i < v.Rows; i++) {
-			c->SetValue(i, this->GetValue(i) * v.GetValue(i));
+			c.SetValue(i, this->GetValue(i) * v.GetValue(i));
 		}
 
-		return *c;
+		return c;
 	}
 
 	void Vector::operator=(const Matrix& m) {
 
-		if (m.Cols != 1) {
+		if (m.GetCols() != 1) {
 			throw "Matrix cannot be converted to Vector";
 		}
 
-		Rows = m.Rows;
-		Cols = m.Cols;
-		Values = m.Values;
+		Matrix::operator=(m);
 	}
 
 	void Vector::operator=(const Vector& v) {

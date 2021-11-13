@@ -16,17 +16,19 @@ namespace PyNet::Infrastructure::Tests
 		TEST_METHOD(Run_WhenCalled_ReturnsOutput)
 		{
 			double input[4] = { 1, 1, 1, 1 };
-			auto context = GetContext(false);
+			auto context = GetContext();
 			auto network = context->get<PyNetwork>();
 		
-			network->AddLayer(2, ActivationFunctions::ActivationFunctionType::Logistic);
+			network.AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
 
-			network->Weights = std::vector<std::shared_ptr<PyNet::Models::Matrix>>();
+			network.Weights = std::vector<Matrix>();
 
 			double weights[4] = { 1, 2, 3, 4 };
-			network->Weights.push_back(std::make_shared<PyNet::Models::Matrix>(2, 2, weights));
+			network.Weights.push_back(context->get<Matrix>());
+			network.Weights[0].Initialise(2, 2);
+			network.Weights[0] = weights;
 
-			auto output = network->Run(input);
+			auto output = network.Run(input);
 
 			Assert::AreEqual(0.48808328584886568, output[0]);
 			Assert::AreEqual(0.51191671415113438, output[1]);
@@ -39,16 +41,16 @@ namespace PyNet::Infrastructure::Tests
 				input[i] = 1;
 			}
 
-			auto context = GetContext(false);
+			auto context = GetContext();
 			auto network = context->get<PyNetwork>();
-			network->AddLayer(2, ActivationFunctions::ActivationFunctionType::Logistic);
+			network.AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
 
 			auto output = new double[2];
 
 			output[0] = 1;
 			output[1] = 0;
 
-			network->Train(&input, &output, 1, 1, 0.1);
+			network.Train(&input, &output, 1, 1, 0.1);
 
 			delete[] input;
 

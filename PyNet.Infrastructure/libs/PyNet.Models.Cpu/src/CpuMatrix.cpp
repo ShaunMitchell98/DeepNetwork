@@ -2,7 +2,8 @@
 
 Matrix& CpuMatrix::operator*(const Matrix& m) {
 
-	auto c = new CpuMatrix(Rows, m.GetCols());
+	auto c = new CpuMatrix(Context.get<CpuMatrix>());
+	c->Initialise(Rows, m.GetCols());
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < m.GetCols(); j++) {
@@ -20,7 +21,7 @@ Matrix& CpuMatrix::operator*(const Matrix& m) {
 
 Matrix& CpuMatrix::operator*(const double d) {
 
-	auto c = new Matrix(Rows, Cols);
+	auto c = new CpuMatrix(*this);
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < Cols; j++) {
@@ -33,7 +34,7 @@ Matrix& CpuMatrix::operator*(const double d) {
 
 Matrix& CpuMatrix::operator-(const Matrix& m) {
 
-	auto c = new Matrix(Rows, Cols);
+	auto c = new CpuMatrix(*this);
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < Cols; j++) {

@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Context.h"
+#include "PyNet.Models/Context.h"
 #include "Logger.h"
 
 class UnitTest
 {
 public:
 
-	di::ContextTmpl<PyNet::Infrastructure::Logger>* GetContext(bool log) {
+	di::Context* GetContext() {
 		auto context = new di::ContextTmpl<PyNet::Infrastructure::Logger>();
 		Settings* settings = new Settings();
-		settings->LoggingEnabled = log;
+		settings->LoggingEnabled = false;
 		context->addInstance<Settings>(settings, true);
 		return context;
 	}

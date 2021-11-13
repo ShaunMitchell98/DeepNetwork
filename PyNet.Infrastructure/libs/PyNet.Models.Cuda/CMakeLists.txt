@@ -9,10 +9,13 @@ include_directories(${CMAKE_SOURCE_DIR}/libs/PyNet.Models)
 
 # target
 add_library(PyNet.Models.Cuda SHARED 
-	./include/PyNet.Models.Cuda/Matrix_Multiplication.h
+	./include/PyNet.Models.Cuda/Matrix_Operations.h
 	./src/Matrix_Multiplication.cu
 	./include/PyNet.Models.Cuda/CudaMatrix.h
-	./src/CudaMatrix.cpp)
+	./src/CudaMatrix.cpp
+	./src/Matrix_Subtraction.cu
+	./src/Matrix_Addition_Assignment.cu
+	./src/cuda_array.h)
 
 target_link_libraries(PyNet.Models.Cuda PyNet.Models)
 set_target_properties(PyNet.Models.Cuda PROPERTIES CUDA_ARCHITECTURES "75")

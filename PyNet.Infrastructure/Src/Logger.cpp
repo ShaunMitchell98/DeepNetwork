@@ -4,8 +4,7 @@
 
 namespace PyNet::Infrastructure {
 
-	Logger::Logger(bool log) {
-		_enabled = log;
+	Logger::Logger(bool log) : _enabled(log) {
 
 		if (_enabled) {
 			_stream = std::ofstream("C:\\Users\\Shaun Mitchell\\Documents\\PyNet_Logs.txt");

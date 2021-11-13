@@ -9,7 +9,7 @@
 
 namespace PyNet::Infrastructure {
 
-	class Logger : public ILogger {
+	class Logger : public PyNet::Models::ILogger {
 	private:
 		bool _enabled;
 		std::ofstream _stream;
@@ -17,8 +17,8 @@ namespace PyNet::Infrastructure {
 
 		typedef ILogger base;
 
-		static auto factory(Settings* settings) {
-			return new Logger(settings->LoggingEnabled);
+		static auto factory(Settings& settings) {
+			return new Logger{ settings.LoggingEnabled };
 		}
 
 		Logger(bool log);

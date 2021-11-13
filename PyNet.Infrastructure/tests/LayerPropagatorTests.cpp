@@ -15,20 +15,28 @@ namespace PyNet::Infrastructure::Tests
 		TEST_METHOD(Propagator_GivenWeightsAndInput_ReturnsOutput)
 		{
 			double weights[4] = { 1, 2, 3, 4 };
-			auto weightMatrix = std::make_unique<PyNet::Models::Matrix>(2, 2, weights, true);
+			auto context = GetContext();
+			auto weightMatrix = context->get<Matrix>();
+			weightMatrix.Initialise(2, 2);
+			weightMatrix = weights;
 
 			double inputLayer[2] = { 1, 1 };
-			auto inputLayerVector = std::make_unique<PyNet::Models::Vector>(2, inputLayer, ActivationFunctions::ActivationFunctionType::Logistic, true);
+			auto inputLayerVector = context->get<Vector>();
+			inputLayerVector.Initialise(2);
+			inputLayerVector.SetActivationFunction(PyNet::Models::ActivationFunctionType::Logistic);
 
-			auto outputLayerVector = std::make_unique<PyNet::Models::Vector>(2, ActivationFunctions::ActivationFunctionType::Logistic, true);
-			auto biasesVector = std::make_unique<PyNet::Models::Vector>(2, true);
+			auto outputLayerVector = context->get<Vector>();
+			outputLayerVector.Initialise(2);
+			outputLayerVector.SetActivationFunction(PyNet::Models::ActivationFunctionType::Logistic);
 
-			auto context = GetContext(false);
+			auto biasesVector = context->get<Vector>();
+			biasesVector.Initialise(2);
+
 			auto layerPropagator = context->get<LayerPropagator>();
-			layerPropagator->PropagateLayer(weightMatrix.get(), inputLayerVector.get(), biasesVector.get(), outputLayerVector.get());
+			layerPropagator.PropagateLayer(&weightMatrix, &inputLayerVector, &biasesVector, &outputLayerVector);
 
-			Assert::AreEqual(0.95257412682243336, outputLayerVector->GetValue(0));
-			Assert::AreEqual(0.99908894880559940, outputLayerVector->GetValue(1));
+			Assert::AreEqual(0.95257412682243336, outputLayerVector.GetValue(0));
+			Assert::AreEqual(0.99908894880559940, outputLayerVector.GetValue(1));
 		}
 	};
 }

@@ -26,7 +26,6 @@ include_directories( ./include
 add_library(PyNet.Infrastructure SHARED
 	./include/PyNetwork_Functions.h
 	./src/Settings.h
-	./src/Context.h
 	./src/AdjustmentCalculator.h
 	./src/AdjustmentCalculator.cpp 
 	./src/LayerPropagator.h

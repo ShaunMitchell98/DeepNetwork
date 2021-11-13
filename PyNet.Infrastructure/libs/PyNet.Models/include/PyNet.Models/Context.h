@@ -33,9 +33,6 @@
 #include <typeindex>
 #include <type_traits>
 #include <iostream>
-#ifdef HAS_TR2
-#include <tr2/type_traits>
-#endif
 
 namespace di {
 
@@ -67,7 +64,7 @@ namespace di {
 
         // Factory signature
         template <class InstanceType, class... Args>
-        using FactoryFunction = InstanceType * (*)(Args*...);
+        using FactoryFunction = InstanceType * (*)(Args&...);
 
 
 
@@ -75,20 +72,6 @@ namespace di {
         std::map<std::type_index, CtxItem> items;
         std::vector<CtxItem*> constructionOrder;
 
-
-
-#ifdef HAS_TR2
-        // Recursively iterate over all bases
-        template <typename T, typename std::enable_if< !T::empty::value >::type* = nullptr >
-        void declareBaseTypes(std::type_index& derivedType)
-        {
-            items[std::type_index(typeid(typename T::first::type))].derivedType = derivedType;
-            declareBaseTypes<typename T::rest::type>(derivedType);
-        }
-
-        template <typename T, typename std::enable_if< T::empty::value >::type* = nullptr >
-        void declareBaseTypes(std::type_index&) { }
-#else
         template<typename T, typename T::base* = nullptr>
         void declareBaseTypes(std::type_index& derivedType)
         {
@@ -98,15 +81,14 @@ namespace di {
 
         template <typename T>
         void declareBaseTypes(...) { }
-#endif
 
 
 
         // Add factory method automatically if present in class
-        template <typename T, typename std::enable_if< std::is_function<decltype(T::nameof(T))>::value >::type* = nullptr>
+        template <typename T, typename std::enable_if< std::is_function<decltype(T::factory)>::value >::type* = nullptr>
         void addClassAuto(void*) // argument only used to disambiguate from vararg version
         {
-            addFactoryPriv(T::nameof(T));
+            addFactoryPriv(T::factory);
         }
 
         template<typename T>
@@ -123,11 +105,7 @@ namespace di {
         {
             auto instanceTypeIdx = std::type_index(typeid(InstanceType));
 
-#ifdef HAS_TR2
-            declareBaseTypes< typename std::tr2::bases<InstanceType>::type >(instanceTypeIdx);
-#else
             declareBaseTypes<InstanceType>(instanceTypeIdx);
-#endif
 
             CtxItem& item = items[instanceTypeIdx];
 
@@ -141,10 +119,10 @@ namespace di {
         }
 
         template <typename T>
-        void addFactoryPriv(T*)
+        void addFactoryPriv(T)
         {
             // Use a dummy is_void type trait to force GCC to display instantiation type in error message
-            static_assert(std::is_void<T*>::value, "Factory has incorrect signature, should take (const) pointers and return a pointer! Example: Foo* Foo::factory(Bar* bar); ");
+            static_assert(std::is_void<T>::value, "Factory has incorrect signature, should take (const) references and return a pointer! Examlpe: Foo* Foo::factory(Bar& bar); ");
         }
 
 
@@ -197,7 +175,7 @@ namespace di {
 
         // Get an instance from the context, runs factories recursively to satisfy all dependencies
         template <class T>
-        T* get()
+        T& get()
         {
             CtxItem& item = getItem<T>(); // may return derived type
 
@@ -211,7 +189,28 @@ namespace di {
                 item.marker = false;
             }
 
-            return (static_cast<T*>(item.instancePtr));
+            return *(static_cast<T*>(item.instancePtr));
+        }
+
+        // Add an already instantiated object to the context
+        template <typename T>
+        void addInstance(T* instance, bool takeOwnership = false)
+        {
+            if (instance == nullptr)
+                throw std::runtime_error(std::string("Trying to add nullptr instance for type: ") + typeid(T).name());
+
+            CtxItem& item = items[std::type_index(typeid(T))];
+
+            if (item.instancePtr != nullptr)
+                throw std::runtime_error(std::string("Instance already in Context for type: ") + typeid(T).name());
+
+            item.instancePtr = static_cast<void*>(instance);
+
+            if (takeOwnership)
+            {
+                item.deleter = [](void* ptr) { delete(static_cast<T*>(ptr)); };
+                constructionOrder.push_back(&item);
+            }
         }
 
 
@@ -236,35 +235,14 @@ namespace di {
         template <typename InstanceType1, typename InstanceType2, typename... ITs>
         void addClass()
         {
-            addFactoryPriv(InstanceType1::nameof(InstanceType1);
+            addFactoryPriv(InstanceType1::factory);
             addClass<InstanceType2, ITs...>();
-        }
-
-        // Add an already instantiated object to the context
-        template <typename T>
-        void addInstance(T* instance, bool takeOwnership = false)
-        {
-            if (instance == nullptr)
-                throw std::runtime_error(std::string("Trying to add nullptr instance for type: ") + typeid(T).name());
-
-            CtxItem& item = items[std::type_index(typeid(T))];
-
-            if (item.instancePtr != nullptr)
-                throw std::runtime_error(std::string("Instance already in Context for type: ") + typeid(T).name());
-
-            item.instancePtr = static_cast<void*>(instance);
-
-            if (takeOwnership)
-            {
-                item.deleter = [](void* ptr) { delete(static_cast<T*>(ptr)); };
-                constructionOrder.push_back(&item);
-            }
         }
 
         template <typename InstanceTypeLast>
         void addClass()
         {
-            addFactoryPriv(InstanceTypeLast::nameof(InstanceTypeLast));
+            addFactoryPriv(InstanceTypeLast::factory);
         }
     };
 

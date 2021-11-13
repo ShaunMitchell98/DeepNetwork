@@ -2,7 +2,8 @@
 
 #include "CpuLogistic.h"
 
-namespace ActivationFunctions {
+namespace PyNet::Models::Cpu {
+
 	auto factory() {
 		return new CpuLogistic();
 	}

@@ -4,7 +4,8 @@
 #include "Logger.h"
 #include "PyNet.Models.Cuda/CudaMatrix.h"
 #include "PyNet.Models.Cpu/CpuMatrix.h"
-#include "PyNet.Models.Cpu/ActivationProvider.h"
+#include <PyNet.Models.Cpu/ActivationProvider.h>
+#include <PyNet.Models/Context.h>
 #include "Settings.h"
 
 namespace PyNet::Infrastructure {
@@ -17,7 +18,7 @@ namespace PyNet::Infrastructure {
 			else
 			{
 				context->addClass<CpuMatrix>();
-				context->addFactory(ActivationFunctions::factory);
+				context->addFactory(PyNet::Models::Cpu::factory);
 			}
 		}
 
@@ -26,7 +27,7 @@ namespace PyNet::Infrastructure {
 			context->addClass<Settings>();
 			
 			AddMatrix(context, cudaEnabled);
-			Settings* settings = new Settings();
+			auto settings = new Settings();
 			settings->LoggingEnabled = log;
 			context->addInstance<Settings>(settings, true);
 			return context;
@@ -34,10 +35,12 @@ namespace PyNet::Infrastructure {
 
 		void* PyNetwork_New(int count, bool log, bool cudaEnabled) {
 			auto context = GetContext(cudaEnabled, log);
-			return context->get<PyNetwork>();
+			auto pyNetwork = new PyNetwork(context->get<PyNetwork>());
+			pyNetwork->AddInitialLayer(count);
+			return pyNetwork;
 		}
 
-		void PyNetwork_AddLayer(void* pyNetwork, int count, ActivationFunctions::ActivationFunctionType activationFunctionType) {
+		void PyNetwork_AddLayer(void* pyNetwork, int count, PyNet::Models::ActivationFunctionType activationFunctionType) {
 			((PyNetwork*)pyNetwork)->AddLayer(count, activationFunctionType);
 		}
 

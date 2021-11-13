@@ -16,14 +16,16 @@ namespace PyNet::Infrastructure::Tests
 		{
 			double testArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 
-			auto myMatrix = std::make_unique<PyNet::Models::Matrix>(10, 1, testArray);
+			auto context = new di::Context();
+			auto matrix = new Matrix(*context);
+			matrix->Initialise(10, 1);
 
 			for (auto i = 0; i < 10; i++) {
-				Assert::AreEqual(testArray[i], myMatrix->GetValue(i, 0));
+				Assert::AreEqual(testArray[i], matrix->GetValue(i, 0));
 			}
 
-			Assert::AreEqual(10, myMatrix->Rows);
-			Assert::AreEqual(1, myMatrix->Cols);
+			Assert::AreEqual(10, matrix->GetRows());
+			Assert::AreEqual(1, matrix->GetCols());
 		}
 	};
 }
