@@ -8,24 +8,24 @@
 #include <numeric>
 
 void PyNetwork::AddInitialLayer(int rows) {
-	auto layer = _context.get<PyNet::Models::Vector>();
+	auto& layer = _context.get<PyNet::Models::Vector>();
 	layer.Initialise(rows);
 	Layers.push_back(layer);
 }
 
 void PyNetwork::AddLayer(int rows, ActivationFunctionType activationFunctionType) {
 
-	auto cols = Layers[Layers.size() - 1].GetRows();
+	auto cols = Layers[Layers.size() - 1].get().GetRows();
 
-	auto layer = _context.get<PyNet::Models::Vector>();
+	auto& layer = _context.get<PyNet::Models::Vector>();
 	layer.SetActivationFunction(activationFunctionType);
 	Layers.push_back(layer);
 
-	auto weightMatrix = _context.get<Matrix>();
+	auto& weightMatrix = _context.get<Matrix>();
 	weightMatrix.Initialise(rows, cols);
 	Weights.push_back(weightMatrix);
 
-	auto biasVector = _context.get<Vector>();
+	auto& biasVector = _context.get<Vector>();
 	biasVector.SetActivationFunction(activationFunctionType);
 	biasVector.Initialise(rows);
 
@@ -34,15 +34,15 @@ void PyNetwork::AddLayer(int rows, ActivationFunctionType activationFunctionType
 }
 
 double* PyNetwork::Run(double* input_layer) {
-	Layers[0] = input_layer;
+	Layers[0].get() = input_layer;
 
 	for (size_t i = 0; i < Weights.size(); i++) {
-		_layerPropagator.PropagateLayer(&Weights[i], &Layers[i], &Biases[i], &Layers[i + 1]);
+		_layerPropagator.PropagateLayer(&Weights[i].get(), &Layers[i].get(), &Biases[i].get(), &Layers[i + 1].get());
 	}
 
 	normalise_layer(Layers[Layers.size() - 1], _logger);
 
-	return Layers[Layers.size() - 1].GetAddress(0);
+	return Layers[Layers.size() - 1].get().GetAddress(0);
 }
 
 double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate) {
@@ -59,7 +59,8 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 
 			Run(inputLayers[i]);
 
-			auto expectedVector = _context.get<Vector>();
+			auto& expectedVector = _context.get<Vector>();
+
 			expectedVector = expectedOutputs[i];
 			expectedVector.SetActivationFunction(ActivationFunctionType::Logistic);
 
@@ -68,15 +69,15 @@ double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int num
 			auto biases = std::vector<Vector*>();
 
 			for (auto i = 0; i < this->Weights.size(); i++) {
-				weights.push_back(&this->Weights[i]);
+				weights.push_back(&this->Weights[i].get());
 			}
 
 			for (auto j = 0; j < this->Layers.size(); j++) {
-				layers.push_back(&this->Layers[j]);
+				layers.push_back(&this->Layers[j].get());
 			}
 
 			for (auto k = 0; k < this->Biases.size(); k++) {
-				biases.push_back(&this->Biases[k]);
+				biases.push_back(&this->Biases[k].get());
 			}
 
 			auto error = _networkTrainer.TrainNetwork(weights, layers, &expectedVector);

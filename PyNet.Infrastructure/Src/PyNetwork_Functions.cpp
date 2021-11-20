@@ -1,7 +1,7 @@
-#include "../Include/PyNetwork_Functions.h"
-
+#include "PyNetwork_Functions.h"
 #include "PyNetwork.h"
 #include "Logger.h"
+
 #include "PyNet.Models.Cuda/CudaMatrix.h"
 #include "PyNet.Models.Cpu/CpuMatrix.h"
 #include <PyNet.Models.Cpu/ActivationProvider.h>

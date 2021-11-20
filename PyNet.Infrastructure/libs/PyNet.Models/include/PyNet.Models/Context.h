@@ -36,6 +36,11 @@
 
 namespace di {
 
+    enum class InstanceMode {
+        Unique,
+        Shared
+    };
+
     class Context
     {
         // A single item in the context
@@ -46,6 +51,7 @@ namespace di {
             std::function<void(void)> factory;                              // factory fn. to create a new object instance
             void (*deleter)(void*) = nullptr;                               // delete fn. (calls proper destructor)
             std::type_index derivedType = std::type_index(typeid(void));    // a derived type (eg. implementation of an interface)
+            InstanceMode instanceMode = InstanceMode::Shared;                             
 
             // non-copyable, non-moveable
             CtxItem() = default;
@@ -101,7 +107,7 @@ namespace di {
 
         // Add a factory function to context
         template <class InstanceType, class... Args>
-        void addFactoryPriv(FactoryFunction<InstanceType, Args...> factoryFunction)
+        void addFactoryPriv(FactoryFunction<InstanceType, Args...> factoryFunction, InstanceMode instanceMode = InstanceMode::Shared)
         {
             auto instanceTypeIdx = std::type_index(typeid(InstanceType));
 
@@ -116,6 +122,8 @@ namespace di {
             {
                 addInstance(factoryFunction(get<Args>()...), true);
             };
+
+            item.instanceMode = instanceMode;
         }
 
         template <typename T>
@@ -179,12 +187,14 @@ namespace di {
         {
             CtxItem& item = getItem<T>(); // may return derived type
 
-            if (item.instancePtr == nullptr)
+            if (item.instancePtr == nullptr || item.instanceMode == InstanceMode::Unique)
             {
                 if (item.marker)
                     throw std::runtime_error(std::string("Cyclic dependecy while instantiating type: ") + typeid(T).name());
 
                 item.marker = true;
+
+                item.instancePtr = nullptr;
                 item.factory();
                 item.marker = false;
             }
@@ -205,7 +215,7 @@ namespace di {
                 throw std::runtime_error(std::string("Instance already in Context for type: ") + typeid(T).name());
 
             item.instancePtr = static_cast<void*>(instance);
-
+  
             if (takeOwnership)
             {
                 item.deleter = [](void* ptr) { delete(static_cast<T*>(ptr)); };
@@ -233,16 +243,16 @@ namespace di {
 
         // Variadic template to add a list of classes with factory methods
         template <typename InstanceType1, typename InstanceType2, typename... ITs>
-        void addClass()
+        void addClass(InstanceMode instanceMode = InstanceMode::Shared)
         {
-            addFactoryPriv(InstanceType1::factory);
+            addFactoryPriv(InstanceType1::factory, instanceMode);
             addClass<InstanceType2, ITs...>();
         }
 
         template <typename InstanceTypeLast>
-        void addClass()
+        void addClass(InstanceMode instanceMode = InstanceMode::Shared)
         {
-            addFactoryPriv(InstanceTypeLast::factory);
+            addFactoryPriv(InstanceTypeLast::factory, instanceMode);
         }
     };
 

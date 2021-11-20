@@ -19,7 +19,7 @@ include_directories( ./include
 	 ./tests
 	 ./src
 	./libs/di/src
-	"C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/include"
+	"C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/VS/UnitTest/include"
 )
 
 # target
@@ -36,7 +36,6 @@ add_library(PyNet.Infrastructure SHARED
 	./src/NetworkTrainer.cpp
 	./src/PyNetwork.h 
 	./src/PyNetwork.cpp 
-	./src/Module.h
 	./src/PyNetwork_Functions.cpp
 	./tests/LayerPropagatorTests.cpp
 	./tests/NetworkTrainerTests.cpp

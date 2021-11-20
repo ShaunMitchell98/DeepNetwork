@@ -34,7 +34,7 @@ namespace PyNet::Models {
 	}
 
 	double* Vector::GetEnd() const {
-		return ((Matrix*)(this))->GetAddress(Rows - 1, 0);
+		return ((Matrix*)(this))->GetAddress(static_cast<size_t>(Rows) - 1, 0);
 	}
 
 	void Vector::SetValue(double value) {
@@ -48,10 +48,6 @@ namespace PyNet::Models {
 		for (auto i = 0; i < Rows; i++) {
 			SetValue(i, GetValue(i) + value);
 		}
-	}
-
-	void Vector::operator+=(const Vector& v) {
-		Matrix::operator+=(v);
 	}
 
 	double Vector::operator|(const Vector& v) {
@@ -71,7 +67,7 @@ namespace PyNet::Models {
 
 	Vector& Vector::operator^(const Vector& v) {
 
-		auto c = Context.get<Vector>();
+		auto& c = Context.get<Vector>();
 		c.Initialise(v.Rows);
 
 		for (auto i = 0; i < v.Rows; i++) {
@@ -94,16 +90,17 @@ namespace PyNet::Models {
 		operator=((Matrix&)v);
 	}
 
-	Vector& Vector::operator-(const Vector& v) {
-		return static_cast<Vector&>((Matrix)(*this) - (Matrix)(v));
-	}
-
-	Vector& Vector::operator*(const double d) {
-		return static_cast<Vector&>(Matrix::operator*(d));
-	}
-
 	Vector& Vector::operator/(const double d) {
 		return static_cast<Vector&>(Matrix::operator/(d));
+	}
+
+	Vector& Vector::operator=(const double* d) {
+
+		for (auto i = 0; i < Rows; i++) {
+			SetValue(i, *(d+i));
+		}
+
+		return *this;
 	}
 }
 

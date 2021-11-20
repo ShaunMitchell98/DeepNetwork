@@ -17,7 +17,7 @@ namespace PyNet::Models {
 	public:
 
 		Matrix(di::Context& context) : Context(context) {}
-		void Initialise(int rows, int cols);
+		void Initialise(size_t rows, size_t cols);
 		double GetValue(size_t row, size_t col) const;
 		void SetValue(int row, int col, double value);
 		int GetCols() const;

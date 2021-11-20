@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # include files
 include_directories( ./include/PyNet.Models.Cuda ./src)
-include_directories(${CMAKE_SOURCE_DIR}/libs/PyNet.Models)
+include_directories(${CMAKE_SOURCE_DIR}/libs/PyNet.Models/include)
 
 # target
 add_library(PyNet.Models.Cuda SHARED 
@@ -13,6 +13,8 @@ add_library(PyNet.Models.Cuda SHARED
 	./src/Matrix_Multiplication.cu
 	./include/PyNet.Models.Cuda/CudaMatrix.h
 	./src/CudaMatrix.cpp
+	./include/PyNet.Models.Cuda/CudaVector.h
+	./src/CudaVector.cpp
 	./src/Matrix_Subtraction.cu
 	./src/Matrix_Addition_Assignment.cu
 	./src/cuda_array.h)

@@ -3,9 +3,10 @@
 
 namespace PyNet::Models {
 
-	void Matrix::Initialise(int rows, int cols) {
+	void Matrix::Initialise(size_t rows, size_t cols) {
 		Rows = rows;
 		Cols = cols;
+		Values = std::vector<double>(rows * cols);
 		generate_random_weights(Values.data(), rows * cols);
 	}
 
@@ -62,7 +63,7 @@ namespace PyNet::Models {
 
 	Matrix& Matrix::operator~() {
 
-		auto m = Context.get<Matrix>();
+		auto& m = Context.get<Matrix>();
 		m.Rows = Cols;
 		m.Cols = Rows;
 		return m;

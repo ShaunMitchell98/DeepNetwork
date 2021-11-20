@@ -4,7 +4,7 @@
 
 using namespace PyNet::Models;
 
-class CpuMatrix : public Matrix
+class CpuMatrix : public PyNet::Models::Matrix
 {
 public:
 
@@ -12,9 +12,11 @@ public:
 		return new CpuMatrix{ context };
 	}
 
+	typedef PyNet::Models::Matrix base;
+
 	CpuMatrix(di::Context& context) : Matrix(context) {}
-	Matrix& operator*(const Matrix& m);
-	Matrix& operator*(const double d);
-	Matrix& operator-(const Matrix& m);
-	void operator+=(const Matrix& m);
+	Matrix& operator*(const Matrix& m) override;
+	Matrix& operator*(const double d) override;
+	Matrix& operator-(const Matrix& m) override;
+	void operator+=(const Matrix& m) override;
 };

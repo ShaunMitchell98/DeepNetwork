@@ -8,13 +8,9 @@ namespace PyNet::Models {
 
 	class Vector : public Matrix
 	{
-	private:
+	protected:
 		Activation& _activation;
 	public:
-
-		static auto factory(di::Context& context, Activation& activation) {
-			return new Vector{ context, activation };
-		}
 
 		Vector(di::Context& context, Activation& activation);
 		void Initialise(int rows) { Matrix::Initialise(rows, 1); }
@@ -29,12 +25,12 @@ namespace PyNet::Models {
 		void AddValue(double value);
 		void operator=(const Matrix& m);
 		void operator=(const Vector& v);
-		void operator+=(const Vector& v);
-		Vector& operator=(const double* v);
-		Vector& operator-(const Vector& v);
+		virtual void operator+=(const Vector& v) = 0;
+		Vector& operator=(const double* d);
+		virtual Vector& operator-(const Vector& v) = 0;
 		double operator|(const Vector& v);
 		Vector& operator^(const Vector& v);
-		Vector& operator*(const double d);
+		virtual Vector& operator*(const double d) = 0;
 		Vector& operator/(const double d);
 
 	};

@@ -19,14 +19,12 @@ namespace PyNet::Infrastructure::Tests
 			auto context = GetContext();
 			auto network = context->get<PyNetwork>();
 		
+			network.AddInitialLayer(2);
 			network.AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
 
-			network.Weights = std::vector<Matrix>();
-
 			double weights[4] = { 1, 2, 3, 4 };
-			network.Weights.push_back(context->get<Matrix>());
-			network.Weights[0].Initialise(2, 2);
-			network.Weights[0] = weights;
+			network.Weights[0].get().Initialise(2, 2);
+			network.Weights[0].get() = weights;
 
 			auto output = network.Run(input);
 
@@ -43,6 +41,7 @@ namespace PyNet::Infrastructure::Tests
 
 			auto context = GetContext();
 			auto network = context->get<PyNetwork>();
+			network.AddInitialLayer(2);
 			network.AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
 
 			auto output = new double[2];

@@ -41,13 +41,13 @@ void NetworkTrainer::GetdError_dActivatedOutput(Matrix* weightMatrix, PyNet::Mod
     _logger.LogNumber(weightMatrix->GetCols());
     _logger.LogNewline();
 
-    auto dActivatedLayerAbove_dOutput = _context.get<Vector>();
+    auto& dActivatedLayerAbove_dOutput = _context.get<Vector>();
     outputLayer->CalculateActivationDerivative(dActivatedLayerAbove_dOutput);
 
-    auto dError_dOutput = _context.get<Vector>();
+    auto& dError_dOutput = _context.get<Vector>();
     dError_dOutput = _dError_dActivatedLayerAbove ^ dActivatedLayerAbove_dOutput;
 
-    auto weightMatrixTranspose = _context.get<Matrix>();
+    auto& weightMatrixTranspose = _context.get<Matrix>();
     weightMatrixTranspose = ~*weightMatrix;
     //*dError_dActivatedInput = (*dError_dOutput_transpose) * *weightMatrix;
     _dError_dActivatedOutput = weightMatrixTranspose * dError_dOutput;
@@ -76,7 +76,7 @@ void NetworkTrainer::GetAdjustmentsForWeightMatrix(Matrix* weightMatrix, Vector*
 
     _logger.LogLine("Calculating adjustments.");
 
-    auto temp_name = _context.get<Vector>();
+    auto& temp_name = _context.get<Vector>();
     outputLayer->CalculateActivationDerivative(temp_name);
 
     auto dError_dBias = 0.0;
@@ -85,20 +85,20 @@ void NetworkTrainer::GetAdjustmentsForWeightMatrix(Matrix* weightMatrix, Vector*
 
     /// /////////////////////////////////
 
-    auto dActivatedOutput_dOutput = _context.get<Vector>();
+    auto& dActivatedOutput_dOutput = _context.get<Vector>();
     outputLayer->CalculateActivationDerivative(dActivatedOutput_dOutput);
 
-    auto dError_dOutput = _context.get<Matrix>();
+    auto& dError_dOutput = _context.get<Matrix>();
     dError_dOutput = _dError_dActivatedOutput ^ dActivatedOutput_dOutput;
 
     auto dOutput_dWeight = inputLayer;
 
-    auto dOutput_dWeight_Transpose = _context.get<Matrix>();
+    auto& dOutput_dWeight_Transpose = _context.get<Matrix>();
     dOutput_dWeight_Transpose = ~*dOutput_dWeight;
-    auto dError_dWeight = _context.get<Matrix>();
+    auto& dError_dWeight = _context.get<Matrix>();
     dError_dWeight = dError_dOutput * dOutput_dWeight_Transpose;
 
-    _adjustmentCalculator.AddWeightAdjustment(weightMatrixIndex, &dError_dWeight);
+    _adjustmentCalculator.AddWeightAdjustment(weightMatrixIndex, dError_dWeight);
 
     _dError_dActivatedLayerAbove = _dError_dActivatedOutput;
     GetdError_dActivatedOutput(weightMatrix, inputLayer, outputLayer);

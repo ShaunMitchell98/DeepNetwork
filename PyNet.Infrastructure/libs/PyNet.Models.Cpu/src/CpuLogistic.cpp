@@ -6,7 +6,7 @@ namespace PyNet::Models::Cpu {
     void CpuLogistic::Apply(PyNet::Models::Matrix& input) {
 
         for (int i = 0; i < input.GetRows(); i++) {
-            for (int j = 0; j < input.GetRows(); j++) {
+            for (int j = 0; j < input.GetCols(); j++) {
                 input.SetValue(i, j, 1 / (1 + exp(-input.GetValue(i, j))));
             }
         }

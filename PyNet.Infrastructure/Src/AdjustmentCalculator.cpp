@@ -9,33 +9,33 @@ void AdjustmentCalculator::AddMatrix(int rows, int cols) {
 	_biasAdjustments.push_back(_context.get<PyNet::Models::Vector>());
 }
 
-void AdjustmentCalculator::AddWeightAdjustment(int matrixIndex, PyNet::Models::Matrix* adjustments) {
+void AdjustmentCalculator::AddWeightAdjustment(int matrixIndex, PyNet::Models::Matrix& adjustments) {
 	
 	if (_newBatch) {
-		_weightAdjustments[matrixIndex] = *adjustments;
+		_weightAdjustments[matrixIndex] = adjustments;
 	}
 	else {
-		_weightAdjustments[matrixIndex] += *adjustments;
+		_weightAdjustments[matrixIndex].get() += adjustments;
 	}
 }
 
 void AdjustmentCalculator::AddBiasAdjustment(int matrixIndex, double adjustment) {
 
 	if (_newBatch) {
-		_biasAdjustments[matrixIndex].SetValue(adjustment);
+		_biasAdjustments[matrixIndex].get().SetValue(adjustment);
 	}
 	else {
-		_biasAdjustments[matrixIndex].AddValue(adjustment);
+		_biasAdjustments[matrixIndex].get().AddValue(adjustment);
 	}
 }
 
 
 PyNet::Models::Matrix* AdjustmentCalculator::GetWeightAdjustment(int matrixIndex) {
-	return &(_weightAdjustments[matrixIndex] / _batchSize);
+	return &(_weightAdjustments[matrixIndex].get() / _batchSize);
 }
 
 PyNet::Models::Vector* AdjustmentCalculator::GetBiasAdjustment(int matrixIndex) {
-	return &(_biasAdjustments[matrixIndex] / _batchSize);
+	return &(_biasAdjustments[matrixIndex].get() / _batchSize);
 }
 
 void AdjustmentCalculator::SetNewBatch(bool newBatch) {

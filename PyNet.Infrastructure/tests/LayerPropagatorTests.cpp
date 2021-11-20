@@ -16,20 +16,20 @@ namespace PyNet::Infrastructure::Tests
 		{
 			double weights[4] = { 1, 2, 3, 4 };
 			auto context = GetContext();
-			auto weightMatrix = context->get<Matrix>();
+			auto& weightMatrix = context->get<Matrix>();
 			weightMatrix.Initialise(2, 2);
 			weightMatrix = weights;
 
 			double inputLayer[2] = { 1, 1 };
-			auto inputLayerVector = context->get<Vector>();
+			auto& inputLayerVector = context->get<Vector>();
 			inputLayerVector.Initialise(2);
 			inputLayerVector.SetActivationFunction(PyNet::Models::ActivationFunctionType::Logistic);
 
-			auto outputLayerVector = context->get<Vector>();
+			auto& outputLayerVector = context->get<Vector>();
 			outputLayerVector.Initialise(2);
 			outputLayerVector.SetActivationFunction(PyNet::Models::ActivationFunctionType::Logistic);
 
-			auto biasesVector = context->get<Vector>();
+			auto& biasesVector = context->get<Vector>();
 			biasesVector.Initialise(2);
 
 			auto layerPropagator = context->get<LayerPropagator>();

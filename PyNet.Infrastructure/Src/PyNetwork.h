@@ -20,9 +20,9 @@ private:
 	Settings& _settings;
 	di::Context& _context;
 public:
-	std::vector<PyNet::Models::Vector> Layers = std::vector<PyNet::Models::Vector>();
-	std::vector<PyNet::Models::Matrix> Weights = std::vector<PyNet::Models::Matrix>();
-	std::vector<PyNet::Models::Vector> Biases = std::vector<PyNet::Models::Vector>();
+	std::vector<std::reference_wrapper<PyNet::Models::Vector>> Layers = std::vector<std::reference_wrapper<PyNet::Models::Vector>>();
+	std::vector<std::reference_wrapper<PyNet::Models::Matrix>> Weights = std::vector<std::reference_wrapper<PyNet::Models::Matrix>>();
+	std::vector<std::reference_wrapper<PyNet::Models::Vector>> Biases = std::vector<std::reference_wrapper<PyNet::Models::Vector>>();
 	std::vector<double> Errors = std::vector<double>();
 	int BatchSize = 0;
 	int BatchNumber = 0;

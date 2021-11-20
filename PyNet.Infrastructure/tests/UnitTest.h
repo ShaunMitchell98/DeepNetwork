@@ -2,6 +2,11 @@
 
 #include "PyNet.Models/Context.h"
 #include "Logger.h"
+//#include "PyNet.Models.Cuda/CudaMatrix.h"
+//#include "PyNet.Models.Cuda/CudaVector.h"
+#include "PyNet.Models.Cpu/CpuMatrix.h"
+#include "PyNet.Models.Cpu/CpuVector.h"
+#include "PyNet.Models.Cpu/CpuLogistic.h"
 
 class UnitTest
 {
@@ -12,6 +17,9 @@ public:
 		Settings* settings = new Settings();
 		settings->LoggingEnabled = false;
 		context->addInstance<Settings>(settings, true);
+		context->addClass<CpuMatrix>(di::InstanceMode::Unique);
+		context->addClass<CpuVector>(di::InstanceMode::Unique);
+		context->addClass<PyNet::Models::Cpu::CpuLogistic>();
 		return context;
 	}
 };
