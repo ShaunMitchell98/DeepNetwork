@@ -10,7 +10,7 @@
 #include "PyNet.Models/ILogger.h"
 #include "Logger.h"
 
-class PyNetwork
+class __declspec(dllexport) PyNetwork
 {
 private:
 	LayerPropagator& _layerPropagator;

@@ -1,24 +1,13 @@
 #include <time.h>
 #include "Logger.h"
 #include <memory>
+#include <chrono>
 
 namespace PyNet::Infrastructure {
 
-	Logger::Logger(bool log) : _enabled(log) {
+	Logger::Logger(bool log) : _enabled(log) {}
 
-		if (_enabled) {
-			_stream = std::ofstream("C:\\Users\\Shaun Mitchell\\Documents\\PyNet_Logs.txt");
-		}
-	}
-
-	Logger::~Logger() {
-		if (_enabled) {
-			LogMessage("Closing logger...");
-			_stream.close();
-		}
-	}
-
-	void Logger::LogMessageWithoutDate(const char* message) {
+	void Logger::LogMessageWithoutDate(std::string_view message) {
 
 		if (_enabled) {
 			auto count = 0;
@@ -26,35 +15,25 @@ namespace PyNet::Infrastructure {
 				count++;
 			}
 
-			_stream << message;
+			auto stream = std::ofstream(_fileName, std::ios_base::app);
+			stream << message;
+			stream.close();
 		}
 	}
 
-	void Logger::LogMessage(std::string message) {
+	void Logger::LogMessage(std::string_view message) {
 		if (_enabled) {
-			time_t _time = time(NULL);
 
-			char buffer[26];
-			ctime_s(buffer, 26, &_time);
-			_stream << buffer;
-			_stream << message;
+			auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+			auto stream = std::ofstream(_fileName, std::ios_base::app);
+			stream << std::ctime(&time);
+			stream << message;
+			stream.close();
 		}
 	}
 
-	void Logger::LogWhitespace() {
-		LogMessageWithoutDate(" ");
-	}
-
-	void Logger::LogNewline() {
-		LogMessageWithoutDate("\n");
-	}
-
-	void Logger::LogNumber(double number) {
-		_stream << number;
-	}
-
-	void Logger::LogLine(const char* message) {
+	void Logger::LogLine(std::string_view message) {
 		LogMessage(message);
-		LogNewline();
+		LogMessage("\n");
 	}
 }

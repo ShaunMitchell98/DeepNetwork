@@ -28,7 +28,14 @@ private:
 
 	void free() {
 		if (start_ != 0) {
-			cudaFree(start_);
+			auto error = cudaFree(start_);
+
+
+			if (error != cudaSuccess) {
+				start_ = end_ = 0;
+				throw std::runtime_error("Failed to allocate device memory");
+			}
+
 			start_ = end_ = 0;
 		}
 	}

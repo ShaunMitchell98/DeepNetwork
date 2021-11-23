@@ -3,7 +3,9 @@
 #include "Logger.h"
 
 #include "PyNet.Models.Cuda/CudaMatrix.h"
+#include "PyNet.Models.Cuda/CudaVector.h"
 #include "PyNet.Models.Cpu/CpuMatrix.h"
+#include "PyNet.Models.Cpu/CpuVector.h"
 #include <PyNet.Models.Cpu/ActivationProvider.h>
 #include <PyNet.Models/Context.h>
 #include "Settings.h"
@@ -13,11 +15,14 @@ namespace PyNet::Infrastructure {
 
 		void AddMatrix(di::Context* context, bool cudaEnabled) {
 			if (cudaEnabled) {
-				context->addClass<CudaMatrix>();
+				context->addClass<CudaMatrix>(di::InstanceMode::Unique);
+				context->addClass<CudaVector>(di::InstanceMode::Unique);
+				context->addFactory(PyNet::Models::Cpu::factory);
 			}
 			else
 			{
-				context->addClass<CpuMatrix>();
+				context->addClass<CpuMatrix>(di::InstanceMode::Unique);
+				context->addClass<CpuVector>(di::InstanceMode::Unique);
 				context->addFactory(PyNet::Models::Cpu::factory);
 			}
 		}
@@ -30,6 +35,7 @@ namespace PyNet::Infrastructure {
 			auto settings = new Settings();
 			settings->LoggingEnabled = log;
 			context->addInstance<Settings>(settings, true);
+			context->addClass<Logger>();
 			return context;
 		}
 

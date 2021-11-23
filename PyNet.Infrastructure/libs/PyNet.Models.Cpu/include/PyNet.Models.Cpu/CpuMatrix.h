@@ -1,10 +1,16 @@
 #pragma once
 
 #include "PyNet.Models/Matrix.h"
+#include "PyNet.Models/Context.h"
 
 using namespace PyNet::Models;
 
-class CpuMatrix : public PyNet::Models::Matrix
+class CpuMatrix 
+#ifdef CPU_VECTOR
+	: public virtual PyNet::Models::Matrix
+#else
+	: public PyNet::Models::Matrix
+#endif
 {
 public:
 
@@ -14,8 +20,8 @@ public:
 
 	typedef PyNet::Models::Matrix base;
 
-	CpuMatrix(di::Context& context) : Matrix(context) {}
-	Matrix& operator*(const Matrix& m) override;
+	CpuMatrix(di::Context& context);
+	Matrix& operator*(const Matrix& m) const override;
 	Matrix& operator*(const double d) override;
 	Matrix& operator-(const Matrix& m) override;
 	void operator+=(const Matrix& m) override;

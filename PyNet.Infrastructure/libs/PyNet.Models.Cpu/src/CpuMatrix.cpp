@@ -1,9 +1,15 @@
 #include "CpuMatrix.h"
 
-Matrix& CpuMatrix::operator*(const Matrix& m) {
+CpuMatrix::CpuMatrix(di::Context& context)
+#ifndef CPU_VECTOR
+	: Matrix(context)
+#endif
+{}
+
+Matrix& CpuMatrix::operator*(const Matrix& m) const {
 
 	auto c = new CpuMatrix(Context.get<CpuMatrix>());
-	c->Initialise(Rows, m.GetCols());
+	c->Initialise(Rows, m.GetCols(), false);
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < m.GetCols(); j++) {

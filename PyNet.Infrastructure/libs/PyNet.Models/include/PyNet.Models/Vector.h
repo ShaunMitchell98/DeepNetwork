@@ -6,14 +6,14 @@
 
 namespace PyNet::Models {
 
-	class Vector : public Matrix
+	class Vector : public virtual Matrix
 	{
 	protected:
 		Activation& _activation;
 	public:
 
 		Vector(di::Context& context, Activation& activation);
-		void Initialise(int rows) { Matrix::Initialise(rows, 1); }
+		void Initialise(int rows, bool generateWeights) { Matrix::Initialise(rows, 1, generateWeights); }
 		void SetActivationFunction(ActivationFunctionType activatonFunctionType);
 		double GetValue(int row) const;
 		double* GetAddress(int row) const;
@@ -26,7 +26,7 @@ namespace PyNet::Models {
 		void operator=(const Matrix& m);
 		void operator=(const Vector& v);
 		virtual void operator+=(const Vector& v) = 0;
-		Vector& operator=(const double* d);
+		void Set(size_t rows, double* d);
 		virtual Vector& operator-(const Vector& v) = 0;
 		double operator|(const Vector& v);
 		Vector& operator^(const Vector& v);

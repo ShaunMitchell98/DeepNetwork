@@ -23,8 +23,7 @@ namespace PyNet::Infrastructure::Tests
 			network.AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
 
 			double weights[4] = { 1, 2, 3, 4 };
-			network.Weights[0].get().Initialise(2, 2);
-			network.Weights[0].get() = weights;
+			network.Weights[0].get().Set(2, 2, weights);
 
 			auto output = network.Run(input);
 

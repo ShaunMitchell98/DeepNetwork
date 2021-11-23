@@ -1,18 +1,16 @@
 #pragma once
 
-#include "PyNet.Models/Matrix.h"
 #include "PyNet.Models/ILogger.h"
 #include "Settings.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <fstream>
 
 namespace PyNet::Infrastructure {
 
-	class Logger : public PyNet::Models::ILogger {
+	class __declspec(dllexport) Logger : public PyNet::Models::ILogger {
 	private:
 		bool _enabled;
-		std::ofstream _stream;
+		const char* _fileName = "PyNet_Logs.txt";
+		Logger(bool log);
 	public:
 
 		typedef ILogger base;
@@ -21,14 +19,9 @@ namespace PyNet::Infrastructure {
 			return new Logger{ settings.LoggingEnabled };
 		}
 
-		Logger(bool log);
-		~Logger();
-		void LogMessage(std::string message);
-		void LogMessageWithoutDate(const char* message);
-		void LogNumber(double number);
-		void LogWhitespace();
-		void LogNewline();
-		void LogLine(const char* message);
+		void LogMessage(std::string_view message) override;
+		void LogMessageWithoutDate(std::string_view message) override;
+		void LogLine(std::string_view message) override;
 	};
 }
 

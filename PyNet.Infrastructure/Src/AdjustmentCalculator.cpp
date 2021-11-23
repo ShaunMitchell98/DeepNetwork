@@ -30,12 +30,12 @@ void AdjustmentCalculator::AddBiasAdjustment(int matrixIndex, double adjustment)
 }
 
 
-PyNet::Models::Matrix* AdjustmentCalculator::GetWeightAdjustment(int matrixIndex) {
-	return &(_weightAdjustments[matrixIndex].get() / _batchSize);
+PyNet::Models::Matrix& AdjustmentCalculator::GetWeightAdjustment(int matrixIndex) {
+	return _weightAdjustments[matrixIndex].get() / _batchSize;
 }
 
-PyNet::Models::Vector* AdjustmentCalculator::GetBiasAdjustment(int matrixIndex) {
-	return &(_biasAdjustments[matrixIndex].get() / _batchSize);
+PyNet::Models::Vector& AdjustmentCalculator::GetBiasAdjustment(int matrixIndex) {
+	return _biasAdjustments[matrixIndex].get() / _batchSize;
 }
 
 void AdjustmentCalculator::SetNewBatch(bool newBatch) {

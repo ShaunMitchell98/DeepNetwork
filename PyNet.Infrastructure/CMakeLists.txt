@@ -37,10 +37,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/PyNetwork.h 
 	./src/PyNetwork.cpp 
 	./src/PyNetwork_Functions.cpp
-	./tests/LayerPropagatorTests.cpp
-	./tests/NetworkTrainerTests.cpp
-	./tests/PyNetworkTests.cpp
-	./tests/UnitTest.h)
+)
 
 add_executable(PyNet.Console ./PyNet.Console/PyNet.Console.cpp)
 
@@ -53,4 +50,18 @@ add_subdirectory( ./libs/PyNet.Models.Cpu )
 target_link_libraries( PyNet.Infrastructure PyNet.Models )
 target_link_libraries( PyNet.Infrastructure PyNet.Models.Cuda )
 target_link_libraries( PyNet.Infrastructure PyNet.Models.Cpu )
+
+
+add_library(PyNet.Infrastructure.Tests SHARED
+		./tests/LayerPropagatorTests.cpp
+	./tests/NetworkTrainerTests.cpp
+	./tests/PyNetworkTests.cpp
+	./tests/UnitTest.h
+)
+
+include_directories(
+	"C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/VS/UnitTest/include"
+)
+
+target_link_libraries(PyNet.Infrastructure.Tests PyNet.Infrastructure)
 link_directories("C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/VS/UnitTest/lib/x64/Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib")

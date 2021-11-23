@@ -19,7 +19,7 @@ namespace PyNet::Infrastructure::Tests
 
 			auto context = GetContext();
 			auto& matrix = context->get<Matrix>();
-			matrix.Initialise(10, 1);
+			matrix.Set(10, 1, testArray);
 
 			for (auto i = 0; i < 10; i++) {
 				Assert::AreEqual(testArray[i], matrix.GetValue(i, 0));

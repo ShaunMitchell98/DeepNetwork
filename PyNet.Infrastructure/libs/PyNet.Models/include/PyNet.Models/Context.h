@@ -100,7 +100,8 @@ namespace di {
         template<typename T>
         void addClassAuto(...)
         {
-            throw std::runtime_error(std::string("Class '") + typeid(T).name() + "' has no factory in context!");
+            auto message = std::string("Class '") + typeid(T).name() + "' has no factory in context!";
+            throw std::runtime_error(message);
         }
 
 

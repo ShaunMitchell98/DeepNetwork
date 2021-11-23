@@ -2,7 +2,7 @@
 
 namespace PyNet::Models {
 
-	Vector::Vector(di::Context& context, Activation& activation) : Matrix(context), _activation{ activation } {}
+	Vector::Vector(di::Context& context, Activation& activation) : _activation { activation } {}
 
 	void Vector::SetActivationFunction(ActivationFunctionType activationFunctionType) {
 		_activation = Context.get<Activation>();
@@ -68,7 +68,7 @@ namespace PyNet::Models {
 	Vector& Vector::operator^(const Vector& v) {
 
 		auto& c = Context.get<Vector>();
-		c.Initialise(v.Rows);
+		c.Initialise(v.Rows, false);
 
 		for (auto i = 0; i < v.Rows; i++) {
 			c.SetValue(i, this->GetValue(i) * v.GetValue(i));
@@ -91,16 +91,16 @@ namespace PyNet::Models {
 	}
 
 	Vector& Vector::operator/(const double d) {
-		return static_cast<Vector&>(Matrix::operator/(d));
+		return dynamic_cast<Vector&>(Matrix::operator/(d));
 	}
 
-	Vector& Vector::operator=(const double* d) {
+	void Vector::Set(size_t rows, double* d) {
 
-		for (auto i = 0; i < Rows; i++) {
-			SetValue(i, *(d+i));
+		Initialise(rows, false);
+
+		for (auto i = 0; i < rows; i++) {
+			Values[i] = *(d + i);
 		}
-
-		return *this;
 	}
 }
 

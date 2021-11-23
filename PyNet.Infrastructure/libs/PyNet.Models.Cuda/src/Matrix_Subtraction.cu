@@ -37,13 +37,15 @@ void internalMatrixSubtract(double* A, double* B, double* C, int rows, int cols)
 
 void matrix_subtract(const Matrix& A, const Matrix& B, Matrix& C) {
 
-    cuda_array<double> d_A(A.GetSize());
-    cuda_array<double> d_B(B.GetSize());
-    cuda_array<double> d_C(C.GetSize());
+    cuda_array<double> d_A(A.GetCValues().size());
+    cuda_array<double> d_B(B.GetCValues().size());
+    cuda_array<double> d_C(C.GetCValues().size());
 
-    d_A.set(A.GetValues());
-    d_B.set(B.GetValues());
+    d_A.set(A.GetCValues());
+    d_B.set(B.GetCValues());
 
     internalMatrixSubtract(d_A.getData(), d_B.getData(), d_C.getData(), A.GetRows(), A.GetCols());
-    d_C.get(C.GetValues().data(), C.GetSize());
+
+    C.Initialise(A.GetRows(), B.GetCols(), false);
+    d_C.get(C.GetCValues().data(), C.GetSize());
 }

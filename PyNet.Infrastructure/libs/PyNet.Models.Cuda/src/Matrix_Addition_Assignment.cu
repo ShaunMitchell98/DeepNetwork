@@ -13,7 +13,7 @@ __global__ void matrixAdditionAssignmentKernel(double* A, double* B, int rows, i
     int j = blockIdx.y * blockDim.y + threadIdx.y;
 
     if (i < rows && j < cols) {
-        A[i * cols + j] = A[i * cols + j] - B[i * cols + j];
+        A[i * cols + j] = A[i * cols + j] + B[i * cols + j];
     }
 }
 
@@ -37,11 +37,11 @@ void internalMatrixAdditionAssignment(double* A, double* B, int rows, int cols) 
 
 void matrix_addition_assignment(Matrix& A, const Matrix& B) {
 
-    cuda_array<double> d_A(A.GetSize());
-    cuda_array<double> d_B(B.GetSize());
+    cuda_array<double> d_A(A.GetCValues().size());
+    cuda_array<double> d_B(B.GetCValues().size());
 
     d_A.set(A.GetValues());
-    d_B.set(B.GetValues());
+    d_B.set(B.GetCValues());
 
     internalMatrixAdditionAssignment(d_A.getData(), d_B.getData(), A.GetRows(), A.GetCols());
     d_A.get(A.GetValues().data(), A.GetSize());

@@ -6,7 +6,7 @@
 
 using namespace PyNet::Models;
 
-class LayerPropagator {
+class __declspec(dllexport) LayerPropagator {
 private:
 	ILogger& _logger;
 public:
@@ -16,5 +16,5 @@ public:
 	}
 
 	LayerPropagator(ILogger& logger) : _logger(logger) {}
-	void PropagateLayer(Matrix* weights, Vector* inputLayer, Vector* bias, Vector* outputLayer);
+	void PropagateLayer(Matrix& weights, Vector& inputLayer, Vector& bias, Vector& outputLayer);
 };

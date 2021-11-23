@@ -3,11 +3,21 @@
 
 namespace PyNet::Models {
 
-	void Matrix::Initialise(size_t rows, size_t cols) {
+	void Matrix::Initialise(size_t rows, size_t cols, bool generateWeights) {
+
+		if (Rows > 0) {
+			Values.resize(rows * cols);
+		}
+		else {
+			Values = std::vector<double>(rows * cols);
+		}
+
 		Rows = rows;
 		Cols = cols;
-		Values = std::vector<double>(rows * cols);
-		generate_random_weights(Values.data(), rows * cols);
+
+		if (generateWeights) {
+			generate_random_weights(Values.data(), rows * cols);
+		}
 	}
 
 	double Matrix::GetValue(size_t row, size_t col) const {
@@ -22,8 +32,8 @@ namespace PyNet::Models {
 		return Values[row * Cols + col];
 	}
 
-	void Matrix::SetValue(int row, int col, double value) {
-		Values[(size_t)row * Cols + col] = value;
+	void Matrix::SetValue(size_t row, size_t col, double value) {
+		Values[row * Cols + col] = value;
 	}
 
 	int Matrix::GetRows() const {
@@ -35,7 +45,7 @@ namespace PyNet::Models {
 	}
 
 	int Matrix::GetSize() const {
-		return Rows * Cols;
+		return GetCols() * GetRows();
 	}
 
 	double* Matrix::GetAddress(size_t row, size_t col) {
@@ -66,6 +76,7 @@ namespace PyNet::Models {
 		auto& m = Context.get<Matrix>();
 		m.Rows = Cols;
 		m.Cols = Rows;
+		m.Values = Values;
 		return m;
 	}
 
@@ -80,16 +91,23 @@ namespace PyNet::Models {
 		Values = m.Values;
 	}
 
-	void Matrix::operator=(const double* m) {
+	void Matrix::Set(size_t rows, size_t cols, const double* values) {
+
+		Rows = rows;
+		Cols = cols;
 
 		for (size_t i = 0; i < Rows; i++) {
 			for (size_t j = 0; j < Cols; j++) {
-				SetValue(i, j, *(m + (i * Cols) + j));
+				Values.push_back(*(values + (i * Cols) + j));
 			}
 		}
 	}
 
-	std::vector<double> Matrix::GetValues() const {
+	std::vector<double> Matrix::GetCValues() const {
+		return this->Values;
+	}
+
+	std::vector<double>& Matrix::GetValues() {
 		return this->Values;
 	}
 }

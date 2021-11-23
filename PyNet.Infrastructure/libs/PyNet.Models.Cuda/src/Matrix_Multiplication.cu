@@ -67,29 +67,34 @@ void internalMatrixDoubleMultiply(double* A, double* B, double* C, int Acols, in
     cudaDeviceSynchronize();
 }
 
-void cuda_matrix_multiply(std::vector<double> A, std::vector<double> B, std::vector<double> C, int Acols, int Bcols) {
+void cuda_matrix_multiply(const Matrix& A, const Matrix& B, Matrix& C) {
+    C.Initialise(A.GetRows(), B.GetCols(), false);
 
-    cuda_array<double> d_A(A.size());
-    cuda_array<double> d_B(B.size());
-    cuda_array<double> d_C(C.size());
+    cuda_array<double> d_A(A.GetCValues().size());
+    cuda_array<double> d_B(B.GetCValues().size());
+    cuda_array<double> d_C(C.GetCValues().size());
 
-    d_A.set(A);
-    d_B.set(B);
+    d_A.set(A.GetCValues());
+    d_B.set(B.GetCValues());
 
-    internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), Acols, Bcols);
-    d_C.get(C.data(), C.size());
+    internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.GetCols(), B.GetCols());
+
+    d_C.get(C.GetCValues().data(), C.GetSize());
 }
 
-void multiply_matrix_and_double(std::vector<double> A, double B, std::vector<double> C, int Acols, int Arows) {
-    cuda_array<double> d_A(A.size());
-    cuda_array<double> d_B(1);
-    cuda_array<double> d_C(C.size());
+void multiply_matrix_and_double(const Matrix& A, const double B, Matrix& C) {
 
-    d_A.set(A);
+    C.Initialise(A.GetRows(), A.GetCols(), false);
+
+    cuda_array<double> d_A(A.GetCValues().size());
+    cuda_array<double> d_B(1);
+    cuda_array<double> d_C(C.GetCValues().size());
+
+    d_A.set(A.GetCValues());
 
     std::vector<double> bVector{ B };
     d_B.set(bVector);
 
-    internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), Acols, Arows);
-    d_C.get(C.data(), C.size());
+    internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.GetCols(), A.GetRows());
+    d_C.get(C.GetCValues().data(), C.GetSize());
 }

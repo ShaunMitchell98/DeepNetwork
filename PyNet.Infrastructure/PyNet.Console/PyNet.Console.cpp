@@ -9,7 +9,7 @@
 using namespace std;
 using namespace PyNet::Infrastructure;
 
-void GetData(string folderPath, string fileName, vector<double*> inputs) {
+void GetData(string folderPath, string fileName, vector<double*>& inputs) {
 
 	auto inputValues = vector<vector<double>>();
 
@@ -46,7 +46,7 @@ void GetData(string folderPath, string fileName, vector<double*> inputs) {
 	}
 }
 
-void GetLabels(string folderPath, string fileName, vector<double*> labels) {
+void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 
 	auto labelValues = vector<int>();
 
@@ -86,7 +86,7 @@ void GetLabels(string folderPath, string fileName, vector<double*> labels) {
 
 int main()
 {
-	auto network = PyNetwork_New(784, false, true);
+	auto network = PyNetwork_New(784, true, true);
 	PyNetwork_AddLayer(network, 500, PyNet::Models::ActivationFunctionType::Logistic);
 	PyNetwork_AddLayer(network, 129, PyNet::Models::ActivationFunctionType::Logistic);
 	PyNetwork_AddLayer(network, 10, PyNet::Models::ActivationFunctionType::Logistic);

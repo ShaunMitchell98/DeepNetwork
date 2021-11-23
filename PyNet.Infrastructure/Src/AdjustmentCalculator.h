@@ -25,8 +25,8 @@ public:
 	void SetBatchSize(int batchSize);
 	void AddWeightAdjustment(int matrixIndex, PyNet::Models::Matrix& adjustments);
 	void AddBiasAdjustment(int matrixIndex, double adjustment);
-	PyNet::Models::Matrix* GetWeightAdjustment(int matrixIndex);
-	PyNet::Models::Vector* GetBiasAdjustment(int matrixIndex);
+	PyNet::Models::Matrix& GetWeightAdjustment(int matrixIndex);
+	PyNet::Models::Vector& GetBiasAdjustment(int matrixIndex);
 	void SetNewBatch(bool newBatch);
 };
 
