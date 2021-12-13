@@ -5,52 +5,58 @@
 #include "PyNet.Models/Vector.h"
 #include "CpuMatrix.h"
 
-class CpuVector : public PyNet::Models::Vector, public CpuMatrix {
+namespace PyNet::Models::Cpu {
 
-public:
-	static auto factory(di::Context& context, Activation& activation) {
-		return new CpuVector{ context, activation };
-	}
+	class CpuVector : public PyNet::Models::Vector, public CpuMatrix {
 
-	typedef PyNet::Models::Vector base;
+	public:
+		static auto factory(std::shared_ptr<PyNet::DI::Context> context, std::shared_ptr<Activation> activation) {
+			return new CpuVector{ context, activation };
+		}
 
-	CpuVector(di::Context& context, Activation& activation);
+		typedef PyNet::Models::Vector base;
 
-	Matrix& operator*(const Matrix& m) const  {
-		return CpuMatrix::operator*(m);
-	}
+		CpuVector(std::shared_ptr<PyNet::DI::Context> context, std::shared_ptr<Activation> activation);
 
-	Matrix& operator-(const Matrix& m) {
-		return CpuMatrix::operator-(m);
-	}
+		std::unique_ptr<Matrix> operator*(const Matrix& m) const {
+			return CpuMatrix::operator*(m);
+		}
 
-	void operator+=(const Matrix& m) {
-		CpuMatrix::operator+=(m);
-	}
+		std::unique_ptr<Matrix> operator-(const Matrix& m) {
+			return CpuMatrix::operator-(m);
+		}
 
-	void operator+=(const Vector& v) override {
-		return CpuMatrix::operator+=(v);
-	}
+		void operator+=(const Matrix& m) {
+			CpuMatrix::operator+=(m);
+		}
 
-	Vector& operator*(const double d) override {
-		return dynamic_cast<CpuVector&>(CpuMatrix::operator*(d));
-	}
+		void operator+=(const Vector& v) override {
+			return CpuMatrix::operator+=(v);
+		}
 
-	Vector& operator-(const Vector& v) override {
-		return dynamic_cast<CpuVector&>(CpuMatrix::operator-(v));
-	}
+		std::unique_ptr<Matrix> operator*(const double d) override {
+			return CpuMatrix::operator*(d);
+		}
 
-	int GetRows() const override {
-		return Vector::GetRows();
-	}
+		std::unique_ptr<Vector> operator-(const Vector& v) override {
+			return std::unique_ptr<Vector>(dynamic_cast<Vector*>(CpuMatrix::operator-(v).get()));
+		}
 
-	int GetCols() const override {
-		return Vector::GetCols();
-	}
+		int GetRows() const override {
+			return Vector::GetRows();
+		}
 
-	explicit operator Matrix& () {
-		return static_cast<PyNet::Models::Matrix&>(static_cast<Vector&>(*this));
-	}
-};
+		int GetCols() const override {
+			return Vector::GetCols();
+		}
+
+		operator Matrix& () {
+			return static_cast<PyNet::Models::Matrix&>(static_cast<Vector&>(*this));
+		}
+
+		CpuVector(const CpuVector& v);
+	};
+}
+
 
 #undef CPU_VECTOR

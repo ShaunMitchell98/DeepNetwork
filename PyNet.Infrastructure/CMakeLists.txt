@@ -16,6 +16,7 @@ include_directories( ./include
 	./libs/PyNet.Models/include
 	./libs/PyNet.Models.Cuda/include
 	./libs/PyNet.Models.Cpu/include
+	./libs/PyNet.DI/include
 	 ./tests
 	 ./src
 	./libs/di/src
@@ -28,6 +29,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/Settings.h
 	./src/AdjustmentCalculator.h
 	./src/AdjustmentCalculator.cpp 
+	./src/InfrastructureModule.h
 	./src/LayerPropagator.h
 	./src/LayerPropagator.cpp 
 	./src/Logger.h
@@ -37,6 +39,9 @@ add_library(PyNet.Infrastructure SHARED
 	./src/PyNetwork.h 
 	./src/PyNetwork.cpp 
 	./src/PyNetwork_Functions.cpp
+	./src/QuadraticLoss.h
+	./src/QuadraticLoss.cpp
+	./src/Setup.h
 )
 
 add_executable(PyNet.Console ./PyNet.Console/PyNet.Console.cpp)
@@ -47,9 +52,11 @@ target_link_libraries(PyNet.Console PyNet.Infrastructure )
 add_subdirectory( ./libs/PyNet.Models )
 add_subdirectory( ./libs/PyNet.Models.Cuda )
 add_subdirectory( ./libs/PyNet.Models.Cpu )
+add_subdirectory( ./libs/PyNet.DI)
 target_link_libraries( PyNet.Infrastructure PyNet.Models )
 target_link_libraries( PyNet.Infrastructure PyNet.Models.Cuda )
 target_link_libraries( PyNet.Infrastructure PyNet.Models.Cpu )
+target_link_libraries( PyNet.Infrastructure PyNet.DI )
 
 
 add_library(PyNet.Infrastructure.Tests SHARED

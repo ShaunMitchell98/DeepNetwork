@@ -1,8 +1,5 @@
 #include "CppUnitTest.h"
-#include <vector>
 #include "PyNetwork.h"
-#include "Logger.h"
-#include <memory>
 #include "UnitTest.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -16,16 +13,15 @@ namespace PyNet::Infrastructure::Tests
 		TEST_METHOD(Run_WhenCalled_ReturnsOutput)
 		{
 			double input[4] = { 1, 1, 1, 1 };
-			auto context = GetContext();
-			auto network = context->get<PyNetwork>();
+			auto network = GetUniqueService<PyNetwork>();
 		
-			network.AddInitialLayer(2);
-			network.AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
+			network->AddInitialLayer(2);
+			network->AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
 
 			double weights[4] = { 1, 2, 3, 4 };
-			network.Weights[0].get().Set(2, 2, weights);
+			//network._weights[0].get().Set(2, 2, weights);
 
-			auto output = network.Run(input);
+			auto output = network->Run(input);
 
 			Assert::AreEqual(0.48808328584886568, output[0]);
 			Assert::AreEqual(0.51191671415113438, output[1]);
@@ -33,22 +29,15 @@ namespace PyNet::Infrastructure::Tests
 
 		TEST_METHOD(Train_WhenCalled_TrainsNetwork)
 		{
-			auto input = new double[2];
-			for (int i = 0; i < 2; i++) {
-				input[i] = 1;
-			}
+			auto input = new double[2] {1, 1};
 
-			auto context = GetContext();
-			auto network = context->get<PyNetwork>();
-			network.AddInitialLayer(2);
-			network.AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
+			auto network = GetUniqueService<PyNetwork>();
+			network->AddInitialLayer(2);
+			network->AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
 
-			auto output = new double[2];
+			auto output = new double[2]{ 1, 0 };
 
-			output[0] = 1;
-			output[1] = 0;
-
-			network.Train(&input, &output, 1, 1, 0.1);
+			network->Train(&input, &output, 1, 1, 0.1);
 
 			delete[] input;
 

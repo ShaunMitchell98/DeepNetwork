@@ -8,98 +8,86 @@
 #include <numeric>
 
 void PyNetwork::AddInitialLayer(int rows) {
-	auto& layer = _context.get<PyNet::Models::Vector>();
-	layer.Initialise(rows, false);
-	Layers.push_back(layer);
+	auto layer = _context->GetUnique<PyNet::Models::Vector>();
+	layer->Initialise(rows, false);
+	_layers.push_back(std::move(layer));
 }
 
 void PyNetwork::AddLayer(int rows, ActivationFunctionType activationFunctionType) {
 
-	auto cols = Layers[Layers.size() - 1].get().GetRows();
+	auto cols = _layers[_layers.size() - 1]->GetRows();
 
-	auto& layer = _context.get<PyNet::Models::Vector>();
-	layer.SetActivationFunction(activationFunctionType);
-	Layers.push_back(layer);
+	auto layer = _context->GetUnique<PyNet::Models::Vector>();
+	layer->Initialise(rows, false);
+	layer->SetActivationFunction(activationFunctionType);
+	_layers.push_back(std::move(layer));
 
-	auto& weightMatrix = _context.get<Matrix>();
-	weightMatrix.Initialise(rows, cols, true);
-	Weights.push_back(weightMatrix);
+	auto weightMatrix = _context->GetUnique<Matrix>();
+	weightMatrix->Initialise(rows, cols, true);
+	_weights.push_back(std::move(weightMatrix));
 
-	auto& biasVector = _context.get<Vector>();
-	biasVector.SetActivationFunction(activationFunctionType);
-	biasVector.Initialise(rows, true);
+	auto biasVector = _context->GetUnique<Vector>();
+	biasVector->SetActivationFunction(activationFunctionType);
+	biasVector->Initialise(rows, true);
 
-	Biases.push_back(biasVector);
-	_adjustmentCalculator.AddMatrix(rows, cols);
+	_biases.push_back(std::move(biasVector));
+	_adjustmentCalculator->AddMatrix(rows, cols);
 }
 
 double* PyNetwork::Run(double* input_layer) {
-	Layers[0].get().Set(Layers[0].get().GetRows(), input_layer);
+	_layers[0]->Set(_layers[0]->GetRows(), input_layer);
 
-	for (size_t i = 0; i < Weights.size(); i++) {
-		_layerPropagator.PropagateLayer(Weights[i].get(), Layers[i].get(), Biases[i].get(), Layers[i + 1].get());
+	for (size_t i = 0; i < _weights.size(); i++) {
+		_layerPropagator->PropagateLayer(*_weights[i], *_layers[i], *_biases[i], _layers[i + 1]);
 	}
 
-	normalise_layer(Layers[Layers.size() - 1], _logger);
+	normalise_layer(*_layers[_layers.size() - 1], *_logger);
 
-	return Layers[Layers.size() - 1].get().GetAddress(0);
+	return _layers[_layers.size() - 1]->GetAddress(0);
 }
 
-double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate) {
-	BatchSize = batchSize;
-	BatchNumber = 1;
-	NumberOfExamples = numberOfExamples;
-	CurrentIteration = 1;
-	LearningRate = learningRate;
+double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate) {
 
-	_adjustmentCalculator.SetBatchSize(batchSize);
+	auto batchNumber = 1;
+	auto currentIteration = 1;
+
+	_adjustmentCalculator->SetBatchSize(batchSize);
 
 	try {
 		for (auto i = 0; i < numberOfExamples; i++) {
 
 			Run(inputLayers[i]);
 
-			auto& expectedVector = _context.get<Vector>();
-			expectedVector.Set(Layers[Layers.size() - 1].get().GetRows(), expectedOutputs[i]);
-			expectedVector.SetActivationFunction(ActivationFunctionType::Logistic);
+			auto expectedVector = _context->GetUnique<Vector>();
+			expectedVector->Set(_layers[_layers.size() - 1]->GetRows(), expectedOutputs[i]);
+			expectedVector->SetActivationFunction(ActivationFunctionType::Logistic);
 
-			auto weights = std::vector<std::reference_wrapper<Matrix>>();
-			auto layers = std::vector<std::reference_wrapper<Vector>>();
-			auto biases = std::vector<std::reference_wrapper<Vector>>();
+			auto loss = _loss->CalculateLoss(*expectedVector, *_layers[_layers.size() - 1]);
+			_logger->LogLine("The loss is: " + std::to_string(loss));
+			_losses.push_back(loss);
 
-			for (auto i = 0; i < this->Weights.size(); i++) {
-				weights.push_back(this->Weights[i].get());
-			}
+			auto lossDerivative = _loss->CalculateDerivative(*expectedVector, *_layers[_layers.size() - 1]);
 
-			for (auto j = 0; j < this->Layers.size(); j++) {
-				layers.push_back(this->Layers[j].get());
-			}
+			_networkTrainer->Backpropagate(_weights, _layers, *expectedVector, std::move(lossDerivative));
 
-			for (auto k = 0; k < this->Biases.size(); k++) {
-				biases.push_back(this->Biases[k].get());
-			}
+			if (batchNumber == batchSize) {
+				auto learningRate = baseLearningRate * (static_cast<double>(numberOfExamples) / currentIteration);
+				_logger->LogLine("The learning rate is: " + std::to_string(learningRate));
+				_networkTrainer->UpdateWeights(_weights, _biases, learningRate);
 
-			auto error = _networkTrainer.TrainNetwork(weights, layers, expectedVector);
-			Errors.push_back(error);
-
-			if (BatchNumber == BatchSize) {
-				auto learningRate = this->LearningRate * (static_cast<double>(this->NumberOfExamples) / this->CurrentIteration);
-				_logger.LogLine("The learning rate is: " + std::to_string(learningRate));
-				_networkTrainer.UpdateWeights(weights, biases, learningRate);
-
-				printf("Iteration %d, Error is %f\n", i, error);
-				BatchNumber = 1;
+				printf("Iteration %d, Error is %f\n", i, loss);
+				batchNumber = 1;
 			}
 			else {
-				BatchNumber++;
+				batchNumber++;
 			}
 
-			CurrentIteration++;
+			currentIteration++;
 		} 
 	}
 	catch (const char* message) {
-		_logger.LogLine(message);
+		_logger->LogLine(message);
 	}
 
-	return Errors.data();
+	return _losses.data();
 }

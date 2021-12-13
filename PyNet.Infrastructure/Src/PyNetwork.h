@@ -5,7 +5,7 @@
 #include <vector>
 #include "PyNet.Models/Vector.h"
 #include "NetworkTrainer.h"
-#include "PyNet.Models/Context.h"
+#include "PyNet.DI/Context.h"
 #include "LayerPropagator.h"
 #include "PyNet.Models/ILogger.h"
 #include "Logger.h"
@@ -13,35 +13,34 @@
 class __declspec(dllexport) PyNetwork
 {
 private:
-	LayerPropagator& _layerPropagator;
-	ILogger& _logger;
-	AdjustmentCalculator& _adjustmentCalculator;
-	NetworkTrainer& _networkTrainer;
-	Settings& _settings;
-	di::Context& _context;
-public:
-	std::vector<std::reference_wrapper<PyNet::Models::Vector>> Layers = std::vector<std::reference_wrapper<PyNet::Models::Vector>>();
-	std::vector<std::reference_wrapper<PyNet::Models::Matrix>> Weights = std::vector<std::reference_wrapper<PyNet::Models::Matrix>>();
-	std::vector<std::reference_wrapper<PyNet::Models::Vector>> Biases = std::vector<std::reference_wrapper<PyNet::Models::Vector>>();
-	std::vector<double> Errors = std::vector<double>();
-	int BatchSize = 0;
-	int BatchNumber = 0;
-	double LearningRate = 0;
-	int NumberOfExamples = 0;
-	int CurrentIteration = 0;
+	std::unique_ptr<LayerPropagator> _layerPropagator;
+	std::shared_ptr<ILogger> _logger;
+	std::shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
+	std::unique_ptr<NetworkTrainer> _networkTrainer;
+	std::shared_ptr<Settings> _settings;
+	std::shared_ptr<PyNet::DI::Context> _context;
+	std::shared_ptr<Loss> _loss;
+	std::vector<double> _losses = std::vector<double>();
+	std::vector<std::unique_ptr<PyNet::Models::Vector>> _layers = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
+	std::vector<std::unique_ptr<PyNet::Models::Vector>> _biases = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
+	std::vector<std::unique_ptr<PyNet::Models::Matrix>> _weights = std::vector<std::unique_ptr<PyNet::Models::Matrix>>();
 
-	static auto factory(ILogger& logger, LayerPropagator& layerPropagator, di::Context& context, AdjustmentCalculator& adjustmentCalculator,
-		NetworkTrainer& networkTrainer, Settings& settings) {
-		return new PyNetwork{ logger, layerPropagator, context, adjustmentCalculator, networkTrainer, settings };
+public:
+
+	static auto factory(std::shared_ptr<ILogger> logger, std::unique_ptr<LayerPropagator> layerPropagator, std::shared_ptr<PyNet::DI::Context> context,
+		std::shared_ptr<AdjustmentCalculator> adjustmentCalculator,
+		std::unique_ptr<NetworkTrainer> networkTrainer, std::shared_ptr<Settings> settings, std::shared_ptr<Loss> loss) {
+		return new PyNetwork{ logger, std::move(layerPropagator), context, adjustmentCalculator, std::move(networkTrainer), settings, loss};
 	}
 
-	PyNetwork(ILogger& logger, LayerPropagator& layerPropagator, di::Context& context,
-		AdjustmentCalculator& adjustmentCalculator, NetworkTrainer& networkTrainer, Settings& settings) :
-		_logger{ logger }, _layerPropagator{ layerPropagator }, _context{ context }, _adjustmentCalculator{ adjustmentCalculator }, _networkTrainer{ networkTrainer }, _settings{ settings } {}
+	PyNetwork(std::shared_ptr<ILogger> logger, std::unique_ptr<LayerPropagator> layerPropagator, std::shared_ptr<PyNet::DI::Context> context,
+		std::shared_ptr<AdjustmentCalculator> adjustmentCalculator, std::unique_ptr<NetworkTrainer> networkTrainer, std::shared_ptr<Settings> settings, std::shared_ptr<Loss> loss) :
+		_logger{ logger }, _layerPropagator{ std::move(layerPropagator) }, _context{ context }, _adjustmentCalculator{ std::move(adjustmentCalculator) },
+		_networkTrainer{ std::move(networkTrainer) }, _settings{ settings }, _loss{ loss } {}
 
 
 	void AddInitialLayer(int rows);
 	void AddLayer(int, ActivationFunctionType);
 	double* Run(double* input_layer);
-	double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate);
+	double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate);
 };

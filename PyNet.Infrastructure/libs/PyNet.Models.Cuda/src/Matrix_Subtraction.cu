@@ -9,8 +9,8 @@
 #include "Matrix_Operations.h"
 
 __global__ void matrixSubtractionKernel(double* A, double* B, double* C, int rows, int cols) {
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    int i = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (i < rows && j < cols) {
         C[i * cols + j] = A[i * cols + j] - B[i * cols + j];
@@ -45,7 +45,5 @@ void matrix_subtract(const Matrix& A, const Matrix& B, Matrix& C) {
     d_B.set(B.GetCValues());
 
     internalMatrixSubtract(d_A.getData(), d_B.getData(), d_C.getData(), A.GetRows(), A.GetCols());
-
-    C.Initialise(A.GetRows(), B.GetCols(), false);
-    d_C.get(C.GetCValues().data(), C.GetSize());
+    d_C.get(C.GetValues().data(), C.GetSize());
 }

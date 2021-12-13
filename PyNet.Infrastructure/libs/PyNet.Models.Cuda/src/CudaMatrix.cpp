@@ -1,31 +1,34 @@
 #include "CudaMatrix.h"
 #include "Matrix_Operations.h"
 
-CudaMatrix::CudaMatrix(di::Context& context)
+CudaMatrix::CudaMatrix(std::shared_ptr<PyNet::DI::Context> context)
 #ifndef CUDA_VECTOR
 	: Matrix(context)
 #endif
 {}
 
-Matrix& CudaMatrix::operator*(const Matrix& m) const {
-	auto& c = Context.get<Matrix>();
-	cuda_matrix_multiply(*this, m, c);
+std::unique_ptr<Matrix> CudaMatrix::operator*(const Matrix& m) const {
+	auto c = Context->GetUnique<Matrix>();
+	c->Initialise(Rows, m.GetCols(), false);
+	cuda_matrix_multiply(*this, m, *c);
 
-	return c;
+	return std::move(c);
 }
 
-Matrix& CudaMatrix::operator*(const double d) {
+std::unique_ptr<Matrix> CudaMatrix::operator*(const double d) {
 
-	auto& c = Context.get<Matrix>();
-	multiply_matrix_and_double(*this, d, c);
-	return c;
+	auto c = Context->GetUnique<Matrix>();
+	c->Initialise(Rows, Cols, false);
+	multiply_matrix_and_double(*this, d, *c);
+	return std::move(c);
 }
 
-Matrix& CudaMatrix::operator-(const Matrix& m) {
-	auto& c = Context.get<Matrix>();
-	matrix_subtract(*this, m, c);
-	return c;
-}
+std::unique_ptr<Matrix> CudaMatrix::operator-(const Matrix& m) {
+	auto c = Context->GetUnique<Matrix>();
+	c->Initialise(Rows, Cols, false);
+	matrix_subtract(*this, m, *c);
+	return std::move(c);
+ }
 
 void CudaMatrix::operator+=(const Matrix& m) {
 

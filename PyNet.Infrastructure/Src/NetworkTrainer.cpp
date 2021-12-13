@@ -1,106 +1,65 @@
 #include "NetworkTrainer.h"
+#include <algorithm>
 
-double NetworkTrainer::TrainNetwork(std::vector<std::reference_wrapper<Matrix>> weightMatrices, std::vector<std::reference_wrapper<Vector>> layers, PyNet::Models::Vector& expectedLayer) {
+void NetworkTrainer::Backpropagate(std::vector<std::unique_ptr<Matrix>>& weightMatrices,
+    std::vector<std::unique_ptr<Vector>>& layers, PyNet::Models::Vector& expectedLayer, std::shared_ptr<Vector> lossDerivative) {
 
-    double error = CalculateErrorDerivativeForFinalLayer(layers[layers.size() - 1], expectedLayer);
-    GetAdjustments(weightMatrices, layers);
-    _adjustmentCalculator.SetNewBatch(false);
+    _dError_dLayerAbove = lossDerivative;
+    _dError_dActivatedOutput = lossDerivative;
 
-    _logger.LogLine("I am returning: " + std::to_string(error));
+    for (auto i = weightMatrices.size() - 1; i >= 0; i--) {
+        
+        auto dError_dBias = GetdError_dBias(layers[i + 1], i);
+        _adjustmentCalculator->AddBiasAdjustment(i, dError_dBias);
 
-    return error;
-}
-
-double NetworkTrainer::CalculateErrorDerivativeForFinalLayer(PyNet::Models::Vector& finalLayer, PyNet::Models::Vector& expectedLayer) {
-
-    //dError_dActivatedOutput.clear();
-    //_logger.LogMessage("Expected layer is:");
-    //_logger.LogVector(expectedLayer->Values);
-    double error = 0;
-    for (int b = 0; b < finalLayer.GetRows(); b++) {
-        error += 0.5 * (expectedLayer.GetValue(b) - finalLayer.GetValue(b)) * (expectedLayer.GetValue(b) - finalLayer.GetValue(b));
-        _logger.LogMessage("Temp error is " + std::to_string(error) + "\n");
+        auto dError_dWeight = GetdError_dWeight(weightMatrices[i], layers[i-1], layers[i], i);
+        _adjustmentCalculator->AddWeightAdjustment(i, std::move(dError_dWeight));
     }
 
-    _dError_dActivatedOutput = finalLayer - expectedLayer;
-    _logger.LogLine("Calculated derivatives for final layer.");
-    _logger.LogMessage("Error is: " + std::to_string(error) + "\n");
+    _logger->LogLine("Finished backpropagating.");
 
-    return error;
+    _adjustmentCalculator->SetNewBatch(false);
 }
 
-void NetworkTrainer::GetdError_dActivatedOutput(Matrix& weightMatrix, PyNet::Models::Vector& inputLayer, PyNet::Models::Vector& outputLayer) {
-    //dError_dOutputCurrent.clear();
-    _logger.LogLine("Calculating error derivative with respect to current output layer.");
+void NetworkTrainer::UpdateWeights(std::vector<std::unique_ptr<Matrix>>& weightMatrices, std::vector<std::unique_ptr<Vector>>& biases, double learningRate) {
+    _logger->LogLine("Updating weights...");
 
-    auto& dActivatedLayerAbove_dOutput = _context.get<Vector>();
-    outputLayer.CalculateActivationDerivative(dActivatedLayerAbove_dOutput);
+    for (auto index = weightMatrices.size() - 1; index >= 0; index--) {
 
-    auto& dError_dOutput = _context.get<Vector>();
-    dError_dOutput = _dError_dActivatedLayerAbove ^ dActivatedLayerAbove_dOutput;
+        auto bias = biases[index].get();
+        auto weightMatrix = weightMatrices[index].get();
+   
+        auto biasAdjustmentMatrix = *_adjustmentCalculator->GetBiasAdjustment(index) * learningRate;
+        auto biasAdjustmentVector = std::unique_ptr<Vector>(dynamic_cast<Vector*>(std::move(biasAdjustmentMatrix.get())));
 
-    auto& weightMatrixTranspose = _context.get<Matrix>();
-    weightMatrixTranspose = ~weightMatrix;
-    //*dError_dActivatedInput = (*dError_dOutput_transpose) * *weightMatrix;
-    _dError_dActivatedOutput = weightMatrixTranspose * dError_dOutput;
-
-    _logger.LogMessage("dError_dOutputCurrent: ");
-    //_logger.LogVector(dError_dOutputCurrent);
-}
-
-void NetworkTrainer::UpdateWeights(std::vector<std::reference_wrapper<Matrix>> weightMatrices, std::vector<std::reference_wrapper<Vector>> biases, double learningRate) {
-    _logger.LogLine("Updating weights...");
-    for (int weightMatrixIndex = static_cast<int>(weightMatrices.size() - 1); weightMatrixIndex >= 0; weightMatrixIndex--) {
-        auto& weightMatrix = weightMatrices[weightMatrixIndex].get();
-        auto& bias = biases[weightMatrixIndex].get();
-
-        bias = bias - _adjustmentCalculator.GetBiasAdjustment(weightMatrixIndex) * learningRate;
-        weightMatrix = weightMatrix - _adjustmentCalculator.GetWeightAdjustment(weightMatrixIndex) * learningRate;
+        biases[index] = std::move(*bias - *biasAdjustmentVector);
+        weightMatrices[index] = *weightMatrix - *(*_adjustmentCalculator->GetWeightAdjustment(index) * learningRate);
     }
 
-    _adjustmentCalculator.SetNewBatch(true);
+    _adjustmentCalculator->SetNewBatch(true);
 }
 
-void NetworkTrainer::GetAdjustmentsForWeightMatrix(Matrix& weightMatrix, Vector& inputLayer, Vector& outputLayer, int weightMatrixIndex) {
-    _logger.LogMessage("Calcuating loop for weight matrix: " + std::to_string(weightMatrixIndex) + "\n");
+double NetworkTrainer::GetdError_dBias(std::unique_ptr<Vector>& outputLayer, int index) 
+{
+ /*   _logger->LogLine("Getting dError_dBias for layer: " + std::to_string(index));
 
-    _logger.LogLine("Calculating adjustments.");
-
-    auto& temp_name = _context.get<Vector>();
-    temp_name.Initialise(outputLayer.GetRows(), false);
-
-    outputLayer.CalculateActivationDerivative(temp_name);
-
-    auto dError_dBias = 0.0;
-    dError_dBias = _dError_dActivatedOutput | temp_name;
-    _adjustmentCalculator.AddBiasAdjustment(weightMatrixIndex, dError_dBias);
-
-    /// /////////////////////////////////
-
-    auto& dActivatedOutput_dOutput = _context.get<Vector>();
-    dActivatedOutput_dOutput.Initialise(outputLayer.GetRows(), false);
-    outputLayer.CalculateActivationDerivative(dActivatedOutput_dOutput);
-
-    auto& dError_dOutput = _context.get<Matrix>();
-    dError_dOutput = _dError_dActivatedOutput ^ dActivatedOutput_dOutput;
-
-    auto& dOutput_dWeight = inputLayer;
-
-    auto& dOutput_dWeight_Transpose = _context.get<Matrix>();
-    dOutput_dWeight_Transpose = ~dOutput_dWeight;
-    auto& dError_dWeight = _context.get<Matrix>();
-    dError_dWeight = dError_dOutput * dOutput_dWeight_Transpose;
-
-    _adjustmentCalculator.AddWeightAdjustment(weightMatrixIndex, dError_dWeight);
-
-    _dError_dActivatedLayerAbove = _dError_dActivatedOutput;
-    GetdError_dActivatedOutput(weightMatrix, inputLayer, outputLayer);
+    auto& activatedOutputLayer = outputLayer.CalculateActivationDerivative();
+    return _dError_dActivatedOutput | activatedOutputLayer;*/
+    return 0;
 }
 
-void NetworkTrainer::GetAdjustments(std::vector<std::reference_wrapper<Matrix>> weightMatrices, std::vector<std::reference_wrapper<Vector>> layers) {
-    for (int a = static_cast<int>(weightMatrices.size() - 1); a >= 0; a--) {
-        GetAdjustmentsForWeightMatrix(weightMatrices[a], layers[a], layers[(size_t)a+1], a);
-    }
+std::unique_ptr<Matrix> NetworkTrainer::GetdError_dWeight(std::unique_ptr<Matrix>& layerAboveMatrix, std::unique_ptr<Vector>& inputLayer, std::unique_ptr<Vector>& outputLayer, int index) {
 
-    _logger.LogLine("End of GetAdjustments");
+    _logger->LogLine("Backpropagating for weight matrix: " + std::to_string(index));
+
+    auto layerAboveTranspose = ~*layerAboveMatrix;
+    auto dError_dActivatedOutput = std::unique_ptr<Vector>(dynamic_cast<Vector*>((*layerAboveTranspose * *_dError_dLayerAbove).get()));
+    auto dError_dOutput = *dError_dActivatedOutput ^ *outputLayer->CalculateActivationDerivative();
+
+    auto inputLayerTranspose = ~*inputLayer;
+    auto dError_dWeight = *dError_dOutput * *inputLayerTranspose;
+
+    _dError_dLayerAbove.reset(dError_dOutput.get());
+
+    return dError_dWeight;
 }

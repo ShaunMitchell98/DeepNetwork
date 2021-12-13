@@ -8,13 +8,13 @@ using namespace PyNet::Models;
 
 class __declspec(dllexport) LayerPropagator {
 private:
-	ILogger& _logger;
+	std::shared_ptr<ILogger> _logger;
 public:
 
-	auto static factory(ILogger& logger) {
+	auto static factory(std::shared_ptr<ILogger> logger) {
 		return new LayerPropagator(logger);
 	}
 
-	LayerPropagator(ILogger& logger) : _logger(logger) {}
-	void PropagateLayer(Matrix& weights, Vector& inputLayer, Vector& bias, Vector& outputLayer);
+	LayerPropagator(std::shared_ptr<ILogger> logger) : _logger(logger) {}
+	void PropagateLayer(Matrix& weights, Vector& inputLayer, Vector& bias, std::unique_ptr<Vector>& outputLayer);
 };

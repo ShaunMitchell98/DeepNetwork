@@ -15,8 +15,8 @@ namespace PyNet::Infrastructure {
 
 		typedef ILogger base;
 
-		static auto factory(Settings& settings) {
-			return new Logger{ settings.LoggingEnabled };
+		static auto factory(std::shared_ptr<Settings> settings) {
+			return new Logger{ settings->LoggingEnabled };
 		}
 
 		void LogMessage(std::string_view message) override;

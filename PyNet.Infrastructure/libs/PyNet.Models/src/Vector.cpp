@@ -2,10 +2,10 @@
 
 namespace PyNet::Models {
 
-	Vector::Vector(di::Context& context, Activation& activation) : _activation { activation } {}
+	Vector::Vector(std::shared_ptr<PyNet::DI::Context> context, std::shared_ptr<Activation> activation) : _activation { std::move(activation) } {}
 
 	void Vector::SetActivationFunction(ActivationFunctionType activationFunctionType) {
-		_activation = Context.get<Activation>();
+		_activation = Context->GetShared<Activation>();
 	}
 
 	double Vector::GetValue(int row) const {
@@ -21,16 +21,12 @@ namespace PyNet::Models {
 	}
 
 	void Vector::ApplyActivation() {
-
-		//if (_activation == NULL) {
-		//	throw "Canot apply activation to vector, Activation is NULL";
-		//}
 		
-		_activation.Apply(*this);
+		_activation->Apply(*this);
 	}
 
-	void Vector::CalculateActivationDerivative(Vector& output) {
-		_activation.CalculateDerivative(*this, output);
+	std::unique_ptr<Vector> Vector::CalculateActivationDerivative() {
+		return std::unique_ptr<Vector>(dynamic_cast<Vector*>(_activation->CalculateDerivative(*this).get()));
 	}
 
 	double* Vector::GetEnd() const {
@@ -50,7 +46,7 @@ namespace PyNet::Models {
 		}
 	}
 
-	double Vector::operator|(const Vector& v) {
+	double Vector::operator|(const Vector& v) const {
 
 		if (v.Rows != this->Rows) {
 			throw "Cannot calculate dot product for vectors with different lengths";
@@ -65,16 +61,16 @@ namespace PyNet::Models {
 		return result;
 	}
 
-	Vector& Vector::operator^(const Vector& v) {
+	std::unique_ptr<Vector> Vector::operator^(const Vector& v) {
 
-		auto& c = Context.get<Vector>();
-		c.Initialise(v.Rows, false);
+		auto c = Context->GetUnique<Vector>();
+		c->Initialise(v.Rows, false);
 
 		for (auto i = 0; i < v.Rows; i++) {
-			c.SetValue(i, this->GetValue(i) * v.GetValue(i));
+			c->SetValue(i, this->GetValue(i) * v.GetValue(i));
 		}
 
-		return c;
+		return std::move(c);
 	}
 
 	void Vector::operator=(const Matrix& m) {
@@ -90,8 +86,8 @@ namespace PyNet::Models {
 		operator=((Matrix&)v);
 	}
 
-	Vector& Vector::operator/(const double d) {
-		return dynamic_cast<Vector&>(Matrix::operator/(d));
+	std::unique_ptr<Vector> Vector::operator/(const double d) {
+		return std::unique_ptr<Vector>(dynamic_cast<Vector*>(Matrix::operator/(d).get()));
 	}
 
 	void Vector::Set(size_t rows, double* d) {

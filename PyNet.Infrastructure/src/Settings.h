@@ -7,5 +7,4 @@ struct Settings {
 	}
 
 	bool LoggingEnabled;
-	bool CudaEnabled;
 };

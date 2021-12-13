@@ -1,14 +1,14 @@
 #include "CpuMatrix.h"
 
-CpuMatrix::CpuMatrix(di::Context& context)
+CpuMatrix::CpuMatrix(std::shared_ptr<PyNet::DI::Context> context)
 #ifndef CPU_VECTOR
 	: Matrix(context)
 #endif
 {}
 
-Matrix& CpuMatrix::operator*(const Matrix& m) const {
+std::unique_ptr<Matrix> CpuMatrix::operator*(const Matrix& m) const {
 
-	auto c = new CpuMatrix(Context.get<CpuMatrix>());
+	auto c = Context->GetUnique<CpuMatrix>();
 	c->Initialise(Rows, m.GetCols(), false);
 
 	for (auto i = 0; i < Rows; i++) {
@@ -22,12 +22,12 @@ Matrix& CpuMatrix::operator*(const Matrix& m) const {
 		}
 	}
 
-	return *c;
+	return std::move(c);
 }
 
-Matrix& CpuMatrix::operator*(const double d) {
+std::unique_ptr<Matrix> CpuMatrix::operator*(const double d) {
 
-	auto c = new CpuMatrix(*this);
+	auto c = std::unique_ptr<Matrix>(new CpuMatrix(*this));
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < Cols; j++) {
@@ -35,12 +35,12 @@ Matrix& CpuMatrix::operator*(const double d) {
 		}
 	}
 
-	return *c;
+	return std::move(c);
 }
 
-Matrix& CpuMatrix::operator-(const Matrix& m) {
+std::unique_ptr<Matrix> CpuMatrix::operator-(const Matrix& m) {
 
-	auto c = new CpuMatrix(*this);
+	auto c = std::unique_ptr<Matrix>(new CpuMatrix(*this));
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < Cols; j++) {
@@ -48,7 +48,7 @@ Matrix& CpuMatrix::operator-(const Matrix& m) {
 		}
 	}
 
-	return *c;
+	return std::move(c);
 }
 
 void CpuMatrix::operator+=(const Matrix& m) {

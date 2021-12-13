@@ -1,49 +1,15 @@
 #include "PyNetwork_Functions.h"
 #include "PyNetwork.h"
-#include "Logger.h"
-
-#include "PyNet.Models.Cuda/CudaMatrix.h"
-#include "PyNet.Models.Cuda/CudaVector.h"
-#include "PyNet.Models.Cpu/CpuMatrix.h"
-#include "PyNet.Models.Cpu/CpuVector.h"
-#include <PyNet.Models.Cpu/ActivationProvider.h>
-#include <PyNet.Models/Context.h>
-#include "Settings.h"
+#include "Setup.h"
 
 namespace PyNet::Infrastructure {
 	extern "C" {
 
-		void AddMatrix(di::Context* context, bool cudaEnabled) {
-			if (cudaEnabled) {
-				context->addClass<CudaMatrix>(di::InstanceMode::Unique);
-				context->addClass<CudaVector>(di::InstanceMode::Unique);
-				context->addFactory(PyNet::Models::Cpu::factory);
-			}
-			else
-			{
-				context->addClass<CpuMatrix>(di::InstanceMode::Unique);
-				context->addClass<CpuVector>(di::InstanceMode::Unique);
-				context->addFactory(PyNet::Models::Cpu::factory);
-			}
-		}
-
-		di::Context* GetContext(bool cudaEnabled, bool log) {
-			auto context = new di::Context();
-			context->addClass<Settings>();
-			
-			AddMatrix(context, cudaEnabled);
-			auto settings = new Settings();
-			settings->LoggingEnabled = log;
-			context->addInstance<Settings>(settings, true);
-			context->addClass<Logger>();
-			return context;
-		}
-
 		void* PyNetwork_New(int count, bool log, bool cudaEnabled) {
 			auto context = GetContext(cudaEnabled, log);
-			auto pyNetwork = new PyNetwork(context->get<PyNetwork>());
+			auto pyNetwork = context->GetUnique<PyNetwork>();
 			pyNetwork->AddInitialLayer(count);
-			return pyNetwork;
+			return pyNetwork.get();
 		}
 
 		void PyNetwork_AddLayer(void* pyNetwork, int count, PyNet::Models::ActivationFunctionType activationFunctionType) {

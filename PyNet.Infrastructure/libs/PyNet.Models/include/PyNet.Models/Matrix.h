@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include "Context.h"
+#include "PyNet.DI/Context.h"
 
 namespace PyNet::Models {
 
@@ -12,11 +12,11 @@ namespace PyNet::Models {
 		int Rows = 0;
 		int Cols = 0;
 		std::vector<double> Values;
-		di::Context& Context;
+		std::shared_ptr<PyNet::DI::Context> Context;
 
 	public:
 
-		Matrix(di::Context& context) : Context(context) {}
+		Matrix(std::shared_ptr<PyNet::DI::Context> context) : Context(context) {}
 		void Initialise(size_t rows, size_t cols, bool generateWeights);
 		double GetValue(size_t row, size_t col) const;
 		void SetValue(size_t row, size_t col, double value);
@@ -26,12 +26,13 @@ namespace PyNet::Models {
 		double* GetAddress(size_t row, size_t col);
 		std::string ToString();
 		void operator=(const Matrix& m);
-		Matrix& operator~();
-		Matrix& operator/(const double d);
+		std::unique_ptr<Matrix> operator~();
+		std::unique_ptr<Matrix> operator/(const double d);
 		void Set(size_t rows, size_t cols, const double* values);
-		virtual Matrix& operator*(const Matrix& m) const = 0;
-		virtual Matrix& operator*(const double d) = 0;
-		virtual Matrix& operator-(const Matrix& m) = 0;
+
+		virtual std::unique_ptr<Matrix> operator*(const Matrix& m) const = 0;
+		virtual std::unique_ptr<Matrix> operator*(const double d) = 0;
+		virtual std::unique_ptr<Matrix> operator-(const Matrix& m) = 0;
 		virtual void operator+=(const Matrix& m) = 0;
 		std::vector<double> GetCValues() const;
 		std::vector<double>& GetValues();

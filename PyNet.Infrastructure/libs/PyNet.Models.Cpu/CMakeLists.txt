@@ -11,7 +11,6 @@ add_library(PyNet.Models.Cpu STATIC
 	./include/PyNet.Models.Cpu/CpuVector.h
 	./src/CpuVector.cpp
 	./include/PyNet.Models.Cpu/CpuLogistic.h
-	./src/CpuLogistic.cpp
-	./include/PyNet.Models.Cpu/ActivationProvider.h)
+	./include/PyNet.Models.Cpu/CpuModule.h)
 
 target_link_libraries(PyNet.Models.Cuda PyNet.Models)

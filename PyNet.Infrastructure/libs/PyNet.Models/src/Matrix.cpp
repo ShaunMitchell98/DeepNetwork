@@ -71,16 +71,16 @@ namespace PyNet::Models {
 		return *text;
 	}
 
-	Matrix& Matrix::operator~() {
+	std::unique_ptr<Matrix> Matrix::operator~() {
 
-		auto& m = Context.get<Matrix>();
-		m.Rows = Cols;
-		m.Cols = Rows;
-		m.Values = Values;
-		return m;
+		auto m = Context->GetUnique<Matrix>();
+		m->Rows = Cols;
+		m->Cols = Rows;
+		m->Values = Values;
+		return std::move(m);
 	}
 
-	Matrix& Matrix::operator/(const double d) {
+	std::unique_ptr<Matrix> Matrix::operator/(const double d) {
 
 		return (*this) * (1 / d);
 	}

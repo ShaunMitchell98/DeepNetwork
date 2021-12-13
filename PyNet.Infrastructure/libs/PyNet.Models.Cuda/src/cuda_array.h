@@ -26,6 +26,8 @@ private:
 		end_ = start_ + size;
 	}
 
+public:
+
 	void free() {
 		if (start_ != 0) {
 			auto error = cudaFree(start_);
@@ -39,8 +41,6 @@ private:
 			start_ = end_ = 0;
 		}
 	}
-
-public:
 
 	explicit cuda_array()
 		: start_(0),

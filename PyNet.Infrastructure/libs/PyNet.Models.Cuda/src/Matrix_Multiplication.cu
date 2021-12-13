@@ -8,16 +8,16 @@
 #include <stddef.h>
 #include "Matrix_Operations.h"
 
-__global__ void matrixMultiplicationKernel(double* A, double* B, double* C, int Acols, int Bcols) {
-    int ROW = blockIdx.y * blockDim.y + threadIdx.y;
-    int COL = blockIdx.x * blockDim.x + threadIdx.x;
+__global__ void matrixMultiplicationKernel(double* A, double* B, double* C, int Arows, int Bcols) {
+    int ROW = blockIdx.x * blockDim.x + threadIdx.x;
+    int COL = blockIdx.y * blockDim.y + threadIdx.y;
 
     double tmpSum = 0;
 
-    if (ROW < Acols && COL < Bcols) {
+    if (ROW < Arows && COL < Bcols) {
         // each thread computes one element of the block sub-matrix
-        for (auto i = 0; i < Acols; i++) {
-            tmpSum += A[ROW * Acols + i] * B[i * Bcols + COL];
+        for (auto i = 0; i < Arows; i++) {
+            tmpSum += A[ROW * Arows + i] * B[i * Bcols + COL];
         }
 
         C[ROW * Bcols + COL] = tmpSum;
@@ -33,20 +33,20 @@ __global__ void matrixDoubleMultiplicationKernel(double* A, double* B, double* C
     }
 }
 
-void internalMatrixMultiply(double* A, double* B, double* C, int Acols, int Bcols) {
+void internalMatrixMultiply(double* A, double* B, double* C, int Arows, int Bcols) {
 
     // declare the number of blocks per grid and the number of threads per block
     // use 1 to 512 threads per block
-    dim3 threadsPerBlock(Acols, Acols);
+    dim3 threadsPerBlock(Arows, Bcols);
     dim3 blocksPerGrid(1, 1);
-    if (Acols * Acols > 512) {
+    if (Arows * Bcols > 512) {
         threadsPerBlock.x = 512;
         threadsPerBlock.y = 512;
-        blocksPerGrid.x = static_cast<int>(ceil(double(Acols) / double(threadsPerBlock.x)));
-        blocksPerGrid.y = static_cast<int>(ceil(double(Acols) / double(threadsPerBlock.y)));
+        blocksPerGrid.x = static_cast<int>(ceil(double(Arows) / double(threadsPerBlock.x)));
+        blocksPerGrid.y = static_cast<int>(ceil(double(Bcols) / double(threadsPerBlock.y)));
     }
 
-    matrixMultiplicationKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, C, Acols, Bcols);
+    matrixMultiplicationKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, C, Arows, Bcols);
     cudaDeviceSynchronize();
 }
 
@@ -68,7 +68,6 @@ void internalMatrixDoubleMultiply(double* A, double* B, double* C, int Acols, in
 }
 
 void cuda_matrix_multiply(const Matrix& A, const Matrix& B, Matrix& C) {
-    C.Initialise(A.GetRows(), B.GetCols(), false);
 
     cuda_array<double> d_A(A.GetCValues().size());
     cuda_array<double> d_B(B.GetCValues().size());
@@ -77,14 +76,12 @@ void cuda_matrix_multiply(const Matrix& A, const Matrix& B, Matrix& C) {
     d_A.set(A.GetCValues());
     d_B.set(B.GetCValues());
 
-    internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.GetCols(), B.GetCols());
+    internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.GetRows(), B.GetCols());
 
-    d_C.get(C.GetCValues().data(), C.GetSize());
+    d_C.get(C.GetValues().data(), C.GetSize());
 }
 
 void multiply_matrix_and_double(const Matrix& A, const double B, Matrix& C) {
-
-    C.Initialise(A.GetRows(), A.GetCols(), false);
 
     cuda_array<double> d_A(A.GetCValues().size());
     cuda_array<double> d_B(1);
@@ -96,5 +93,5 @@ void multiply_matrix_and_double(const Matrix& A, const double B, Matrix& C) {
     d_B.set(bVector);
 
     internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.GetCols(), A.GetRows());
-    d_C.get(C.GetCValues().data(), C.GetSize());
+    d_C.get(C.GetValues().data(), C.GetSize());
 }

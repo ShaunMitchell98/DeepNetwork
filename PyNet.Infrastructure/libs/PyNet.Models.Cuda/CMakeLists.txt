@@ -17,8 +17,16 @@ add_library(PyNet.Models.Cuda SHARED
 	./src/CudaVector.cpp
 	./src/Matrix_Subtraction.cu
 	./src/Matrix_Addition_Assignment.cu
-	./src/cuda_array.h)
+	./src/cuda_array.h
+	./include/PyNet.Models.Cuda/CudaModule.h)
 
 target_link_libraries(PyNet.Models.Cuda PyNet.Models)
 set_target_properties(PyNet.Models.Cuda PROPERTIES CUDA_ARCHITECTURES "75")
 set_property(TARGET PyNet.Models.Cuda PROPERTY CUDA_STANDARD 17)
+
+add_library(PyNet.Models.Cuda.Tests SHARED
+	./tests/CudaMatrixTests.cpp
+	./tests/UnitTest.h
+)
+
+target_link_libraries(PyNet.Models.Cuda.Tests PyNet.Models.Cuda)

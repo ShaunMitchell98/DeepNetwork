@@ -8,19 +8,19 @@
 class __declspec(dllexport) CudaVector : public Vector, private CudaMatrix {
 public:
 
-	static auto factory(di::Context& context, PyNet::Models::Activation& activation) {
+	static auto factory(std::shared_ptr<PyNet::DI::Context> context, std::shared_ptr<Activation> activation) {
 		return new CudaVector{ context, activation };
 	}
 
 	typedef Vector base;
 
-	CudaVector(di::Context& context, PyNet::Models::Activation& activation);
+	CudaVector(std::shared_ptr<PyNet::DI::Context> context, std::shared_ptr<Activation> activation);
 
-	Matrix& operator*(const Matrix& m) const override {
+	std::unique_ptr<Matrix> operator*(const Matrix& m) const override {
 		return CudaMatrix::operator*(m);
 	}
 
-	Matrix& operator-(const Matrix& m) override {
+	std::unique_ptr<Matrix> operator-(const Matrix& m) override {
 		return CudaMatrix::operator-(m);
 	}
 
@@ -32,9 +32,13 @@ public:
 		return CudaMatrix::operator+=((Matrix&)v);
 	}
 
-	Vector& operator*(const double d) override;
+	std::unique_ptr<Matrix> operator*(const double d) override {
+		return CudaMatrix::operator*(d);
+	}
 
-	Vector& operator-(const Vector& v) override;
+	std::unique_ptr<Vector> operator-(const Vector& v) override {
+		return std::unique_ptr<Vector>(dynamic_cast<Vector*>(CudaMatrix::operator-(v).get()));
+	}
 
 	int GetRows() const override {
 		return Vector::GetRows();
@@ -42,10 +46,6 @@ public:
 
 	int GetCols() const override {
 		return Vector::GetCols();
-	}
-
-	operator Matrix& () {
-		return static_cast<PyNet::Models::Matrix&>(static_cast<Vector&>(*this));
 	}
 
 	CudaVector(const CudaVector& v);

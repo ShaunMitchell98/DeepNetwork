@@ -1,26 +1,31 @@
 #pragma once
 
-#include "PyNet.Models/Context.h"
-#include "Logger.h"
-#include "PyNet.Models.Cuda/CudaMatrix.h"
-#include "PyNet.Models.Cuda/CudaVector.h"
-#include "PyNet.Models.Cpu/CpuMatrix.h"
-#include "PyNet.Models.Cpu/CpuVector.h"
-#include "PyNet.Models.Cpu/CpuLogistic.h"
+#include <Setup.h>
 
-class UnitTest
-{
-public:
+namespace PyNet::Infrastructure::Tests {
 
-	di::Context* GetContext() {
-		auto context = new di::ContextTmpl<PyNet::Infrastructure::Logger>();
-		Settings* settings = new Settings();
-		settings->LoggingEnabled = false;
-		context->addInstance<Settings>(settings, true);
-		context->addClass<CudaMatrix>(di::InstanceMode::Unique);
-		context->addClass<CudaVector>(di::InstanceMode::Unique);
-		context->addClass<PyNet::Models::Cpu::CpuLogistic>();
-		return context;
-	}
-};
+	class UnitTest
+	{
+	private:
+		std::shared_ptr<PyNet::DI::Context> _context;
+	public:
+
+		UnitTest() {
+			_context = std::move(GetContext(true, false));
+		}
+
+		template<class T>
+		std::unique_ptr<T> GetUniqueService() {
+			return _context->GetUnique<T>();
+		}
+
+		template<class T>
+		std::shared_ptr<T> GetSharedService() {
+			return _context->GetShared<T>();
+		}
+	};
+}
+
+
+
 

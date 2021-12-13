@@ -4,37 +4,40 @@
 #include <vector>
 #include "PyNet.Models/ILogger.h"
 #include "PyNet.Models/Vector.h"
-#include "PyNet.Models/Context.h"
+#include "PyNet.DI/Context.h"
+#include "PyNet.Models/Loss.h"
 #include "AdjustmentCalculator.h"
+
 
 using namespace PyNet::Models;
 
 class NetworkTrainer
 {
 private:
-	Vector& _dError_dActivatedLayerAbove;
-	Vector& _dError_dActivatedOutput;
-	ILogger& _logger;
-	AdjustmentCalculator& _adjustmentCalculator;
-	Settings& _settings;
-	di::Context& _context;
+	std::shared_ptr<Vector> _dError_dLayerAbove;
+	std::shared_ptr<Vector> _dError_dActivatedOutput;
+	std::shared_ptr<ILogger> _logger;
+	std::unique_ptr<AdjustmentCalculator> _adjustmentCalculator;
+	std::shared_ptr<Settings> _settings;
+	std::shared_ptr<Loss> _loss;
+	std::shared_ptr<PyNet::DI::Context> _context;
 
-	double CalculateErrorDerivativeForFinalLayer(Vector& finalLayer, Vector& expectedLayer);
-	void GetAdjustmentsForWeightMatrix(Matrix& weightMatrix, Vector& inputLayer, Vector& outputLayer, int weightMatrixIndex);
-	void GetAdjustments(std::vector<std::reference_wrapper<Matrix>> weightMatrices, std::vector<std::reference_wrapper<Vector>> layers);
-	void GetdError_dActivatedOutput(Matrix& weightMatrix, PyNet::Models::Vector& inputLayer, PyNet::Models::Vector& outputLayer);
+	std::unique_ptr<Matrix> GetdError_dWeight(std::unique_ptr<Matrix>& weightMatrix, std::unique_ptr<Vector>& inputLayer, std::unique_ptr<Vector>& outputLayer, int weightMatrixIndex);
+	double GetdError_dBias(std::unique_ptr<Vector>& outputLayer, int index);
+
 public:
 
-	static auto factory(ILogger& logger, AdjustmentCalculator& adjustmentCalculator, Settings& settings, di::Context& context,
-		Vector& dError_dActivatedLayerAbove, Vector& dError_dActivatedOutput) {
-		return new NetworkTrainer{ logger, adjustmentCalculator, settings, context, dError_dActivatedLayerAbove, dError_dActivatedOutput };
+	static auto factory(std::shared_ptr<ILogger> logger, std::unique_ptr<AdjustmentCalculator> adjustmentCalculator, std::shared_ptr<Settings> settings, std::shared_ptr<PyNet::DI::Context> context,
+		std::unique_ptr<Vector> dError_dLayerAbove, std::unique_ptr<Vector> dError_dActivatedOutput, std::shared_ptr<Loss> loss) {
+		return new NetworkTrainer{ logger, std::move(adjustmentCalculator), settings, context, std::move(dError_dLayerAbove), std::move(dError_dActivatedOutput), loss };
 	}
 
-	NetworkTrainer(ILogger& logger, AdjustmentCalculator& adjustmentCalculator, Settings& settings, di::Context& context, Vector& dError_dActivatedLayerAbove,
-		Vector& dError_dActivatedOutput) : _logger(logger), _adjustmentCalculator(adjustmentCalculator), _settings(settings), _context(context),
-		_dError_dActivatedLayerAbove(dError_dActivatedLayerAbove), _dError_dActivatedOutput(dError_dActivatedOutput) {}
+	NetworkTrainer(std::shared_ptr<ILogger> logger, std::unique_ptr<AdjustmentCalculator> adjustmentCalculator, std::shared_ptr<Settings> settings,
+		std::shared_ptr<PyNet::DI::Context> context, std::unique_ptr<Vector> dError_dLayerAbove,
+		std::unique_ptr<Vector> dError_dActivatedOutput, std::shared_ptr<Loss> loss) : _logger(logger), _adjustmentCalculator(std::move(adjustmentCalculator)), _settings(settings), _context(context),
+		_dError_dLayerAbove(std::move(dError_dLayerAbove)), _dError_dActivatedOutput(std::move(dError_dActivatedOutput)), _loss{ loss } {}
 
-	double TrainNetwork(std::vector<std::reference_wrapper<Matrix>> weightMatrices, std::vector<std::reference_wrapper<Vector>> layers, PyNet::Models::Vector& expectedLayer);
-	void UpdateWeights(std::vector<std::reference_wrapper<Matrix>> weightMatrices, std::vector<std::reference_wrapper<Vector>> biases, double learningRate);
+	void Backpropagate(std::vector<std::unique_ptr<Matrix>>& weightMatrices, std::vector<std::unique_ptr<Vector>>& layers, PyNet::Models::Vector& expectedLayer, std::shared_ptr<PyNet::Models::Vector> lossDerivative);
+	void UpdateWeights(std::vector<std::unique_ptr<Matrix>>& weightMatrices, std::vector<std::unique_ptr<Vector>>& biases, double learningRate);
 };
 
