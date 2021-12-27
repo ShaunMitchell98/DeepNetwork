@@ -14,16 +14,17 @@ class __declspec(dllexport) CudaMatrix
 {
 public:
 	
-	static auto factory(std::shared_ptr<PyNet::DI::Context> context) {
-		return new CudaMatrix{ context };
+	static auto factory() {
+		return new CudaMatrix();
 	}
 
 	typedef PyNet::Models::Matrix base;
 
-	CudaMatrix(std::shared_ptr<PyNet::DI::Context> context);
+	CudaMatrix();
 	std::unique_ptr<Matrix> operator*(const Matrix& m) const override;
 	std::unique_ptr<Matrix> operator*(const double d) override;
 	std::unique_ptr<Matrix> operator-(const Matrix& m) override;
+	std::unique_ptr<Matrix> operator~() override;
 	void operator+=(const Matrix& m) override;
 };
 

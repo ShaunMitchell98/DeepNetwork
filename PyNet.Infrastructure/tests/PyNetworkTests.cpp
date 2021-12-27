@@ -16,7 +16,7 @@ namespace PyNet::Infrastructure::Tests
 			auto network = GetSharedService<PyNetwork>();
 		
 			network->AddInitialLayer(2);
-			network->AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
+			network->AddLayer(2);
 
 			double weights[4] = { 1, 2, 3, 4 };
 			//network._weights[0].get().Set(2, 2, weights);
@@ -33,7 +33,7 @@ namespace PyNet::Infrastructure::Tests
 
 			auto network = GetSharedService<PyNetwork>();
 			network->AddInitialLayer(2);
-			network->AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
+			network->AddLayer(2);
 
 			auto output = new double[2]{ 1, 0 };
 

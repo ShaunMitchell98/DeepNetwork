@@ -14,15 +14,16 @@ class CpuMatrix
 {
 public:
 
-	static auto factory(std::shared_ptr<PyNet::DI::Context> context) {
-		return new CpuMatrix{ context };
+	static auto factory() {
+		return new CpuMatrix();
 	}
 
 	typedef PyNet::Models::Matrix base;
 
-	CpuMatrix(std::shared_ptr<PyNet::DI::Context> context);
+	CpuMatrix();
 	std::unique_ptr<Matrix> operator*(const Matrix& m) const override;
 	std::unique_ptr<Matrix> operator*(const double d) override;
 	std::unique_ptr<Matrix> operator-(const Matrix& m) override;
+	std::unique_ptr<Matrix> operator~() override;
 	void operator+=(const Matrix& m) override;
 };

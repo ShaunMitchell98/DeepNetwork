@@ -2,11 +2,7 @@
 
 namespace PyNet::Models {
 
-	Vector::Vector(std::shared_ptr<PyNet::DI::Context> context, std::shared_ptr<Activation> activation) : _activation { std::move(activation) } {}
-
-	void Vector::SetActivationFunction(ActivationFunctionType activationFunctionType) {
-		_activation = Context->GetShared<Activation>();
-	}
+	Vector::Vector(std::shared_ptr<Activation> activation) : _activation { activation } {}
 
 	double Vector::GetValue(int row) const {
 		return ((Matrix*)(this))->GetValue(row, 0);
@@ -25,9 +21,6 @@ namespace PyNet::Models {
 		_activation->Apply(*this);
 	}
 
-	std::unique_ptr<Vector> Vector::CalculateActivationDerivative() {
-		return std::unique_ptr<Vector>(dynamic_cast<Vector*>(_activation->CalculateDerivative(*this).get()));
-	}
 
 	double* Vector::GetEnd() const {
 		return ((Matrix*)(this))->GetAddress(static_cast<size_t>(Rows) - 1, 0);
@@ -61,18 +54,6 @@ namespace PyNet::Models {
 		return result;
 	}
 
-	std::unique_ptr<Vector> Vector::operator^(const Vector& v) {
-
-		auto c = Context->GetUnique<Vector>();
-		c->Initialise(v.Rows, false);
-
-		for (auto i = 0; i < v.Rows; i++) {
-			c->SetValue(i, this->GetValue(i) * v.GetValue(i));
-		}
-
-		return std::move(c);
-	}
-
 	void Vector::operator=(const Matrix& m) {
 
 		if (m.GetCols() != 1) {
@@ -84,10 +65,6 @@ namespace PyNet::Models {
 
 	void Vector::operator=(const Vector& v) {
 		operator=((Matrix&)v);
-	}
-
-	std::unique_ptr<Vector> Vector::operator/(const double d) {
-		return std::unique_ptr<Vector>(dynamic_cast<Vector*>(Matrix::operator/(d).get()));
 	}
 
 	void Vector::Set(size_t rows, double* d) {

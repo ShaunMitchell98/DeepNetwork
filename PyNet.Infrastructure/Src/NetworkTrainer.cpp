@@ -4,15 +4,23 @@
 void NetworkTrainer::Backpropagate(std::vector<std::unique_ptr<Matrix>>& weightMatrices,
     std::vector<std::unique_ptr<Vector>>& layers, PyNet::Models::Vector& expectedLayer, std::shared_ptr<Vector> lossDerivative) {
 
-    _dError_dLayerAbove = std::unique_ptr<Vector>(lossDerivative.get());
-    _dError_dActivatedOutput = std::unique_ptr<Vector>(lossDerivative.get());
+    auto dActivatedLayerAbove_dLayerAbove = layers[layers.size() - 1]->CalculateActivationDerivative();
+    _dError_dLayerAbove = *lossDerivative ^ *dActivatedLayerAbove_dLayerAbove;
 
-    for (size_t i = weightMatrices.size() - 1; i >= 0; i--) {
+    auto dError_dWeight = *_dError_dLayerAbove * *~*layers[layers.size() - 2];
+    auto dError_dBias = *_dError_dLayerAbove | *layers[layers.size() - 1]->CalculateActivationDerivative();
+
+    _adjustmentCalculator->AddWeightAdjustment(weightMatrices.size() - 1, std::move(dError_dWeight));
+    _adjustmentCalculator->AddBiasAdjustment(weightMatrices.size() - 1, dError_dBias);
+
+    for (int i = weightMatrices.size() - 2; i >= 0; i--) {
         
-        auto dError_dBias = GetdError_dBias(layers[i + 1], i);
+        _logger->LogLine("Getting dError_dBias for layer: " + std::to_string(i));
+        auto dError_dBias = GetdError_dBias(layers[(size_t)i + 1]);
         _adjustmentCalculator->AddBiasAdjustment(i, dError_dBias);
 
-        auto dError_dWeight = GetdError_dWeight(weightMatrices[i], layers[i-1], layers[i], i);
+        _logger->LogLine("Backpropagating for weight matrix: " + std::to_string(i));
+        auto dError_dWeight = GetdError_dWeight(weightMatrices[i], layers[i], layers[(size_t)i+1]);
         _adjustmentCalculator->AddWeightAdjustment(i, std::move(dError_dWeight));
     }
 
@@ -25,32 +33,24 @@ void NetworkTrainer::UpdateWeights(std::vector<std::unique_ptr<Matrix>>& weightM
     _logger->LogLine("Updating weights...");
 
     for (int index = weightMatrices.size() - 1; index >= 0; index--) {
-
-        auto bias = biases[index].get();
-        auto weightMatrix = weightMatrices[index].get();
-   
+    
         auto biasAdjustmentMatrix = *_adjustmentCalculator->GetBiasAdjustment(index) * learningRate;
-        auto biasAdjustmentVector = std::unique_ptr<Vector>(dynamic_cast<Vector*>(std::move(biasAdjustmentMatrix.get())));
+        auto biasAdjustmentVector = _context->GetUnique<Vector>();
+        biasAdjustmentVector->Set(biasAdjustmentMatrix->GetRows(), biasAdjustmentMatrix->GetValues().data());
 
-        biases[index] = std::move(*bias - *biasAdjustmentVector);
-        weightMatrices[index] = *weightMatrix - *(*_adjustmentCalculator->GetWeightAdjustment(index) * learningRate);
+        biases[index] = *biases[index] - *biasAdjustmentVector;
+        weightMatrices[index] = *weightMatrices[index] - *(*_adjustmentCalculator->GetWeightAdjustment(index) * learningRate);
     }
 
     _adjustmentCalculator->SetNewBatch(true);
 }
 
-double NetworkTrainer::GetdError_dBias(std::unique_ptr<Vector>& outputLayer, int index) 
+double NetworkTrainer::GetdError_dBias(std::unique_ptr<Vector>& outputLayer) 
 {
- /*   _logger->LogLine("Getting dError_dBias for layer: " + std::to_string(index));
-
-    auto& activatedOutputLayer = outputLayer.CalculateActivationDerivative();
-    return _dError_dActivatedOutput | activatedOutputLayer;*/
-    return 0;
+    return *_dError_dLayerAbove | *outputLayer->CalculateActivationDerivative();
 }
 
-std::unique_ptr<Matrix> NetworkTrainer::GetdError_dWeight(std::unique_ptr<Matrix>& layerAboveMatrix, std::unique_ptr<Vector>& inputLayer, std::unique_ptr<Vector>& outputLayer, int index) {
-
-    _logger->LogLine("Backpropagating for weight matrix: " + std::to_string(index));
+std::unique_ptr<Matrix> NetworkTrainer::GetdError_dWeight(std::unique_ptr<Matrix>& layerAboveMatrix, std::unique_ptr<Vector>& inputLayer, std::unique_ptr<Vector>& outputLayer) {
 
     auto layerAboveTranspose = ~*layerAboveMatrix;
     auto dError_dActivatedOutput = std::unique_ptr<Vector>(dynamic_cast<Vector*>((*layerAboveTranspose * *_dError_dLayerAbove).get()));
@@ -61,5 +61,5 @@ std::unique_ptr<Matrix> NetworkTrainer::GetdError_dWeight(std::unique_ptr<Matrix
 
     _dError_dLayerAbove.reset(dError_dOutput.get());
 
-    return dError_dWeight;
+    return std::move(dError_dWeight);
 }

@@ -19,11 +19,9 @@ namespace PyNet::Infrastructure::Tests
 			double inputLayer[2] = { 1, 1 };
 			auto inputLayerVector = GetUniqueService<Vector>();
 			inputLayerVector->Set(2, inputLayer);
-			inputLayerVector->SetActivationFunction(PyNet::Models::ActivationFunctionType::Logistic);
 
 			auto outputLayerVector = GetUniqueService<Vector>();
 			outputLayerVector->Initialise(2, false);
-			outputLayerVector->SetActivationFunction(PyNet::Models::ActivationFunctionType::Logistic);
 
 			double biasesLayer[2] = { 0.1, 0.5 };
 			auto biasesVector = GetUniqueService<Vector>();

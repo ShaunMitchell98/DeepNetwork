@@ -15,13 +15,12 @@ namespace PyNet::Infrastructure {
 		_layers.push_back(std::move(layer));
 	}
 
-	void PyNetwork::AddLayer(int rows, ActivationFunctionType activationFunctionType) {
+	void PyNetwork::AddLayer(int rows) {
 
 		auto cols = _layers[_layers.size() - 1]->GetRows();
 
 		auto layer = std::move(_context->GetUnique<PyNet::Models::Vector>());
 		layer->Initialise(rows, false);
-		layer->SetActivationFunction(activationFunctionType);
 		_layers.push_back(std::move(layer));
 
 		auto weightMatrix = std::move(_context->GetUnique<Matrix>());
@@ -29,7 +28,6 @@ namespace PyNet::Infrastructure {
 		_weights.push_back(std::move(weightMatrix));
 
 		auto biasVector = std::move(_context->GetUnique<Vector>());
-		biasVector->SetActivationFunction(activationFunctionType);
 		biasVector->Initialise(rows, true);
 
 		_biases.push_back(std::move(biasVector));
@@ -62,7 +60,6 @@ namespace PyNet::Infrastructure {
 
 				auto expectedVector = std::move(_context->GetUnique<Vector>());
 				expectedVector->Set(_layers[_layers.size() - 1]->GetRows(), expectedOutputs[i]);
-				expectedVector->SetActivationFunction(ActivationFunctionType::Logistic);
 
 				auto loss = _loss->CalculateLoss(*expectedVector, *_layers[_layers.size() - 1]);
 				_logger->LogLine("The loss is: " + std::to_string(loss));

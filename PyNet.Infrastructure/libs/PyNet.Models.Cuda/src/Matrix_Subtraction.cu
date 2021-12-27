@@ -9,8 +9,8 @@
 #include "Matrix_Operations.h"
 
 __global__ void matrixSubtractionKernel(double* A, double* B, double* C, int rows, int cols) {
-    int i = blockIdx.y * blockDim.y + threadIdx.y;
-    int j = blockIdx.x * blockDim.x + threadIdx.x;
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
 
     if (i < rows && j < cols) {
         C[i * cols + j] = A[i * cols + j] - B[i * cols + j];

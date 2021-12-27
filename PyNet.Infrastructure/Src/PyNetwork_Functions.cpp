@@ -14,7 +14,7 @@ namespace PyNet::Infrastructure {
 		}
 
 		void PyNetwork_AddLayer(void* pyNetwork, int count, PyNet::Models::ActivationFunctionType activationFunctionType) {
-			((PyNetwork*)pyNetwork)->AddLayer(count, activationFunctionType);
+			((PyNetwork*)pyNetwork)->AddLayer(count);
 		}
 
 		double* PyNetwork_Run(void* pyNetwork, double* input_layer) {

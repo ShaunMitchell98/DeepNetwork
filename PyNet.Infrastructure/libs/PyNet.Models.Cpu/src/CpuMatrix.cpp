@@ -1,14 +1,14 @@
 #include "CpuMatrix.h"
 
-CpuMatrix::CpuMatrix(std::shared_ptr<PyNet::DI::Context> context)
+CpuMatrix::CpuMatrix()
 #ifndef CPU_VECTOR
-	: Matrix(context)
+	: Matrix()
 #endif
 {}
 
 std::unique_ptr<Matrix> CpuMatrix::operator*(const Matrix& m) const {
 
-	auto c = Context->GetUnique<CpuMatrix>();
+	auto c = std::unique_ptr<Matrix>(new CpuMatrix());
 	c->Initialise(Rows, m.GetCols(), false);
 
 	for (auto i = 0; i < Rows; i++) {
@@ -58,4 +58,11 @@ void CpuMatrix::operator+=(const Matrix& m) {
 			this->SetValue(i, j, this->GetValue(i, j) + m.GetValue(i, j));
 		}
 	}
+}
+
+std::unique_ptr<Matrix> CpuMatrix::operator~() {
+
+	auto m = std::unique_ptr<Matrix>(new CpuMatrix());
+	m->Set(Cols, Rows, Values.data());
+	return std::move(m);
 }

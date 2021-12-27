@@ -41,7 +41,7 @@ namespace PyNet::Infrastructure {
 
 
 		__declspec(dllexport) void AddInitialLayer(int rows);
-		_declspec(dllexport) void AddLayer(int, ActivationFunctionType);
+		_declspec(dllexport) void AddLayer(int);
 		_declspec(dllexport) double* Run(double* input_layer);
 		_declspec(dllexport) double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate);
 	};
