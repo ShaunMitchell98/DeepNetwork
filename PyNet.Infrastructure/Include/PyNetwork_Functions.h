@@ -3,6 +3,7 @@
 #include "PyNet.Models/Activation.h"
 
 namespace PyNet::Infrastructure {
+
 	extern "C" {
 #define EXPORT_SYMBOL __declspec(dllexport)
 

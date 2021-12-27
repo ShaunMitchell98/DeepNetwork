@@ -22,54 +22,30 @@ namespace PyNet::DI {
         std::shared_ptr<ItemContainer> _container = std::make_shared<ItemContainer>();
         std::shared_ptr<Context> _context = std::make_shared<Context>(_container);
 
-        // Add factory method automatically if present in class
-        template <typename T, typename std::enable_if< std::is_function<decltype(T::factory)>::value >::type* = nullptr>
-        void AddClassAuto(void*) // argument only used to disambiguate from vararg version
-        {
-            AddFactoryPriv(T::factory);
-        }
-
-        template<typename T>
-        void AddClassAuto(...)
-        {
-            throw std::runtime_error(std::string("Class {} has no factory in context!") + typeid(T).name());
-        }
-
     public:
 
-        // Variadic template to add a list of free standing factory functions
-        template <typename T1, typename T2, typename... Ts>
-        void AddFactory(T1 t1, T2 t2, Ts... ts)
-        {
-            AddFactoryPriv(t1, _context);
-            AddFactory(t2, ts...);
-        }
-
-        template <typename T>
-        void AddFactory(T t)
-        {
-            AddFactoryPriv(t, _context);
+        ContextBuilder() {
+            AddInstance(_context.get(), InstanceMode::Shared);
         }
 
         // Add an already instantiated object to the context
         template <typename InstanceType>
-        void AddInstance(InstanceType* instance, InstanceMode instanceMode)
+        ContextBuilder* AddInstance(InstanceType* instance, InstanceMode instanceMode)
         {
             if (instance == nullptr)
                 throw std::runtime_error(std::string("Trying to add nullptr instance for type: ") + typeid(InstanceType).name());
 
-            Item& item = _container->GetInitialItem<InstanceType>();
+            auto& item = _container->GetInitialItem<InstanceType>();
 
-            if (item.instancePtr.index() != 0)
+            if (item.instancePtr)
                 throw std::runtime_error(std::string("Instance already in Context for type: ") + typeid(InstanceType).name());
 
-            std::any value = *instance;
-            if (instanceMode == InstanceMode::Unique) {
-                item.instancePtr = std::unique_ptr<std::any>(&value);
+            if (instanceMode == InstanceMode::Shared) {
+                item.instancePtr = std::make_shared<void*>();
+                *item.instancePtr = static_cast<void*>(instance);
             }
-            else {
-                item.instancePtr = std::shared_ptr<std::any>(&value);
-            }
+
+            return this;
         }
 
         // Add a factory function to context builder
@@ -81,11 +57,16 @@ namespace PyNet::DI {
             if (item.factory)
                 throw std::runtime_error(std::string("Factory already registed for type: ") + typeid(InstanceType).name());
 
-            item.factory = [factoryFunction, instanceMode, this]()
+            item.factory = [factoryFunction, instanceMode](Context& context)
             {
-                AddInstance(factoryFunction(_context->Get<Args>()...), instanceMode);
+                return factoryFunction(context.GetShared<typename Args::element_type>()...);
             };
 
+            if (instanceMode == InstanceMode::Shared) {
+                item.instancePtr = std::make_shared<void*>();
+                *item.instancePtr = item.factory(*_context);
+            }
+ 
             item.instanceMode = instanceMode;
         }
 
@@ -113,7 +94,6 @@ namespace PyNet::DI {
         }
 
         std::shared_ptr<Context> Build() {
-            AddInstance(_context.get(), InstanceMode::Shared);
             return _context;
         }
     };

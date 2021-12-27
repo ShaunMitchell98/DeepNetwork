@@ -10,7 +10,7 @@ namespace PyNet::Infrastructure {
 	private:
 		bool _enabled;
 		const char* _fileName = "PyNet_Logs.txt";
-		Logger(bool log);
+		Logger(bool log) : _enabled{ log } {};
 	public:
 
 		typedef ILogger base;

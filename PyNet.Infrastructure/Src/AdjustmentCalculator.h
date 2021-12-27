@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <memory>
 #include "PyNet.Models/Matrix.h"
 #include "PyNet.Models/Vector.h"
 #include "Settings.h"
@@ -14,13 +14,13 @@ private:
 	int _batchSize = 0;
 	std::shared_ptr<Settings> _settings;
 	std::shared_ptr<PyNet::DI::Context> _context;
+	AdjustmentCalculator(std::shared_ptr<Settings> settings, std::shared_ptr<PyNet::DI::Context> context) : _settings(settings), _context(context) {}
 public:
 
 	static auto factory(std::shared_ptr<Settings> settings, std::shared_ptr<PyNet::DI::Context> context) {
 		return new AdjustmentCalculator(settings, context);
 	}
 
-	AdjustmentCalculator(std::shared_ptr<Settings> settings, std::shared_ptr<PyNet::DI::Context> context) : _settings(settings), _context(context) {}
 	void AddMatrix(int rows, int cols);
 	void SetBatchSize(int batchSize);
 	void AddWeightAdjustment(int matrixIndex, std::unique_ptr<PyNet::Models::Matrix> adjustments);

@@ -5,8 +5,6 @@
 
 namespace PyNet::Infrastructure {
 
-	Logger::Logger(bool log) : _enabled(log) {}
-
 	void Logger::LogMessageWithoutDate(std::string_view message) {
 
 		if (_enabled) {

@@ -4,10 +4,10 @@
 void NetworkTrainer::Backpropagate(std::vector<std::unique_ptr<Matrix>>& weightMatrices,
     std::vector<std::unique_ptr<Vector>>& layers, PyNet::Models::Vector& expectedLayer, std::shared_ptr<Vector> lossDerivative) {
 
-    _dError_dLayerAbove = lossDerivative;
-    _dError_dActivatedOutput = lossDerivative;
+    _dError_dLayerAbove = std::unique_ptr<Vector>(lossDerivative.get());
+    _dError_dActivatedOutput = std::unique_ptr<Vector>(lossDerivative.get());
 
-    for (auto i = weightMatrices.size() - 1; i >= 0; i--) {
+    for (size_t i = weightMatrices.size() - 1; i >= 0; i--) {
         
         auto dError_dBias = GetdError_dBias(layers[i + 1], i);
         _adjustmentCalculator->AddBiasAdjustment(i, dError_dBias);
@@ -24,7 +24,7 @@ void NetworkTrainer::Backpropagate(std::vector<std::unique_ptr<Matrix>>& weightM
 void NetworkTrainer::UpdateWeights(std::vector<std::unique_ptr<Matrix>>& weightMatrices, std::vector<std::unique_ptr<Vector>>& biases, double learningRate) {
     _logger->LogLine("Updating weights...");
 
-    for (auto index = weightMatrices.size() - 1; index >= 0; index--) {
+    for (int index = weightMatrices.size() - 1; index >= 0; index--) {
 
         auto bias = biases[index].get();
         auto weightMatrix = weightMatrices[index].get();

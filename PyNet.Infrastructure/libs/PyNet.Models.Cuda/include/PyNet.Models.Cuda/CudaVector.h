@@ -36,9 +36,7 @@ public:
 		return CudaMatrix::operator*(d);
 	}
 
-	std::unique_ptr<Vector> operator-(const Vector& v) override {
-		return std::unique_ptr<Vector>(dynamic_cast<Vector*>(CudaMatrix::operator-(v).get()));
-	}
+	std::unique_ptr<Vector> operator-(const Vector& v) override;
 
 	int GetRows() const override {
 		return Vector::GetRows();
@@ -49,6 +47,12 @@ public:
 	}
 
 	CudaVector(const CudaVector& v);
+
+	operator const Matrix&() {
+		auto& temp1 = static_cast<Vector&>(*this);
+		auto& temp2 = static_cast<Matrix&>(temp1);
+		return temp2;
+	}
 };
 
 #undef CUDA_VECTOR

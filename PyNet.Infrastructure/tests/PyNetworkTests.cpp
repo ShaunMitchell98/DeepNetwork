@@ -13,7 +13,7 @@ namespace PyNet::Infrastructure::Tests
 		TEST_METHOD(Run_WhenCalled_ReturnsOutput)
 		{
 			double input[4] = { 1, 1, 1, 1 };
-			auto network = GetUniqueService<PyNetwork>();
+			auto network = GetSharedService<PyNetwork>();
 		
 			network->AddInitialLayer(2);
 			network->AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
@@ -31,7 +31,7 @@ namespace PyNet::Infrastructure::Tests
 		{
 			auto input = new double[2] {1, 1};
 
-			auto network = GetUniqueService<PyNetwork>();
+			auto network = GetSharedService<PyNetwork>();
 			network->AddInitialLayer(2);
 			network->AddLayer(2, PyNet::Models::ActivationFunctionType::Logistic);
 

@@ -37,54 +37,35 @@ namespace PyNet::DI {
     public:
         Context(std::shared_ptr<ItemContainer> container) : _container{ container} {}
 
-        // Get an instance from the context, runs factories recursively to satisfy all dependencies
         template <class T>
         std::unique_ptr<T> GetUnique()
         {
-            return Get<std::unique_ptr<T>>();
+            auto& item = _container->GetItem<T>();
+
+            item.marker = true;
+            void* temp = item.factory(*this);
+            item.marker = false;
+
+            auto result = std::unique_ptr<T>(static_cast<T*>(temp));
+            return std::move(result);
         }
 
-
-        // Get an instance from the context, runs factories recursively to satisfy all dependencies
         template <class T>
         std::shared_ptr<T> GetShared()
         {
-            return Get<std::shared_ptr<T>>();
-        }
+            Item& item = _container->GetItem<T>();
 
-        template<class T>
-        auto Get() 
-        {
-
-            Item& item = _container->GetItem<T>(); // may return derived type
-
-            if (item.instancePtr.index() == 0 || item.instanceMode == InstanceMode::Unique)
+            if (!item.instancePtr)
             {
-                if (item.marker) {
-                    throw std::runtime_error(std::string("Cyclic dependecy while instantiating type: ") + typeid(T).name());
-                }
-
-                item.marker = true;
-
-                item.instancePtr = std::monostate();
-                item.factory();
-                item.marker = false;
+                throw std::runtime_error(std::string("No instance of type ") + typeid(T).name() + " has been registed with the Context.");
             }
 
-            if (std::is_same<typename std::remove_cv<T>::type, std::shared_ptr<typename T::element_type>>::value) {
-                auto ptr = std::get<std::shared_ptr<std::any>>(item.instancePtr);
-                auto result = T();
-                result.reset(std::any_cast<typename T::element_type>(ptr.get()));
-                return result;
-                //return std::invoke_result_t<T, typename T::element_type>(&T::reset, result, std::any_cast<typename T::element_type>(ptr.get()));
+            if (item.marker) {
+                throw std::runtime_error(std::string("Cyclic dependecy while instantiating type: ") + typeid(T).name());
             }
-            else {
-                auto ptr = std::move(std::get<std::unique_ptr<std::any>>(item.instancePtr));
-                auto result = T();
-                result.reset(std::any_cast<typename T::element_type>(ptr.get()));
-                return std::move(result);
-                //return std::invoke_result_t<T, typename T::element_type>(&T::reset, result, std::any_cast<typename T::element_type>(ptr.get()));
-            }
+
+            T* elementPtr = static_cast<T*>(*item.instancePtr);
+            return std::shared_ptr<T>(item.instancePtr, elementPtr);
         }
     };
 }

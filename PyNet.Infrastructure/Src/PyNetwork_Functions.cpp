@@ -7,9 +7,10 @@ namespace PyNet::Infrastructure {
 
 		void* PyNetwork_New(int count, bool log, bool cudaEnabled) {
 			auto context = GetContext(cudaEnabled, log);
-			auto pyNetwork = context->GetUnique<PyNetwork>();
+			auto pyNetwork = context->GetShared<PyNetwork>();
 			pyNetwork->AddInitialLayer(count);
-			return pyNetwork.get();
+			auto unmanagedPyNetwork = pyNetwork.get();
+			return unmanagedPyNetwork;
 		}
 
 		void PyNetwork_AddLayer(void* pyNetwork, int count, PyNet::Models::ActivationFunctionType activationFunctionType) {
