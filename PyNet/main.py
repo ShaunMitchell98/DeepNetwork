@@ -17,8 +17,8 @@ train_images = train_images / 255.0
 test_images = test_images / 255.0
 
 batch_sizes = [20]
-learning_rates = [1]
-number: int = 30000
+learning_rates = [2]
+number: int = 40000
 
 for learning_rate in learning_rates:
     for batch_size in batch_sizes:

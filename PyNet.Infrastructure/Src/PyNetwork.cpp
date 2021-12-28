@@ -70,7 +70,8 @@ namespace PyNet::Infrastructure {
 				_networkTrainer->Backpropagate(_weights, _layers, *expectedVector, std::move(lossDerivative));
 
 				if (batchNumber == batchSize) {
-					auto learningRate = baseLearningRate * (static_cast<double>(numberOfExamples) / currentIteration);
+					//auto learningRate = baseLearningRate * (static_cast<double>(numberOfExamples) / currentIteration);
+					auto learningRate = baseLearningRate;
 					_logger->LogLine("The learning rate is: " + std::to_string(learningRate));
 					_networkTrainer->UpdateWeights(_weights, _biases, learningRate);
 

@@ -8,11 +8,6 @@ namespace PyNet::Infrastructure {
 	void Logger::LogMessageWithoutDate(std::string_view message) {
 
 		if (_enabled) {
-			auto count = 0;
-			while (message[count] != '\0') {
-				count++;
-			}
-
 			auto stream = std::ofstream(_fileName, std::ios_base::app);
 			stream << message;
 			stream.close();
@@ -32,6 +27,6 @@ namespace PyNet::Infrastructure {
 
 	void Logger::LogLine(std::string_view message) {
 		LogMessage(message);
-		LogMessage("\n");
+		LogMessageWithoutDate("\n");
 	}
 }

@@ -18,10 +18,14 @@ static void internalMatrixDoubleMultiply(double* A, double* B, double* C, int Ar
     // use 1 to 512 threads per block
     dim3 threadsPerBlock(Arows, Acols);
     dim3 blocksPerGrid(1, 1);
-    if (Arows * Acols > 512) {
-        threadsPerBlock.x = 512;
-        threadsPerBlock.y = 512;
+
+    if (Arows > 32) {
+        threadsPerBlock.x = 32;
         blocksPerGrid.x = static_cast<int>(ceil(double(Arows) / double(threadsPerBlock.x)));
+    }
+
+    if (Acols > 32) {
+        threadsPerBlock.y = 32;
         blocksPerGrid.y = static_cast<int>(ceil(double(Acols) / double(threadsPerBlock.y)));
     }
 

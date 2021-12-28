@@ -24,10 +24,13 @@ void internalMatrixAdditionAssignment(double* A, double* B, int rows, int cols) 
     // use 1 to 512 threads per block
     dim3 threadsPerBlock(rows, cols);
     dim3 blocksPerGrid(1, 1);
-    if (rows * cols > 512) {
-        threadsPerBlock.x = 512;
-        threadsPerBlock.y = 512;
+    if (rows > 32) {
+        threadsPerBlock.x = 32;
         blocksPerGrid.x = static_cast<int>(ceil(double(rows) / double(threadsPerBlock.x)));
+    }
+
+    if (cols > 32) {
+        threadsPerBlock.y = 32;
         blocksPerGrid.y = static_cast<int>(ceil(double(cols) / double(threadsPerBlock.y)));
     }
 
