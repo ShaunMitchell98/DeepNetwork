@@ -20,12 +20,11 @@ namespace PyNet::DI {
         using FactoryFunction = InstanceType * (*)(Args...);
 
         std::shared_ptr<ItemContainer> _container = std::make_shared<ItemContainer>();
-        std::shared_ptr<Context> _context = std::make_shared<Context>(_container);
 
     public:
 
         ContextBuilder() {
-            AddInstance(_context.get(), InstanceMode::Shared);
+            AddInstance(new Context(_container), InstanceMode::Shared);
         }
 
         // Add an already instantiated object to the context
@@ -64,7 +63,7 @@ namespace PyNet::DI {
 
             if (instanceMode == InstanceMode::Shared) {
                 item.instancePtr = std::make_shared<void*>();
-                *item.instancePtr = item.factory(*_context);
+                *item.instancePtr = item.factory(*Build());
             }
  
             item.instanceMode = instanceMode;
@@ -94,7 +93,9 @@ namespace PyNet::DI {
         }
 
         std::shared_ptr<Context> Build() {
-            return _context;
+            auto& item = _container->GetItem<Context>();
+            Context* elementPtr = static_cast<Context*>(*item.instancePtr);
+            return std::shared_ptr<Context>(item.instancePtr, elementPtr);
         }
     };
 }

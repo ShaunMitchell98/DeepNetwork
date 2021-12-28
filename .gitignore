@@ -369,3 +369,4 @@ build/CMakeFiles/
 build/libs/PyNet.Models/
 /PyNet/Images/
 /PyNet/successes.txt
+*.txt

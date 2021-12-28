@@ -30,7 +30,7 @@ namespace PyNet::Infrastructure {
 				->AddClass<LayerPropagator>()
 				->AddClass<AdjustmentCalculator>()
 				->AddClass<NetworkTrainer>()
-				->AddClass<PyNetwork>();
+				->AddClass<PyNetwork>(PyNet::DI::InstanceMode::Unique);
 
 		}
 	};
