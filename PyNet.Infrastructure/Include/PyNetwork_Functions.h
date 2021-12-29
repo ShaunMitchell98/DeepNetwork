@@ -5,13 +5,13 @@
 namespace PyNet::Infrastructure {
 
 	extern "C" {
-#define EXPORT_SYMBOL __declspec(dllexport)
 
-		EXPORT_SYMBOL void* PyNetwork_New(int count, bool log, bool cudaEnabled);
-		EXPORT_SYMBOL void PyNetwork_AddLayer(void* pyNetwork, int count, PyNet::Models::ActivationFunctionType activationFunctionType);
-		EXPORT_SYMBOL double* PyNetwork_Run(void* pyNetwork, double* input_layer);
-		EXPORT_SYMBOL void PyNetwork_Train(void* pyNetwork, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate);
+		__declspec(dllexport) void* PyNetwork_New(bool log, bool cudaEnabled);
+		__declspec(dllexport) int PyNetwork_Load(void* pyNetwork, const char* filePath);
+		__declspec(dllexport) void PyNetwork_AddLayer(void* pyNetwork, int count, PyNet::Models::ActivationFunctionType activationFunctionType);
+		__declspec(dllexport) double* PyNetwork_Run(void* pyNetwork, double* input_layer);
+		__declspec(dllexport) void PyNetwork_Train(void* pyNetwork, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate);
+		__declspec(dllexport) void PyNetwork_Save(void* pyNetwork, const char* filePath);
 
-#undef EXPORT_SYMBOL
 	}
 }

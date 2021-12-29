@@ -6,16 +6,54 @@
 #include <vector>
 #include <iterator>
 #include <numeric>
+#include "XmlWriter.h"
+#include "XmlReader.h"
 
 namespace PyNet::Infrastructure {
 
-	void PyNetwork::AddInitialLayer(int rows) {
-		auto layer = std::move(_context->GetUnique<PyNet::Models::Vector>());
-		layer->Initialise(rows, false);
+	int PyNetwork::Load(const char* filePath) {
+		auto reader = XmlReader::Create(filePath);
+
+		if (reader->FindNode("Configuration")) {
+			if (reader->FindNode("Weights")) {
+				while (reader->FindNode("Weight")) {
+					auto weightMatrix = _context->GetUnique<Matrix>();
+					weightMatrix->Load(reader->ReadContent());
+					_adjustmentCalculator->AddMatrix(weightMatrix->GetRows(), weightMatrix->GetCols());
+					_weights.push_back(std::move(weightMatrix));	
+				}
+			}
+
+			if (reader->FindNode("Biases")) {
+				while (reader->FindNode("Bias")) {
+					auto biasVector = _context->GetUnique<Vector>();
+					biasVector->Load(reader->ReadContent());
+					_biases.push_back(std::move(biasVector));
+				}
+			}
+		}
+
+		auto layer = _context->GetUnique<Vector>();
+		layer->Initialise(_weights[0]->GetCols(), false);
 		_layers.push_back(std::move(layer));
+
+		for (auto& m : _weights) {
+			auto layer = _context->GetUnique<Vector>();
+			layer->Initialise(m->GetRows(), false);
+			_layers.push_back(std::move(layer));
+		}
+
+		return _layers[_layers.size() - 1]->GetRows();
 	}
 
 	void PyNetwork::AddLayer(int rows) {
+
+		if (_layers.empty()) {
+			auto layer = std::move(_context->GetUnique<PyNet::Models::Vector>());
+			layer->Initialise(rows, false);
+			_layers.push_back(std::move(layer));
+			return;
+		}
 
 		auto cols = _layers[_layers.size() - 1]->GetRows();
 
@@ -90,5 +128,31 @@ namespace PyNet::Infrastructure {
 		}
 
 		return _losses.data();
+	}
+
+	void PyNetwork::Save(const char* filePath) {
+
+		auto writer = XmlWriter::Create(filePath);
+
+		writer->StartElement("Configuration");
+		writer->StartElement("Weights");
+		for (auto i = 0; i < _weights.size(); i++) {
+			writer->StartElement("Weight");
+			writer->WriteString(_weights[i]->ToString());
+			writer->EndElement();
+		}
+
+		writer->EndElement();
+
+		writer->StartElement("Biases");
+		for (auto i = 0; i < _biases.size(); i++) {
+			writer->StartElement("Bias");
+			writer->WriteString(_biases[i]->ToString());
+			writer->EndElement();
+		}
+
+		writer->EndElement();
+
+		writer->EndElement();
 	}
 }

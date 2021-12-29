@@ -52,13 +52,53 @@ namespace PyNet::Models {
 		return &Values[row * Cols + col];
 	}
 
+	void Matrix::Load(std::string_view value) {
+
+		string currentValue;
+		int expectedColNumber = 0;
+		int currentRowNumber = 0;
+		int currentColNumber = 0;
+		Values = std::vector<double>();
+
+		for (auto ch : value) {
+
+			if (ch != ',' && ch != '\n') {
+				currentValue += ch;
+			}
+			else {
+				Values.push_back(stod(currentValue));
+				currentValue.erase();
+				currentColNumber++;
+			}
+
+			if (ch == '\n') {
+
+				if (expectedColNumber == 0) {
+					expectedColNumber = currentColNumber;
+				}
+				else if (expectedColNumber != currentColNumber) {
+					throw std::exception("Cannot load matrix with non-constant column number.");
+				}
+
+				currentColNumber = 0;
+				currentRowNumber++;
+			}
+		}
+
+		Rows = currentRowNumber;
+		Cols = expectedColNumber;
+	}
+
 	std::string Matrix::ToString() {
 
 		auto text = new std::string();
+		char buffer[30];
 
 		for (auto row = 0; row < Rows; row++) {
 			for (auto col = 0; col < Cols; col++) {
-				*text += std::to_string(GetValue(row, col));
+				auto value = GetValue(row, col);
+				sprintf(buffer, "%.20f", value);
+				*text += buffer;
 
 				if (col != Cols - 1) {
 					*text += ", ";

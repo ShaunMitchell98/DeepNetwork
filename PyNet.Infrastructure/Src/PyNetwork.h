@@ -39,10 +39,10 @@ namespace PyNet::Infrastructure {
 			_logger{ logger }, _layerPropagator{ layerPropagator }, _context{ context }, _adjustmentCalculator{ adjustmentCalculator },
 			_networkTrainer{ networkTrainer }, _settings{ settings }, _loss{ loss } {}
 
-
-		__declspec(dllexport) void AddInitialLayer(int rows);
-		_declspec(dllexport) void AddLayer(int);
-		_declspec(dllexport) double* Run(double* input_layer);
-		_declspec(dllexport) double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate);
+		__declspec(dllexport) int Load(const char* filePath);
+		__declspec(dllexport) void AddLayer(int);
+		__declspec(dllexport) double* Run(double* input_layer);
+		__declspec(dllexport) double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate);
+		__declspec(dllexport) void Save(const char* filePath);
 	};
 }

@@ -6,10 +6,10 @@ from PyNet.PyNet.NumpyArrayConversion import convert_numpy_array_to_2d_double_ar
 
 class PyNetwork:
 
-    def __init__(self, count: int, log: bool, cudaEnabled: bool):
+    def __init__(self, log: bool, cudaEnabled: bool):
 
         self.lib = ctypes.windll.LoadLibrary(r"..\PyNet.Infrastructure\build\Release\PyNet.Infrastructure.dll")
-        self.lib.PyNetwork_New.argtypes = [ctypes.c_int, ctypes.c_bool, ctypes.c_bool]
+        self.lib.PyNetwork_New.argtypes = [ctypes.c_bool, ctypes.c_bool]
         self.lib.PyNetwork_New.restype = ctypes.c_void_p
 
         self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
@@ -25,16 +25,20 @@ class PyNetwork:
 
         self.lib.PyNetwork_Train.restype = ctypes.POINTER(ctypes.c_double)
 
-        self.obj = self.lib.PyNetwork_New(count, log, cudaEnabled)
-        self.counts = []
+        self.lib.PyNetwork_Save.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        self.lib.PyNetwork_Load.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        self.lib.PyNetwork_Load.restype = ctypes.c_int
+
+        self.obj = self.lib.PyNetwork_New(log, cudaEnabled)
+        self.outputNumber = 0
 
     def add_layer(self, count: int, activationFunctionType: int):
         self.lib.PyNetwork_AddLayer(self.obj, count, activationFunctionType)
-        self.counts.append(count)
+        self.outputNumber = count
 
     def run(self, input_layer: np.ndarray) -> np.ndarray:
         results = self.lib.PyNetwork_Run(self.obj, input_layer.ctypes.data_as(ctypes.POINTER(ctypes.c_double)))
-        return np.ctypeslib.as_array(results, shape=(self.counts[self.counts.__len__() - 1],))
+        return np.ctypeslib.as_array(results, shape=(self.outputNumber,))
 
     def train(self, input_layers: np.ndarray,
               expected_outputs: np.ndarray, numberOfOutputOptions: int, batch_size: int, learning_rate: float):
@@ -56,3 +60,9 @@ class PyNetwork:
         errors = self.lib.PyNetwork_Train(self.obj, input_arr_ptr, expected_arr_ptr, input_layers.shape[0], batch_size,
                                           learning_rate)
         return np.ctypeslib.as_array(errors, shape=(input_layers.shape[0],))
+
+    def save(self, filePath):
+        self.lib.PyNetwork_Save(self.obj, ctypes.c_char_p(filePath.encode('utf-8')))
+
+    def load(self, filePath):
+        self.outputNumber = self.lib.PyNetwork_Load(self.obj, ctypes.c_char_p(filePath.encode('utf-8')))

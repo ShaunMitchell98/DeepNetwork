@@ -14,7 +14,6 @@ namespace PyNet::Models {
 		std::vector<double> Values;
 
 	public:
-
 		void Initialise(size_t rows, size_t cols, bool generateWeights);
 		double GetValue(size_t row, size_t col) const;
 		void SetValue(size_t row, size_t col, double value);
@@ -26,6 +25,7 @@ namespace PyNet::Models {
 		void operator=(const Matrix& m);
 		std::unique_ptr<Matrix> operator/(const double d);
 		void Set(size_t rows, size_t cols, const double* values);
+		void Load(std::string_view value);
 
 		virtual std::unique_ptr<Matrix> operator*(const Matrix& m) const = 0;
 		virtual std::unique_ptr<Matrix> operator*(const double d) = 0;

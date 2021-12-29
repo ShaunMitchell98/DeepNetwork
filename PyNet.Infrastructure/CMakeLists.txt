@@ -42,6 +42,10 @@ add_library(PyNet.Infrastructure SHARED
 	./src/QuadraticLoss.h
 	./src/QuadraticLoss.cpp
 	./src/Setup.h
+	./src/XmlWriter.h
+	./src/XmlWriter.cpp
+	./src/XmlReader.h
+	./src/XmlReader.cpp
 )
 
 add_executable(PyNet.Console ./PyNet.Console/PyNet.Console.cpp)
