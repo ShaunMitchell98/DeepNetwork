@@ -24,8 +24,8 @@ namespace PyNet::Infrastructure {
 			return ((PyNetwork*)pyNetwork)->Run(input_layer);
 		}
 
-		void PyNetwork_Train(void* pyNetwork, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate) {
-			((PyNetwork*)pyNetwork)->Train(inputLayers, expectedOutputs, numberOfExamples, batchSize, learningRate);
+		void PyNetwork_Train(void* pyNetwork, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate, double momentum) {
+			((PyNetwork*)pyNetwork)->Train(inputLayers, expectedOutputs, numberOfExamples, batchSize, learningRate, momentum);
 		}
 
 		void PyNetwork_Save(void* pyNetwork, const char* filePath) {

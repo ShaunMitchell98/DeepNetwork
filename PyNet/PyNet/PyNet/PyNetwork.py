@@ -21,6 +21,7 @@ class PyNetwork:
         self.lib.PyNetwork_Train.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.POINTER(ctypes.c_double)),
                                              ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.c_int,
                                              ctypes.c_int,
+                                             ctypes.c_double,
                                              ctypes.c_double]
 
         self.lib.PyNetwork_Train.restype = ctypes.POINTER(ctypes.c_double)
@@ -41,7 +42,8 @@ class PyNetwork:
         return np.ctypeslib.as_array(results, shape=(self.outputNumber,))
 
     def train(self, input_layers: np.ndarray,
-              expected_outputs: np.ndarray, numberOfOutputOptions: int, batch_size: int, learning_rate: float):
+              expected_outputs: np.ndarray, numberOfOutputOptions: int, batch_size: int, learning_rate: float,
+              momentum: float = 0):
 
         flattened_array = np.zeros(shape=(input_layers.shape[0], input_layers.shape[1] * input_layers.shape[2]))
         for j in range(0, input_layers.shape[0]):
@@ -58,7 +60,7 @@ class PyNetwork:
         expected_arr_ptr = convert_numpy_array_to_2d_double_array(expected_arrays)
 
         errors = self.lib.PyNetwork_Train(self.obj, input_arr_ptr, expected_arr_ptr, input_layers.shape[0], batch_size,
-                                          learning_rate)
+                                          learning_rate, momentum)
         return np.ctypeslib.as_array(errors, shape=(input_layers.shape[0],))
 
     def save(self, filePath):

@@ -84,12 +84,13 @@ namespace PyNet::Infrastructure {
 		return _layers[_layers.size() - 1]->GetAddress(0);
 	}
 
-	double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate) {
+	double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate, double momentum) {
 
 		auto batchNumber = 1;
 		auto currentIteration = 1;
 
 		_adjustmentCalculator->SetBatchSize(batchSize);
+		_adjustmentCalculator->SetMomentum(momentum);
 
 		try {
 			for (auto i = 0; i < numberOfExamples; i++) {

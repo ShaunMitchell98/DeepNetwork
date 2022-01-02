@@ -107,7 +107,7 @@ int main()
 
 	GetData(folderPath, trainingExamplesFileName, inputs);
 	GetLabels(folderPath, trainingLabelsFileName, labels);
-	PyNetwork_Train(network, inputs.data(), labels.data(), 10, 5, 0.01);
+	PyNetwork_Train(network, inputs.data(), labels.data(), 10, 5, 0.01, 0);
 	PyNetwork_Save(network, "Network.xml");
 }
 	

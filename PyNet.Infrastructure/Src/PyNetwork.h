@@ -42,7 +42,8 @@ namespace PyNet::Infrastructure {
 		__declspec(dllexport) int Load(const char* filePath);
 		__declspec(dllexport) void AddLayer(int);
 		__declspec(dllexport) double* Run(double* input_layer);
-		__declspec(dllexport) double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate);
+		__declspec(dllexport) double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,
+			double momentum);
 		__declspec(dllexport) void Save(const char* filePath);
 	};
 }

@@ -12,6 +12,7 @@ private:
 	std::vector<std::unique_ptr<PyNet::Models::Vector>> _biasAdjustments = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
 	bool _newBatch = true;
 	int _batchSize = 0;
+	double _momentum = 0;
 	std::shared_ptr<Settings> _settings;
 	std::shared_ptr<PyNet::DI::Context> _context;
 	AdjustmentCalculator(std::shared_ptr<Settings> settings, std::shared_ptr<PyNet::DI::Context> context) : _settings(settings), _context(context) {}
@@ -23,6 +24,7 @@ public:
 
 	void AddMatrix(int rows, int cols);
 	void SetBatchSize(int batchSize);
+	void SetMomentum(int momentum);
 	void AddWeightAdjustment(int matrixIndex, std::unique_ptr<PyNet::Models::Matrix> adjustments);
 	void AddBiasAdjustment(int matrixIndex, double adjustment);
 	std::unique_ptr<PyNet::Models::Matrix> GetWeightAdjustment(int matrixIndex);
