@@ -8,6 +8,7 @@
 #include "PyNet.DI/Context.h"
 #include "LayerPropagator.h"
 #include "PyNet.Models/ILogger.h"
+#include "VariableLearningSettings.h"
 
 namespace PyNet::Infrastructure {
 
@@ -21,6 +22,7 @@ namespace PyNet::Infrastructure {
 		std::shared_ptr<Settings> _settings;
 		std::shared_ptr<PyNet::DI::Context> _context;
 		std::shared_ptr<Loss> _loss;
+		VariableLearningSettings* _vlSettings = nullptr;
 		std::vector<double> _losses = std::vector<double>();
 		std::vector<std::unique_ptr<PyNet::Models::Vector>> _layers = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
 		std::vector<std::unique_ptr<PyNet::Models::Vector>> _biases = std::vector<std::unique_ptr<PyNet::Models::Vector>>();
@@ -43,7 +45,8 @@ namespace PyNet::Infrastructure {
 		__declspec(dllexport) void AddLayer(int);
 		__declspec(dllexport) double* Run(double* input_layer);
 		__declspec(dllexport) double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,
-			double momentum);
+			double momentum, int epochs);
+		__declspec(dllexport) void SetVLSettings(VariableLearningSettings* vlSettings);
 		__declspec(dllexport) void Save(const char* filePath);
 	};
 }

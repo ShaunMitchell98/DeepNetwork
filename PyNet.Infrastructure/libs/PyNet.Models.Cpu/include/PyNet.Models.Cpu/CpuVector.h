@@ -27,6 +27,10 @@ namespace PyNet::Models::Cpu {
 			return CpuMatrix::operator*(m);
 		}
 
+		std::unique_ptr<Matrix> operator+(const Matrix& m) {
+			return CpuMatrix::operator+(m);
+		}
+
 		std::unique_ptr<Matrix> operator-(const Matrix& m) {
 			return CpuMatrix::operator-(m);
 		}
@@ -50,6 +54,10 @@ namespace PyNet::Models::Cpu {
 		std::unique_ptr<Vector> CalculateActivationDerivative() override;
 
 		std::unique_ptr<Vector> operator^(const Vector& v) override;
+
+		std::unique_ptr<Vector> operator+(const Vector& v) override {
+			return std::unique_ptr<Vector>(dynamic_cast<Vector*>(CpuMatrix::operator+(v).get()));
+		}
 
 		std::unique_ptr<Vector> operator-(const Vector& v) override {
 			return std::unique_ptr<Vector>(dynamic_cast<Vector*>(CpuMatrix::operator-(v).get()));

@@ -84,45 +84,82 @@ namespace PyNet::Infrastructure {
 		return _layers[_layers.size() - 1]->GetAddress(0);
 	}
 
-	double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate, double momentum) {
+	void PyNetwork::SetVLSettings(VariableLearningSettings* vlSettings) {
+		_vlSettings = vlSettings;
+	}
+
+	double* PyNetwork::Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate, double momentum, int epochs) {
 
 		auto batchNumber = 1;
 		auto currentIteration = 1;
+		auto totalLossForCurrentEpoch = 0.0;
+		auto learningRate = baseLearningRate;
 
+		auto expectedVector = std::move(_context->GetUnique<Vector>());
+		
 		_adjustmentCalculator->SetBatchSize(batchSize);
 		_adjustmentCalculator->SetMomentum(momentum);
 
 		try {
-			for (auto i = 0; i < numberOfExamples; i++) {
 
-				Run(inputLayers[i]);
+			for (auto epoch = 0; epoch < epochs; epoch++) {
+				for (auto i = 0; i < numberOfExamples; i++) {
 
-				auto expectedVector = std::move(_context->GetUnique<Vector>());
-				expectedVector->Set(_layers[_layers.size() - 1]->GetRows(), expectedOutputs[i]);
+					Run(inputLayers[i]);
 
-				auto loss = _loss->CalculateLoss(*expectedVector, *_layers[_layers.size() - 1]);
-				_logger->LogLine("The loss is: " + std::to_string(loss));
-				_losses.push_back(loss);
+					expectedVector->Set(_layers[_layers.size() - 1]->GetRows(), expectedOutputs[i]);
 
-				auto lossDerivative = _loss->CalculateDerivative(*expectedVector, *_layers[_layers.size() - 1]);
+					auto loss = _loss->CalculateLoss(*expectedVector, *_layers[_layers.size() - 1]);
 
-				_networkTrainer->Backpropagate(_weights, _layers, *expectedVector, std::move(lossDerivative));
+					totalLossForCurrentEpoch += loss;
+					_logger->LogLine("The loss is: " + std::to_string(loss));
+					_losses.push_back(loss);
 
-				if (batchNumber == batchSize) {
-					//auto learningRate = baseLearningRate * (static_cast<double>(numberOfExamples) / currentIteration);
-					auto learningRate = baseLearningRate;
-					_logger->LogLine("The learning rate is: " + std::to_string(learningRate));
-					_networkTrainer->UpdateWeights(_weights, _biases, learningRate);
+					auto lossDerivative = _loss->CalculateDerivative(*expectedVector, *_layers[_layers.size() - 1]);
 
-					printf("Iteration %d, Error is %f\n", i, loss);
-					batchNumber = 1;
+					_networkTrainer->Backpropagate(_weights, _layers, *expectedVector, std::move(lossDerivative));
+
+					if (batchNumber == batchSize) {
+
+						_logger->LogLine("The learning rate is: " + std::to_string(learningRate));
+						_networkTrainer->UpdateWeights(_weights, _biases, learningRate);
+
+						printf("Iteration %d, Error is %f\n", i, loss);				
+						batchNumber = 1;
+					}
+					else {
+						batchNumber++;
+					}
+
+					currentIteration++;
 				}
-				else {
-					batchNumber++;
+
+				if (_vlSettings != nullptr) {
+
+					auto adjustedTotalLossForCurrentEpoch = 0.0;
+					for (auto j = 0; j < numberOfExamples; j++) {
+						Run(inputLayers[j]);
+						expectedVector->Set(_layers[_layers.size() - 1]->GetRows(), expectedOutputs[j]);
+						adjustedTotalLossForCurrentEpoch += _loss->CalculateLoss(*expectedVector, *_layers[_layers.size() - 1]);
+					}
+
+					if (adjustedTotalLossForCurrentEpoch > (1 + _vlSettings->ErrorThreshold) * totalLossForCurrentEpoch) {
+						learningRate = learningRate * _vlSettings->LRDecrease;
+						_networkTrainer->UpdateWeights(_weights, _biases, learningRate, true);
+						_adjustmentCalculator->SetMomentum(0);
+					}
+					else if (adjustedTotalLossForCurrentEpoch > totalLossForCurrentEpoch) {
+						_adjustmentCalculator->SetMomentum(momentum);
+					}
+					else {
+						learningRate = learningRate * _vlSettings->LRIncrease;
+						_adjustmentCalculator->SetMomentum(momentum);
+					}
 				}
 
-				currentIteration++;
+				totalLossForCurrentEpoch = 0.0;
 			}
+			
 		}
 		catch (const char* message) {
 			_logger->LogLine(message);

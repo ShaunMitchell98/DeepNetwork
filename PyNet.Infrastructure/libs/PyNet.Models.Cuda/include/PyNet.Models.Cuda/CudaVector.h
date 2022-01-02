@@ -25,6 +25,10 @@ public:
 		return CudaMatrix::operator*(m);
 	}
 
+	std::unique_ptr<Matrix> operator+(const Matrix& m) override {
+		return CudaMatrix::operator+(m);
+	}
+
 	std::unique_ptr<Matrix> operator-(const Matrix& m) override {
 		return CudaMatrix::operator-(m);
 	}
@@ -46,6 +50,8 @@ public:
 	}
 
 	std::unique_ptr<Vector> CalculateActivationDerivative() override;
+
+	std::unique_ptr<Vector> operator+(const Vector& v) override;
 
 	std::unique_ptr<Vector> operator-(const Vector& v) override;
 

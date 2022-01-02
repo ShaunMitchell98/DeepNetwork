@@ -23,6 +23,7 @@ public:
 	CpuMatrix();
 	std::unique_ptr<Matrix> operator*(const Matrix& m) const override;
 	std::unique_ptr<Matrix> operator*(const double d) override;
+	std::unique_ptr<Matrix> operator+(const Matrix& m) override;
 	std::unique_ptr<Matrix> operator-(const Matrix& m) override;
 	std::unique_ptr<Matrix> operator~() override;
 	void operator+=(const Matrix& m) override;

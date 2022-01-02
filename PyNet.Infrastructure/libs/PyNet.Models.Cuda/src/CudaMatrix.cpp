@@ -23,6 +23,13 @@ std::unique_ptr<Matrix> CudaMatrix::operator*(const double d) {
 	return std::move(c);
 }
 
+std::unique_ptr<Matrix> CudaMatrix::operator+(const Matrix& m) {
+	auto c = std::unique_ptr<Matrix>(new CudaMatrix());
+	c->Initialise(Rows, Cols, false);
+	matrix_add(*this, m, *c);
+	return std::move(c);
+}
+
 std::unique_ptr<Matrix> CudaMatrix::operator-(const Matrix& m) {
 	auto c = std::unique_ptr<Matrix>(new CudaMatrix());
 	c->Initialise(Rows, Cols, false);

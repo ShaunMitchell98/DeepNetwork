@@ -27,6 +27,7 @@ namespace PyNet::Models {
 		void operator=(const Vector& v);
 		virtual void operator+=(const Vector& v) = 0;
 		void Set(size_t rows, double* d);
+		virtual std::unique_ptr<Vector> operator+(const Vector& v) = 0;
 		virtual std::unique_ptr<Vector> operator-(const Vector& v) = 0;
 		double operator|(const Vector& v) const;
 		virtual std::unique_ptr<Vector> operator^(const Vector& v) = 0;

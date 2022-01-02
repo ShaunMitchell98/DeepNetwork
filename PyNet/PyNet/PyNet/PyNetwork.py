@@ -2,6 +2,7 @@ import numpy as np
 import ctypes
 import os
 from PyNet.PyNet.NumpyArrayConversion import convert_numpy_array_to_2d_double_array
+from PyNet.PyNet.VariableLearningSettings import VariableLearningSettings
 
 
 class PyNetwork:
@@ -22,9 +23,12 @@ class PyNetwork:
                                              ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.c_int,
                                              ctypes.c_int,
                                              ctypes.c_double,
-                                             ctypes.c_double]
+                                             ctypes.c_double,
+                                             ctypes.c_int]
 
         self.lib.PyNetwork_Train.restype = ctypes.POINTER(ctypes.c_double)
+
+        self.lib.PyNetwork_SetVariableLearning.argtypes = [ctypes.c_void_p, ctypes.POINTER(VariableLearningSettings)]
 
         self.lib.PyNetwork_Save.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
         self.lib.PyNetwork_Load.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
@@ -43,6 +47,7 @@ class PyNetwork:
 
     def train(self, input_layers: np.ndarray,
               expected_outputs: np.ndarray, numberOfOutputOptions: int, batch_size: int, learning_rate: float,
+              epochs: int,
               momentum: float = 0):
 
         flattened_array = np.zeros(shape=(input_layers.shape[0], input_layers.shape[1] * input_layers.shape[2]))
@@ -60,8 +65,11 @@ class PyNetwork:
         expected_arr_ptr = convert_numpy_array_to_2d_double_array(expected_arrays)
 
         errors = self.lib.PyNetwork_Train(self.obj, input_arr_ptr, expected_arr_ptr, input_layers.shape[0], batch_size,
-                                          learning_rate, momentum)
+                                          learning_rate, momentum, epochs)
         return np.ctypeslib.as_array(errors, shape=(input_layers.shape[0],))
+
+    def SetVariableLearning(self, vlSettings: VariableLearningSettings):
+        self.lib.PyNetwork_SetVariableLearning(self.obj, ctypes.byref(vlSettings))
 
     def save(self, filePath):
         self.lib.PyNetwork_Save(self.obj, ctypes.c_char_p(filePath.encode('utf-8')))

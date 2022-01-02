@@ -5,6 +5,13 @@ CudaVector::CudaVector(std::shared_ptr<Activation> activation) : Vector(activati
 
 CudaVector::CudaVector(const CudaVector& v) : Vector(v._activation) {}
 
+std::unique_ptr<Vector> CudaVector::operator+(const Vector& v) {
+	auto c = std::unique_ptr<Vector>(new CudaVector(*this));
+	c->Initialise(GetRows(), false);
+	matrix_add(this->operator const PyNet::Models::Matrix & (), v, *c);
+	return std::move(c);
+}
+
 std::unique_ptr<Vector> CudaVector::operator-(const Vector& v) {
 	auto c = std::unique_ptr<Vector>(new CudaVector(*this));
 	c->Initialise(GetRows(), false);

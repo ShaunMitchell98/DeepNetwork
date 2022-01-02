@@ -29,6 +29,7 @@ namespace PyNet::Models {
 
 		virtual std::unique_ptr<Matrix> operator*(const Matrix& m) const = 0;
 		virtual std::unique_ptr<Matrix> operator*(const double d) = 0;
+		virtual std::unique_ptr<Matrix> operator+(const Matrix& m) = 0;
 		virtual std::unique_ptr<Matrix> operator-(const Matrix& m) = 0;
 		virtual std::unique_ptr<Matrix> operator~() = 0;
 		virtual void operator+=(const Matrix& m) = 0;

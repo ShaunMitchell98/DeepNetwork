@@ -32,17 +32,24 @@ void NetworkTrainer::Backpropagate(std::vector<std::unique_ptr<Matrix>>& weightM
     _adjustmentCalculator->SetNewBatch(false);
 }
 
-void NetworkTrainer::UpdateWeights(std::vector<std::unique_ptr<Matrix>>& weightMatrices, std::vector<std::unique_ptr<Vector>>& biases, double learningRate) {
+void NetworkTrainer::UpdateWeights(std::vector<std::unique_ptr<Matrix>>& weightMatrices, std::vector<std::unique_ptr<Vector>>& biases, double learningRate, bool reverse) {
     _logger->LogLine("Updating weights...");
+
+    auto biasAdjustmentVector = _context->GetUnique<Vector>();
 
     for (int index = weightMatrices.size() - 1; index >= 0; index--) {
     
         auto biasAdjustmentMatrix = *_adjustmentCalculator->GetBiasAdjustment(index) * learningRate;
-        auto biasAdjustmentVector = _context->GetUnique<Vector>();
         biasAdjustmentVector->Set(biasAdjustmentMatrix->GetRows(), biasAdjustmentMatrix->GetValues().data());
 
-        biases[index] = *biases[index] - *biasAdjustmentVector;
-        weightMatrices[index] = *weightMatrices[index] - *(*_adjustmentCalculator->GetWeightAdjustment(index) * learningRate);
+        if (reverse) {
+            biases[index] = *biases[index] + *biasAdjustmentVector;
+            weightMatrices[index] = *weightMatrices[index] + *(*_adjustmentCalculator->GetWeightAdjustment(index) * learningRate);
+        }
+        else {
+            biases[index] = *biases[index] - *biasAdjustmentVector;
+            weightMatrices[index] = *weightMatrices[index] - *(*_adjustmentCalculator->GetWeightAdjustment(index) * learningRate);
+        }
     }
 
     _adjustmentCalculator->SetNewBatch(true);

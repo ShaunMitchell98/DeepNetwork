@@ -38,6 +38,20 @@ std::unique_ptr<Matrix> CpuMatrix::operator*(const double d) {
 	return std::move(c);
 }
 
+
+std::unique_ptr<Matrix> CpuMatrix::operator+(const Matrix& m) {
+
+	auto c = std::unique_ptr<Matrix>(new CpuMatrix(*this));
+
+	for (auto i = 0; i < Rows; i++) {
+		for (auto j = 0; j < Cols; j++) {
+			c->SetValue(i, j, GetValue(i, j) + m.GetValue(i, j));
+		}
+	}
+
+	return std::move(c);
+}
+
 std::unique_ptr<Matrix> CpuMatrix::operator-(const Matrix& m) {
 
 	auto c = std::unique_ptr<Matrix>(new CpuMatrix(*this));

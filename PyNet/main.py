@@ -1,4 +1,5 @@
 from PyNet.PyNet.PyNetwork import PyNetwork
+from PyNet.PyNet.VariableLearningSettings import VariableLearningSettings
 from PyNet.PyNet import ActivationFunctionType
 import tensorflow as tf
 import numpy as np
@@ -17,19 +18,27 @@ test_images = test_images / 255.0
 
 batch_sizes = [5]
 learning_rates = [2]
-momenta = [0.]
-number: int = 20000
+momenta = [0.7]
+epochs = 5
+number: int = 10000
 
 for learning_rate in learning_rates:
     for batch_size in batch_sizes:
         for momentum in momenta:
+
             network = PyNetwork(False, True)
+            vlSettings = VariableLearningSettings()
+            vlSettings.ErrorThreshold = 0.04
+            vlSettings.LRDecrease = 0.7
+            vlSettings.LRIncrease = 1.05
+            network.SetVariableLearning(vlSettings)
             network.add_layer(784, ActivationFunctionType.LOGISTIC)
             network.add_layer(1000, ActivationFunctionType.LOGISTIC)
             network.add_layer(10, ActivationFunctionType.LOGISTIC)
 
             start = timeit.default_timer()
             errors = network.train(train_images[1:number], train_labels[1:number], 10, batch_size, learning_rate,
+                                   epochs,
                                    momentum)
             stop = timeit.default_timer()
 

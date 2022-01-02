@@ -18,6 +18,7 @@ add_library(PyNet.Models.Cuda SHARED
 	./src/Matrix_Subtraction.cu
 	./src/Matrix_Addition_Assignment.cu
 	./src/Matrix_Double_Multiplication.cu
+	./src/Matrix_Addition.cu
 	./src/cuda_array.h
 	./include/PyNet.Models.Cuda/CudaModule.h)
 

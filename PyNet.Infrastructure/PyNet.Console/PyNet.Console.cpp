@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "PyNet.Models/Activation.h"
+#include "VariableLearningSettings.h"
 
 using namespace std;
 using namespace PyNet::Infrastructure;
@@ -92,6 +93,12 @@ int main()
 	PyNetwork_AddLayer(network, 129, PyNet::Models::ActivationFunctionType::Logistic);
 	PyNetwork_AddLayer(network, 10, PyNet::Models::ActivationFunctionType::Logistic);
 
+	auto settings = VariableLearningSettings();
+	settings.ErrorThreshold = 0.04;
+	settings.LRDecrease = 0.7;
+	settings.LRIncrease = 1.05;
+	PyNetwork_SetVariableLearning(network, &settings);
+
 	string folderPath = "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet.Infrastructure\\tests\\Resources\\";
 	string trainingExamplesFileName = "Training_Example";
 	string trainingLabelsFileName = "Training_Labels";
@@ -108,6 +115,5 @@ int main()
 	GetData(folderPath, trainingExamplesFileName, inputs);
 	GetLabels(folderPath, trainingLabelsFileName, labels);
 	PyNetwork_Train(network, inputs.data(), labels.data(), 10, 5, 0.01, 0);
-	PyNetwork_Save(network, "Network.xml");
 }
 	

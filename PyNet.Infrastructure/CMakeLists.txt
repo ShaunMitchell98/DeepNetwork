@@ -46,6 +46,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/XmlWriter.cpp
 	./src/XmlReader.h
 	./src/XmlReader.cpp
+	./src/VariableLearningSettings.h
 )
 
 add_executable(PyNet.Console ./PyNet.Console/PyNet.Console.cpp)

@@ -37,7 +37,7 @@ namespace PyNet::Infrastructure::Tests
 
 			auto output = new double[2]{ 1, 0 };
 
-			network->Train(&input, &output, 1, 1, 0.1, 0);
+			network->Train(&input, &output, 1, 1, 0.1, 0, 1);
 
 			delete[] input;
 
