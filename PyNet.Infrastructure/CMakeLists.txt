@@ -52,24 +52,21 @@ add_library(PyNet.Infrastructure SHARED
 	./src/GradientCalculator.cpp
 )
 
-add_executable(PyNet.Console ./PyNet.Console/PyNet.Console.cpp)
-
-target_link_libraries(PyNet.Console PyNet.Infrastructure )
-
 # 3rd party libs
 add_subdirectory( ./libs/PyNet.Models )
 add_subdirectory( ./libs/PyNet.Models.Cuda )
 add_subdirectory( ./libs/PyNet.Models.Cpu )
 add_subdirectory( ./libs/PyNet.DI)
+add_subdirectory( ./libs/PyNet.Console )
 target_link_libraries( PyNet.Infrastructure PyNet.Models )
 target_link_libraries( PyNet.Infrastructure PyNet.Models.Cuda )
 target_link_libraries( PyNet.Infrastructure PyNet.Models.Cpu )
 target_link_libraries( PyNet.Infrastructure PyNet.DI )
-
+target_link_libraries(PyNet.Console PyNet.Infrastructure )
 
 add_library(PyNet.Infrastructure.Tests SHARED
 		./tests/LayerPropagatorTests.cpp
-	./tests/NetworkTrainerTests.cpp
+	./tests/SteepestDescentTests.cpp
 	./tests/PyNetworkTests.cpp
 	./tests/UnitTest.h
 )
