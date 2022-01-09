@@ -7,34 +7,34 @@ CudaMatrix::CudaMatrix()
 #endif
 {}
 
-std::unique_ptr<Matrix> CudaMatrix::operator*(const Matrix& m) const {
-	auto c = std::unique_ptr<Matrix>(new CudaMatrix());
+unique_ptr<Matrix> CudaMatrix::operator*(const Matrix& m) const {
+	auto c = unique_ptr<Matrix>(new CudaMatrix());
 	c->Initialise(Rows, m.GetCols(), false);
 	cuda_matrix_multiply(*this, m, *c);
 
-	return std::move(c);
+	return move(c);
 }
 
-std::unique_ptr<Matrix> CudaMatrix::operator*(const double d) {
+unique_ptr<Matrix> CudaMatrix::operator*(const double d) const {
 
-	auto c = std::unique_ptr<Matrix>(new CudaMatrix());
+	auto c = unique_ptr<Matrix>(new CudaMatrix());
 	c->Initialise(Rows, Cols, false);
 	multiply_matrix_and_double(*this, d, *c);
-	return std::move(c);
+	return move(c);
 }
 
-std::unique_ptr<Matrix> CudaMatrix::operator+(const Matrix& m) {
-	auto c = std::unique_ptr<Matrix>(new CudaMatrix());
+unique_ptr<Matrix> CudaMatrix::operator+(const Matrix& m) const {
+	auto c = unique_ptr<Matrix>(new CudaMatrix());
 	c->Initialise(Rows, Cols, false);
 	matrix_add(*this, m, *c);
-	return std::move(c);
+	return move(c);
 }
 
-std::unique_ptr<Matrix> CudaMatrix::operator-(const Matrix& m) {
-	auto c = std::unique_ptr<Matrix>(new CudaMatrix());
+unique_ptr<Matrix> CudaMatrix::operator-(const Matrix& m) const {
+	auto c = unique_ptr<Matrix>(new CudaMatrix());
 	c->Initialise(Rows, Cols, false);
 	matrix_subtract(*this, m, *c);
-	return std::move(c);
+	return move(c);
  }
 
 void CudaMatrix::operator+=(const Matrix& m) {
@@ -43,9 +43,9 @@ void CudaMatrix::operator+=(const Matrix& m) {
 }
 
 
-std::unique_ptr<Matrix> CudaMatrix::operator~() {
+unique_ptr<Matrix> CudaMatrix::operator~() const {
 
-	auto m = std::unique_ptr<Matrix>(new CudaMatrix());
+	auto m = unique_ptr<Matrix>(new CudaMatrix());
 	m->Set(Cols, Rows, Values.data());
-	return std::move(m);
+	return move(m);
 }

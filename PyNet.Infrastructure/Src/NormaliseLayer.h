@@ -3,18 +3,20 @@
 #include "PyNet.Models/Vector.h"
 #include "PyNet.Models/ILogger.h"
 
-void normalise_layer(PyNet::Models::Vector& A, ILogger& logger) {
+using namespace PyNet::Models;
+
+void normalise_layer(Vector& A, ILogger& logger) {
     logger.LogLine("Normalising final layer");
     logger.LogMessage(A.ToString());
 
-    double sum = 0;
+    auto sum = 0.0;
 
     for (auto i = 0; i < A.GetRows(); i++) {
-        sum += A.GetValue(i);
+        sum += A[i];
     }
 
     for (auto i = 0; i < A.GetRows(); i++) {
-        A.SetValue(i, A.GetValue(i) / sum);
+        A[i] = A[i] / sum;
     }
 
     logger.LogLine("Final layer after normalisation: ");

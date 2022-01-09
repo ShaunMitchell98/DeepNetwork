@@ -45,5 +45,5 @@ void multiply_matrix_and_double(const Matrix& A, const double B, Matrix& C) {
     d_B.set(bVector);
 
     internalMatrixDoubleMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.GetRows(), A.GetCols());
-    d_C.get(C.GetValues().data(), C.GetSize());
+    d_C.get(C.Values.data(), C.GetSize());
 }

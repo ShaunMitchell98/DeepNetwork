@@ -15,23 +15,22 @@ namespace PyNet::Models {
 		Vector(std::shared_ptr<Activation> activation);
 
 		void Initialise(int rows, bool generateWeights) { Matrix::Initialise(rows, 1, generateWeights); }
-		double GetValue(int row) const;
+		const double& operator[](size_t row) const;
+		double& operator[](size_t row);
 		double* GetAddress(int row) const;
-		double* GetEnd() const;
-		void SetValue(int row, double value);
 		void ApplyActivation();
-		virtual std::unique_ptr<Vector> CalculateActivationDerivative() = 0;
+		virtual std::unique_ptr<Vector> CalculateActivationDerivative() const = 0;
 		void SetValue(double value);
 		void AddValue(double value);
 		void operator=(const Matrix& m);
 		void operator=(const Vector& v);
 		virtual void operator+=(const Vector& v) = 0;
 		void Set(size_t rows, double* d);
-		virtual std::unique_ptr<Vector> operator+(const Vector& v) = 0;
-		virtual std::unique_ptr<Vector> operator-(const Vector& v) = 0;
+		virtual std::unique_ptr<Vector> operator+(const Vector& v) const = 0;
+		virtual std::unique_ptr<Vector> operator-(const Vector& v) const = 0;
 		double operator|(const Vector& v) const;
-		virtual std::unique_ptr<Vector> operator^(const Vector& v) = 0;
-		virtual std::unique_ptr<Vector> operator/(const double d) = 0;
+		virtual std::unique_ptr<Vector> operator^(const Vector& v) const = 0;
+		virtual std::unique_ptr<Vector> operator/(const double d) const = 0;
 	};
 }
 

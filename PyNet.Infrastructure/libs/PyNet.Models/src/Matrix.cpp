@@ -20,8 +20,7 @@ namespace PyNet::Models {
 		}
 	}
 
-	double Matrix::GetValue(size_t row, size_t col) const {
-
+	double& Matrix::operator()(size_t row, size_t col) {
 		if (row >= this->Rows) {
 			throw "Row out of bounds";
 		}
@@ -32,8 +31,15 @@ namespace PyNet::Models {
 		return Values[row * Cols + col];
 	}
 
-	void Matrix::SetValue(size_t row, size_t col, double value) {
-		Values[row * Cols + col] = value;
+	const double& Matrix::operator()(size_t row, size_t col) const {
+		if (row >= this->Rows) {
+			throw "Row out of bounds";
+		}
+		else if (col > this->Cols) {
+			throw "Col out of bounds";
+		}
+
+		return Values[row * Cols + col];
 	}
 
 	int Matrix::GetRows() const {
@@ -89,20 +95,20 @@ namespace PyNet::Models {
 		Cols = expectedColNumber;
 	}
 
-	std::string Matrix::ToString() {
+	std::string Matrix::ToString() const {
 
 		auto text = new std::string();
 		char buffer[30];
 
 		for (auto row = 0; row < Rows; row++) {
 			for (auto col = 0; col < Cols; col++) {
-				auto value = GetValue(row, col);
+				auto value = (*this)(row, col);
 				sprintf(buffer, "%.20f", value);
 				*text += buffer;
 
 				if (col != Cols - 1) {
 					*text += ", ";
-				}
+				}	
 			}
 
 			*text += "\n";
@@ -111,7 +117,7 @@ namespace PyNet::Models {
 		return *text;
 	}
 
-	std::unique_ptr<Matrix> Matrix::operator/(const double d) {
+	std::unique_ptr<Matrix> Matrix::operator/(const double d) const {
 
 		return std::move((*this) * (1 / d));
 	}
@@ -135,10 +141,6 @@ namespace PyNet::Models {
 	}
 
 	std::vector<double> Matrix::GetCValues() const {
-		return this->Values;
-	}
-
-	std::vector<double>& Matrix::GetValues() {
 		return this->Values;
 	}
 }

@@ -4,16 +4,16 @@ namespace PyNet::Models {
 
 	Vector::Vector(std::shared_ptr<Activation> activation) : _activation { activation } {}
 
-	double Vector::GetValue(int row) const {
-		return ((Matrix*)(this))->GetValue(row, 0);
+	const double& Vector::operator[](size_t row) const {
+		return Values[row];
+	}
+
+	double& Vector::operator[](size_t row) {
+		return Values[row];
 	}
 
 	double* Vector::GetAddress(int row) const {
 		return ((Matrix*)(this))->GetAddress(row, 0);
-	}
-
-	void Vector::SetValue(int row, double value) {
-		return ((Matrix*)(this))->SetValue(row, 0, value);
 	}
 
 	void Vector::ApplyActivation() {
@@ -21,21 +21,16 @@ namespace PyNet::Models {
 		_activation->Apply(*this);
 	}
 
-
-	double* Vector::GetEnd() const {
-		return ((Matrix*)(this))->GetAddress(static_cast<size_t>(Rows) - 1, 0);
-	}
-
 	void Vector::SetValue(double value) {
 
 		for (auto i = 0; i < Rows; i++) {
-			SetValue(i, value);
+			(*this)[i] = value;
 		}
 	}
 
 	void Vector::AddValue(double value) {
 		for (auto i = 0; i < Rows; i++) {
-			SetValue(i, GetValue(i) + value);
+			(*this)[i] += value;
 		}
 	}
 
@@ -48,7 +43,7 @@ namespace PyNet::Models {
 		double result = 0;
 
 		for (auto i = 0; i < v.Rows; i++) {
-			result += this->GetValue(i) * v.GetValue(i);
+			result += (*this)[i] * v[i];
 		}
 
 		return result;
@@ -72,7 +67,7 @@ namespace PyNet::Models {
 		Initialise(rows, false);
 
 		for (auto i = 0; i < rows; i++) {
-			Values[i] = *(d + i);
+			(*this)[i] = *(d + i);
 		}
 	}
 }

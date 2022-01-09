@@ -20,7 +20,7 @@ namespace PyNet::Infrastructure {
 					auto weightMatrix = _context->GetUnique<Matrix>();
 					weightMatrix->Load(reader->ReadContent());
 					_adjustmentCalculator->AddMatrix(weightMatrix->GetRows(), weightMatrix->GetCols());
-					_weights.push_back(std::move(weightMatrix));	
+					_weights.push_back(move(weightMatrix));	
 				}
 			}
 
@@ -28,19 +28,19 @@ namespace PyNet::Infrastructure {
 				while (reader->FindNode("Bias")) {
 					auto biasVector = _context->GetUnique<Vector>();
 					biasVector->Load(reader->ReadContent());
-					_biases.push_back(std::move(biasVector));
+					_biases.push_back(move(biasVector));
 				}
 			}
 		}
 
 		auto layer = _context->GetUnique<Vector>();
 		layer->Initialise(_weights[0]->GetCols(), false);
-		_layers.push_back(std::move(layer));
+		_layers.push_back(move(layer));
 
 		for (auto& m : _weights) {
 			auto layer = _context->GetUnique<Vector>();
 			layer->Initialise(m->GetRows(), false);
-			_layers.push_back(std::move(layer));
+			_layers.push_back(move(layer));
 		}
 
 		return _layers[_layers.size() - 1]->GetRows();
@@ -49,26 +49,26 @@ namespace PyNet::Infrastructure {
 	void PyNetwork::AddLayer(int rows) {
 
 		if (_layers.empty()) {
-			auto layer = std::move(_context->GetUnique<PyNet::Models::Vector>());
+			auto layer = move(_context->GetUnique<Vector>());
 			layer->Initialise(rows, false);
-			_layers.push_back(std::move(layer));
+			_layers.push_back(move(layer));
 			return;
 		}
 
 		auto cols = _layers[_layers.size() - 1]->GetRows();
 
-		auto layer = std::move(_context->GetUnique<PyNet::Models::Vector>());
+		auto layer = move(_context->GetUnique<Vector>());
 		layer->Initialise(rows, false);
-		_layers.push_back(std::move(layer));
+		_layers.push_back(move(layer));
 
-		auto weightMatrix = std::move(_context->GetUnique<Matrix>());
+		auto weightMatrix = move(_context->GetUnique<Matrix>());
 		weightMatrix->Initialise(rows, cols, true);
-		_weights.push_back(std::move(weightMatrix));
+		_weights.push_back(move(weightMatrix));
 
-		auto biasVector = std::move(_context->GetUnique<Vector>());
+		auto biasVector = move(_context->GetUnique<Vector>());
 		biasVector->Initialise(rows, true);
 
-		_biases.push_back(std::move(biasVector));
+		_biases.push_back(move(biasVector));
 		_adjustmentCalculator->AddMatrix(rows, cols);
 	}
 
@@ -76,7 +76,7 @@ namespace PyNet::Infrastructure {
 		_layers[0]->Set(_layers[0]->GetRows(), input_layer);
 
 		for (size_t i = 0; i < _weights.size(); i++) {
-			_layerPropagator->PropagateLayer(*_weights[i], *_layers[i], *_biases[i], _layers[i + 1]);
+			_layerPropagator->PropagateLayer(*_weights[i], *_layers[i], *_biases[i], *_layers[i + 1]);
 		}
 
 		normalise_layer(*_layers[_layers.size() - 1], *_logger);
@@ -95,7 +95,7 @@ namespace PyNet::Infrastructure {
 		auto totalLossForCurrentEpoch = 0.0;
 		auto learningRate = baseLearningRate;
 
-		auto expectedVector = std::move(_context->GetUnique<Vector>());
+		auto expectedVector = _context->GetUnique<Vector>();
 		
 		_adjustmentCalculator->SetBatchSize(batchSize);
 		_adjustmentCalculator->SetMomentum(momentum);
@@ -112,17 +112,17 @@ namespace PyNet::Infrastructure {
 					auto loss = _loss->CalculateLoss(*expectedVector, *_layers[_layers.size() - 1]);
 
 					totalLossForCurrentEpoch += loss;
-					_logger->LogLine("The loss is: " + std::to_string(loss));
+					_logger->LogLine("The loss is: " + to_string(loss));
 					_losses.push_back(loss);
 
 					auto lossDerivative = _loss->CalculateDerivative(*expectedVector, *_layers[_layers.size() - 1]);
 
-					_networkTrainer->Backpropagate(_weights, _layers, *expectedVector, std::move(lossDerivative));
+					_gradientCalculator->CalculateGradients(_weights, _layers, *expectedVector, *lossDerivative);
 
 					if (batchNumber == batchSize) {
 
-						_logger->LogLine("The learning rate is: " + std::to_string(learningRate));
-						_networkTrainer->UpdateWeights(_weights, _biases, learningRate);
+						_logger->LogLine("The learning rate is: " + to_string(learningRate));
+						_trainingAlgorithm->UpdateWeights(_weights, _biases, learningRate);
 
 						printf("Iteration %d, Error is %f\n", i, loss);				
 						batchNumber = 1;
@@ -145,7 +145,7 @@ namespace PyNet::Infrastructure {
 
 					if (adjustedTotalLossForCurrentEpoch > (1 + _vlSettings->ErrorThreshold) * totalLossForCurrentEpoch) {
 						learningRate = learningRate * _vlSettings->LRDecrease;
-						_networkTrainer->UpdateWeights(_weights, _biases, learningRate, true);
+						_trainingAlgorithm->UpdateWeights(_weights, _biases, learningRate, true);
 						_adjustmentCalculator->SetMomentum(0);
 					}
 					else if (adjustedTotalLossForCurrentEpoch > totalLossForCurrentEpoch) {

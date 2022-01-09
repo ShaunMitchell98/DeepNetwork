@@ -28,10 +28,10 @@ namespace PyNet::Infrastructure::Tests
 			biasesVector->Set(2, biasesLayer);
 
 			auto layerPropagator = GetUniqueService<LayerPropagator>();
-			layerPropagator->PropagateLayer(*weightMatrix, *inputLayerVector, *biasesVector, outputLayerVector);
+			layerPropagator->PropagateLayer(*weightMatrix, *inputLayerVector, *biasesVector, *outputLayerVector);
 
-			Assert::AreEqual(0.95689274505891386, outputLayerVector->GetValue(0));
-			Assert::AreEqual(0.99944722136307640, outputLayerVector->GetValue(1));
+			Assert::AreEqual(0.95689274505891386, (*outputLayerVector)[0]);
+			Assert::AreEqual(0.99944722136307640, (*outputLayerVector)[1]);
 		}
 	};
 }

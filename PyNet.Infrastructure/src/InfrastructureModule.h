@@ -5,7 +5,8 @@
 #include "QuadraticLoss.h"
 #include "Logger.h"
 #include "LayerPropagator.h"
-#include "NetworkTrainer.h"
+#include "SteepestDescent.h"
+#include "GradientCalculator.h"
 #include "PyNetwork.h"
 #include "Settings.h"
 
@@ -29,7 +30,8 @@ namespace PyNet::Infrastructure {
 				->AddClass<Logger>()
 				->AddClass<LayerPropagator>()
 				->AddClass<AdjustmentCalculator>()
-				->AddClass<NetworkTrainer>()
+				->AddClass<SteepestDescent>()
+				->AddClass<GradientCalculator>()
 				->AddClass<PyNetwork>(PyNet::DI::InstanceMode::Unique);
 
 		}

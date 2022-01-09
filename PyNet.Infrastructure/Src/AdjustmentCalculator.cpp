@@ -1,56 +1,64 @@
 #include "AdjustmentCalculator.h"
 
-void AdjustmentCalculator::SetBatchSize(int batchSize) {
-	_batchSize = batchSize;
-}
+namespace PyNet::Infrastructure {
 
-void AdjustmentCalculator::SetMomentum(int momentum) {
-	_momentum = momentum;
-}
-
-void AdjustmentCalculator::AddMatrix(int rows, int cols) {
-	auto weightMatrix = _context->GetUnique<PyNet::Models::Matrix>();
-	weightMatrix->Initialise(rows, cols, false);
-	_weightAdjustments.push_back(std::move(weightMatrix));
-
-	auto biasVector = _context->GetUnique<PyNet::Models::Vector>();
-	biasVector->Initialise(rows, false);
-	_biasAdjustments.push_back(std::move(biasVector));
-}
-
-void AdjustmentCalculator::AddWeightAdjustment(int matrixIndex, std::unique_ptr<PyNet::Models::Matrix> adjustments) {
-	
-	auto adjustmentWithMomentum = *adjustments * (1 - _momentum);
-
-	if (_newBatch) {
-		*_weightAdjustments[matrixIndex] = *(*adjustmentWithMomentum - *(*_weightAdjustments[matrixIndex] * _momentum));
+	void AdjustmentCalculator::SetBatchSize(int batchSize) {
+		_batchSize = batchSize;
 	}
-	else {
-		*_weightAdjustments[matrixIndex] += *adjustmentWithMomentum;
+
+	void AdjustmentCalculator::SetMomentum(int momentum) {
+		_momentum = momentum;
 	}
-}
 
-void AdjustmentCalculator::AddBiasAdjustment(int matrixIndex, double adjustment) {
+	void AdjustmentCalculator::AddMatrix(int rows, int cols) {
+		auto weightMatrix = _context->GetUnique<Matrix>();
+		weightMatrix->Initialise(rows, cols, false);
+		_weightAdjustments.push_back(move(weightMatrix));
 
-	auto adjustmentWithMomentum = adjustment * (1 - _momentum);
-
-	if (_newBatch) {
-		auto totalAdjustment = adjustmentWithMomentum - (_biasAdjustments[matrixIndex]->GetValue(0) * _momentum);
-		_biasAdjustments[matrixIndex]->SetValue(totalAdjustment);
+		auto biasVector = _context->GetUnique<Vector>();
+		biasVector->Initialise(rows, false);
+		_biasAdjustments.push_back(move(biasVector));
 	}
-	else {
-		_biasAdjustments[matrixIndex]->AddValue(adjustmentWithMomentum);
+
+	void AdjustmentCalculator::AddWeightAdjustment(int matrixIndex, unique_ptr<Matrix> adjustments) {
+
+		auto adjustmentWithMomentum = *adjustments * (1 - _momentum);
+
+		if (_newBatch) {
+
+			if (_momentum > 0) {
+				adjustmentWithMomentum = *adjustmentWithMomentum - *(*_weightAdjustments[matrixIndex] * _momentum);
+			}
+
+			_weightAdjustments[matrixIndex] = move(adjustmentWithMomentum);
+		}
+		else {
+			*_weightAdjustments[matrixIndex] += *adjustmentWithMomentum;
+		}
 	}
-}
 
-std::unique_ptr<PyNet::Models::Matrix> AdjustmentCalculator::GetWeightAdjustment(int matrixIndex) {
-	return std::move(*_weightAdjustments[matrixIndex] / _batchSize);
-}
+	void AdjustmentCalculator::AddBiasAdjustment(int matrixIndex, double adjustment) {
 
-std::unique_ptr<PyNet::Models::Vector> AdjustmentCalculator::GetBiasAdjustment(int matrixIndex) {
-	return std::move(*_biasAdjustments[matrixIndex] / _batchSize);
-}
+		auto adjustmentWithMomentum = adjustment * (1 - _momentum);
 
-void AdjustmentCalculator::SetNewBatch(bool newBatch) {
-	_newBatch = newBatch;
+		if (_newBatch) {
+			auto totalAdjustment = adjustmentWithMomentum - ((*_biasAdjustments[matrixIndex])[0] * _momentum);
+			_biasAdjustments[matrixIndex]->SetValue(totalAdjustment);
+		}
+		else {
+			_biasAdjustments[matrixIndex]->AddValue(adjustmentWithMomentum);
+		}
+	}
+
+	unique_ptr<Matrix> AdjustmentCalculator::GetWeightAdjustment(int matrixIndex) const {
+		return move(*_weightAdjustments[matrixIndex] / _batchSize);
+	}
+
+	unique_ptr<Vector> AdjustmentCalculator::GetBiasAdjustment(int matrixIndex) const {
+		return move(*_biasAdjustments[matrixIndex] / _batchSize);
+	}
+
+	void AdjustmentCalculator::SetNewBatch(bool newBatch) {
+		_newBatch = newBatch;
+	}
 }

@@ -34,8 +34,8 @@ add_library(PyNet.Infrastructure SHARED
 	./src/LayerPropagator.cpp 
 	./src/Logger.h
 	./src/Logger.cpp 
-	./src/NetworkTrainer.h
-	./src/NetworkTrainer.cpp
+	./src/SteepestDescent.h
+	./src/SteepestDescent.cpp
 	./src/PyNetwork.h 
 	./src/PyNetwork.cpp 
 	./src/PyNetwork_Functions.cpp
@@ -47,6 +47,9 @@ add_library(PyNet.Infrastructure SHARED
 	./src/XmlReader.h
 	./src/XmlReader.cpp
 	./src/VariableLearningSettings.h
+	./src/TrainingAlgorithm.h
+	./src/GradientCalculator.h
+	./src/GradientCalculator.cpp
 )
 
 add_executable(PyNet.Console ./PyNet.Console/PyNet.Console.cpp)

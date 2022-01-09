@@ -8,32 +8,32 @@
 class __declspec(dllexport) CudaVector : public Vector, private CudaMatrix {
 public:
 
-	static auto factory(std::shared_ptr<Activation> activation) {
+	static auto factory(shared_ptr<Activation> activation) {
 		return new CudaVector{ activation };
 	}
 
 	typedef Vector base;
 
-	CudaVector(std::shared_ptr<Activation> activation);
+	CudaVector(shared_ptr<Activation> activation);
 
 	CudaVector(Matrix&& m) : Vector(nullptr) {
-		static_cast<Vector*>(this)->Set(m.GetRows(), m.GetValues().data());
+		static_cast<Vector*>(this)->Set(m.GetRows(), m.Values.data());
 		m.Set(0, 0, nullptr);
 	}
 
-	std::unique_ptr<Matrix> operator*(const Matrix& m) const override {
+	unique_ptr<Matrix> operator*(const Matrix& m) const override {
 		return CudaMatrix::operator*(m);
 	}
 
-	std::unique_ptr<Matrix> operator+(const Matrix& m) override {
+	unique_ptr<Matrix> operator+(const Matrix& m) const override {
 		return CudaMatrix::operator+(m);
 	}
 
-	std::unique_ptr<Matrix> operator-(const Matrix& m) override {
+	unique_ptr<Matrix> operator-(const Matrix& m) const override {
 		return CudaMatrix::operator-(m);
 	}
 
-	std::unique_ptr<Matrix> operator~() override {
+	unique_ptr<Matrix> operator~() const override {
 		return CudaMatrix::operator~();
 	}
 
@@ -45,19 +45,19 @@ public:
 		return CudaMatrix::operator+=((Matrix&)v);
 	}
 
-	std::unique_ptr<Matrix> operator*(const double d) override {
+	unique_ptr<Matrix> operator*(const double d) const override {
 		return CudaMatrix::operator*(d);
 	}
 
-	std::unique_ptr<Vector> CalculateActivationDerivative() override;
+	unique_ptr<Vector> CalculateActivationDerivative() const override;
 
-	std::unique_ptr<Vector> operator+(const Vector& v) override;
+	unique_ptr<Vector> operator+(const Vector& v) const override;
 
-	std::unique_ptr<Vector> operator-(const Vector& v) override;
+	unique_ptr<Vector> operator-(const Vector& v) const override;
 
-	std::unique_ptr<Vector> operator^(const Vector& v) override;
+	unique_ptr<Vector> operator^(const Vector& v) const override;
 
-	std::unique_ptr<Vector> operator/(const double d) override;
+	unique_ptr<Vector> operator/(const double d) const override;
 
 	int GetRows() const override {
 		return Vector::GetRows();
@@ -69,9 +69,9 @@ public:
 
 	CudaVector(const CudaVector& v);
 
-	operator const Matrix&() {
-		auto& temp1 = static_cast<Vector&>(*this);
-		auto& temp2 = static_cast<Matrix&>(temp1);
+	operator const Matrix&() const {
+		auto& temp1 = static_cast<const Vector&>(*this);
+		auto& temp2 = static_cast<const Matrix&>(temp1);
 		return temp2;
 	}
 };

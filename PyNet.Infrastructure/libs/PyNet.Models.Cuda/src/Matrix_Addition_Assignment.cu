@@ -43,9 +43,9 @@ void matrix_addition_assignment(Matrix& A, const Matrix& B) {
     cuda_array<double> d_A(A.GetCValues().size());
     cuda_array<double> d_B(B.GetCValues().size());
 
-    d_A.set(A.GetValues());
+    d_A.set(A.Values);
     d_B.set(B.GetCValues());
 
     internalMatrixAdditionAssignment(d_A.getData(), d_B.getData(), A.GetRows(), A.GetCols());
-    d_A.get(A.GetValues().data(), A.GetSize());
+    d_A.get(A.Values.data(), A.GetSize());
 }

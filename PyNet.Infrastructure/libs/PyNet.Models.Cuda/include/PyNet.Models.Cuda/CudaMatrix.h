@@ -4,12 +4,13 @@
 #include "PyNet.DI/Context.h"
 
 using namespace PyNet::Models;
+using namespace std;
 
 class __declspec(dllexport) CudaMatrix
 #ifdef CUDA_VECTOR
-	: public virtual PyNet::Models::Matrix
+	: public virtual Matrix
 #else
-	: public PyNet::Models::Matrix
+	: public Matrix
 #endif
 {
 public:
@@ -18,14 +19,13 @@ public:
 		return new CudaMatrix();
 	}
 
-	typedef PyNet::Models::Matrix base;
+	typedef Matrix base;
 
 	CudaMatrix();
-	std::unique_ptr<Matrix> operator*(const Matrix& m) const override;
-	std::unique_ptr<Matrix> operator*(const double d) override;
-	std::unique_ptr<Matrix> operator+(const Matrix& m) override;
-	std::unique_ptr<Matrix> operator-(const Matrix& m) override;
-	std::unique_ptr<Matrix> operator~() override;
+	unique_ptr<Matrix> operator*(const Matrix& m) const override;
+	unique_ptr<Matrix> operator*(const double d) const override;
+	unique_ptr<Matrix> operator+(const Matrix& m) const override;
+	unique_ptr<Matrix> operator-(const Matrix& m) const override;
+	unique_ptr<Matrix> operator~() const override;
 	void operator+=(const Matrix& m) override;
 };
-

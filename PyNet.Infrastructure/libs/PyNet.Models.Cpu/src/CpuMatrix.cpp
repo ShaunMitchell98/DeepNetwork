@@ -6,77 +6,77 @@ CpuMatrix::CpuMatrix()
 #endif
 {}
 
-std::unique_ptr<Matrix> CpuMatrix::operator*(const Matrix& m) const {
+unique_ptr<Matrix> CpuMatrix::operator*(const Matrix& m) const {
 
-	auto c = std::unique_ptr<Matrix>(new CpuMatrix());
+	auto c = unique_ptr<Matrix>(new CpuMatrix());
 	c->Initialise(Rows, m.GetCols(), false);
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < m.GetCols(); j++) {
 			double tempValue = 0;
 			for (auto k = 0; k < Cols; k++) {
-				tempValue += GetValue(i, k) * m.GetValue(k, j);
+				tempValue += (*this)(i, k) * m(k, j);
 			}
 
-			c->SetValue(j, i, tempValue);
+			(*c)(j, i) = tempValue;
 		}
 	}
 
-	return std::move(c);
+	return move(c);
 }
 
-std::unique_ptr<Matrix> CpuMatrix::operator*(const double d) {
+unique_ptr<Matrix> CpuMatrix::operator*(const double d) const {
 
-	auto c = std::unique_ptr<Matrix>(new CpuMatrix(*this));
+	auto c = unique_ptr<Matrix>(new CpuMatrix(*this));
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < Cols; j++) {
-			c->SetValue(i, j, GetValue(i, j) * d);
+			(*c)(i, j) = (*this)(i, j) * d;
 		}
 	}
 
-	return std::move(c);
+	return move(c);
 }
 
 
-std::unique_ptr<Matrix> CpuMatrix::operator+(const Matrix& m) {
+unique_ptr<Matrix> CpuMatrix::operator+(const Matrix& m) const {
 
-	auto c = std::unique_ptr<Matrix>(new CpuMatrix(*this));
+	auto c = unique_ptr<Matrix>(new CpuMatrix(*this));
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < Cols; j++) {
-			c->SetValue(i, j, GetValue(i, j) + m.GetValue(i, j));
+			(*c)(i, j) = (*this)(i, j) + m(i, j);
 		}
 	}
 
-	return std::move(c);
+	return move(c);
 }
 
-std::unique_ptr<Matrix> CpuMatrix::operator-(const Matrix& m) {
+unique_ptr<Matrix> CpuMatrix::operator-(const Matrix& m) const {
 
-	auto c = std::unique_ptr<Matrix>(new CpuMatrix(*this));
+	auto c = unique_ptr<Matrix>(new CpuMatrix(*this));
 
 	for (auto i = 0; i < Rows; i++) {
 		for (auto j = 0; j < Cols; j++) {
-			c->SetValue(i, j, GetValue(i, j) - m.GetValue(i, j));
+			(*c)(i, j) = (*this)(i, j) - m(i, j);
 		}
 	}
 
-	return std::move(c);
+	return move(c);
 }
 
 void CpuMatrix::operator+=(const Matrix& m) {
 
 	for (auto i = 0; i < m.GetRows(); i++) {
 		for (auto j = 0; j < m.GetCols(); j++) {
-			this->SetValue(i, j, this->GetValue(i, j) + m.GetValue(i, j));
+			(*this)(i, j) = (*this)(i, j) + m(i, j);
 		}
 	}
 }
 
-std::unique_ptr<Matrix> CpuMatrix::operator~() {
+unique_ptr<Matrix> CpuMatrix::operator~() const {
 
-	auto m = std::unique_ptr<Matrix>(new CpuMatrix());
+	auto m = unique_ptr<Matrix>(new CpuMatrix());
 	m->Set(Cols, Rows, Values.data());
-	return std::move(m);
+	return move(m);
 }

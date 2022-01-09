@@ -1,5 +1,5 @@
 #include "CppUnitTest.h"
-#include "NetworkTrainer.h"
+#include "SteepestDescent.h"
 #include "PyNet.Models/Matrix.h"
 #include "UnitTest.h"
 
@@ -7,11 +7,11 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace PyNet::Infrastructure::Tests
 {
-	TEST_CLASS(NetworkTrainerTests), public UnitTest
+	TEST_CLASS(SteepestDescentTests), public UnitTest
 	{
 	public:
 
-		TEST_METHOD(Trainer_TrainNetworkCalled_)
+		TEST_METHOD(SteepestDescent_UpdateWeightsCalled_)
 		{
 			double testArray[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 
@@ -19,7 +19,7 @@ namespace PyNet::Infrastructure::Tests
 			matrix->Set(10, 1, testArray);
 
 			for (auto i = 0; i < 10; i++) {
-				Assert::AreEqual(testArray[i], matrix->GetValue(i, 0));
+				Assert::AreEqual(testArray[i], (*matrix)(i, 0));
 			}
 
 			Assert::AreEqual(10, matrix->GetRows());

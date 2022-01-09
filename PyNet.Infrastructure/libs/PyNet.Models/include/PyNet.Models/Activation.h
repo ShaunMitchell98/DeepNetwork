@@ -12,7 +12,7 @@ namespace PyNet::Models {
 	class Activation {
 	protected:
 	public:
-		virtual void Apply(PyNet::Models::Matrix& input) = 0;
-		virtual std::unique_ptr<PyNet::Models::Matrix> CalculateDerivative(PyNet::Models::Matrix& input) = 0;
+		virtual void Apply(Matrix& input) = 0;
+		virtual std::unique_ptr<Matrix> CalculateDerivative(const Matrix& input) = 0;
 	};
 }

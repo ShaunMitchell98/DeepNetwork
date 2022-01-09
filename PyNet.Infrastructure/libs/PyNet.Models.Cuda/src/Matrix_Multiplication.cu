@@ -48,5 +48,5 @@ void cuda_matrix_multiply(const Matrix& A, const Matrix& B, Matrix& C) {
     d_B.set(B.GetCValues());
 
     internalMatrixMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.GetRows(), A.GetCols(), B.GetCols());
-    d_C.get(C.GetValues().data(), C.GetSize());
+    d_C.get(C.Values.data(), C.GetSize());
 }
