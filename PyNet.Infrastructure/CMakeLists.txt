@@ -20,7 +20,7 @@ include_directories( ./include
 	 ./tests
 	 ./src
 	./libs/di/src
-	"C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/VS/UnitTest/include"
+	"C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/include"
 )
 
 # target
@@ -71,9 +71,5 @@ add_library(PyNet.Infrastructure.Tests SHARED
 	./tests/UnitTest.h
 )
 
-include_directories(
-	"C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/VS/UnitTest/include"
-)
-
 target_link_libraries(PyNet.Infrastructure.Tests PyNet.Infrastructure)
-link_directories("C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/VS/UnitTest/lib/x64/Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib")
+link_directories("C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/lib/x64/Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib")
