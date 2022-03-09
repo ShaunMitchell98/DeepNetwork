@@ -2,11 +2,12 @@
 #include <iostream>
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include "cuda_array.h"
 #include <vector>
 #include <stdlib.h>
 #include <stddef.h>
-#include "Matrix_Operations.h"
+#include "CudaArray.h"
+
+using namespace std;
 
 __global__ void matrixAdditionKernel(double* A, double* B, double* C, int rows, int cols) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -16,7 +17,6 @@ __global__ void matrixAdditionKernel(double* A, double* B, double* C, int rows, 
         C[i * cols + j] = A[i * cols + j] + B[i * cols + j];
     }
 }
-
 
 void internalMatrixAdd(double* A, double* B, double* C, int rows, int cols) {
 
@@ -39,15 +39,15 @@ void internalMatrixAdd(double* A, double* B, double* C, int rows, int cols) {
     cudaDeviceSynchronize();
 }
 
-void matrix_add(const Matrix& A, const Matrix& B, Matrix& C) {
+void matrix_add(const vector<double>& A, const vector<double>& B, vector<double>& C, int Arows, int Acols) {
 
-    cuda_array<double> d_A(A.GetCValues().size());
-    cuda_array<double> d_B(B.GetCValues().size());
-    cuda_array<double> d_C(C.GetCValues().size());
+    CudaArray<double> d_A(A.size());
+    CudaArray<double> d_B(B.size());
+    CudaArray<double> d_C(C.size());
 
-    d_A.set(A.GetCValues());
-    d_B.set(B.GetCValues());
+    d_A.set(A);
+    d_B.set(B);
 
-    internalMatrixAdd(d_A.getData(), d_B.getData(), d_C.getData(), A.GetRows(), A.GetCols());
-    d_C.get(C.Values.data(), C.GetSize());
+    internalMatrixAdd(d_A.getData(), d_B.getData(), d_C.getData(), Arows, Acols);
+    d_C.get(C.data(), C.size());
 }

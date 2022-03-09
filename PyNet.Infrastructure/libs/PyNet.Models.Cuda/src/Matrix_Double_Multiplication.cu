@@ -1,7 +1,11 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include "cuda_array.h"
+#include <cmath>
+#include <vector>
+#include "CudaArray.h"
 #include "Matrix_Operations.h"
+
+using namespace std;
 
 __global__ static void matrixDoubleMultiplicationKernel(double* A, double* B, double* C, int Arows, int Acols) {
     int ROW = blockIdx.x * blockDim.x + threadIdx.x;
@@ -33,17 +37,17 @@ static void internalMatrixDoubleMultiply(double* A, double* B, double* C, int Ar
     cudaDeviceSynchronize();
 }
 
-void multiply_matrix_and_double(const Matrix& A, const double B, Matrix& C) {
+void multiply_matrix_and_double(const vector<double>& A, const double B, vector<double>& C, int Arows, int Acols) {
 
     const std::vector<double> bVector{ B };
 
-    cuda_array<double> d_A(A.GetCValues().size());
-    cuda_array<double> d_B(bVector.size());
-    cuda_array<double> d_C(C.GetCValues().size());
+    CudaArray<double> d_A(A.size());
+    CudaArray<double> d_B(bVector.size());
+    CudaArray<double> d_C(C.size());
 
-    d_A.set(A.GetCValues());
+    d_A.set(A);
     d_B.set(bVector);
 
-    internalMatrixDoubleMultiply(d_A.getData(), d_B.getData(), d_C.getData(), A.GetRows(), A.GetCols());
-    d_C.get(C.Values.data(), C.GetSize());
+    internalMatrixDoubleMultiply(d_A.getData(), d_B.getData(), d_C.getData(), Arows, Acols);
+    d_C.get(C.data(), C.size());
 }

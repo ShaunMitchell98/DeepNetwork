@@ -1,12 +1,11 @@
 #pragma once
 
 #include <vector>
-#include "PyNet.Models/Matrix.h"
 
-using namespace PyNet::Models;
+using namespace std;
 
-void cuda_matrix_multiply(const Matrix& A, const Matrix& B, Matrix& C);
-void multiply_matrix_and_double(const Matrix& A, const double B, Matrix& C);
-void matrix_add(const Matrix& A, const Matrix& B, Matrix& C);
-void matrix_subtract(const Matrix& A, const Matrix& B, Matrix& C);
-void matrix_addition_assignment(Matrix& A, const Matrix& B);
+void cuda_matrix_multiply(const vector<double>& A, const vector<double>& B, vector<double>& C, int Arows, int Acols, int Bcols);
+void multiply_matrix_and_double(const vector<double>& A, const double B, vector<double>& C, int Arows, int Acols);
+void matrix_add(const vector<double>& A, const vector<double>& B, vector<double>& C, int Arows, int Acols);
+void matrix_subtract(const vector<double>& A, const vector<double>& B, vector<double>& C, int Arows, int Acols);
+void matrix_addition_assignment(vector<double> A, const vector<double>& B, int Arows, int Acols);

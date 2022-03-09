@@ -1,16 +1,12 @@
 project(PyNet.Models.Cpu)
 
-# include files
-include_directories( ./include/PyNet.Models.Cpu ./src )
-include_directories(${CMAKE_SOURCE_DIR}/libs/PyNet.Models)
-
 # target
 add_library(PyNet.Models.Cpu STATIC 
-	./include/PyNet.Models.Cpu/CpuMatrix.h
-	./src/CpuMatrix.cpp
-	./include/PyNet.Models.Cpu/CpuVector.h
-	./src/CpuVector.cpp
-	./include/PyNet.Models.Cpu/CpuLogistic.h
-	./include/PyNet.Models.Cpu/CpuModule.h)
+	./modules/CpuMatrix.ixx
+	./modules/CpuVector.ixx
+	./modules/CpuLogistic.ixx
+	./modules/CpuModule.ixx
+	./modules/PyNet.Models.Cpu.ixx)
 
-target_link_libraries(PyNet.Models.Cuda PyNet.Models)
+target_link_libraries(PyNet.Models.Cpu PyNet.Models)
+target_link_libraries(PyNet.Models.Cpu PyNet.DI)

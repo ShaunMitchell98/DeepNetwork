@@ -5,30 +5,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # include files
 include_directories( ./include/PyNet.Models.Cuda ./src)
-include_directories(${CMAKE_SOURCE_DIR}/libs/PyNet.Models/include)
 
 # target
-add_library(PyNet.Models.Cuda SHARED 
+add_library(PyNet.Models.Cuda SHARED
 	./include/PyNet.Models.Cuda/Matrix_Operations.h
 	./src/Matrix_Multiplication.cu
-	./include/PyNet.Models.Cuda/CudaMatrix.h
-	./src/CudaMatrix.cpp
-	./include/PyNet.Models.Cuda/CudaVector.h
-	./src/CudaVector.cpp
+	./modules/CudaMatrix.ixx
+	./modules/CudaVector.ixx
+	./modules/PyNet.Models.Cuda.ixx
+	./src/CudaArray.h
 	./src/Matrix_Subtraction.cu
 	./src/Matrix_Addition_Assignment.cu
 	./src/Matrix_Double_Multiplication.cu
 	./src/Matrix_Addition.cu
-	./src/cuda_array.h
-	./include/PyNet.Models.Cuda/CudaModule.h)
+	./modules/CudaModule.ixx)
 
 target_link_libraries(PyNet.Models.Cuda PyNet.Models)
+target_link_libraries(PyNet.Models.Cuda PyNet.DI)
 set_target_properties(PyNet.Models.Cuda PROPERTIES CUDA_ARCHITECTURES "75")
 set_property(TARGET PyNet.Models.Cuda PROPERTY CUDA_STANDARD 17)
 
 add_library(PyNet.Models.Cuda.Tests SHARED
-	./tests/CudaMatrixTests.cpp
-	./tests/UnitTest.h
+	./tests/CudaMatrixTests.ixx
+	./tests/UnitTest.ixx
 )
 
 target_link_libraries(PyNet.Models.Cuda.Tests PyNet.Models.Cuda)

@@ -5,6 +5,9 @@ project(PyNet.Infrastructure)
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_SYSROOT_FLAG_CODE "list(APPEND CMAKE_CXX_SOURCE_FILE_EXTENSIONS ixx)")
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(C_STANDARD C17)
 
@@ -12,44 +15,31 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # include files
-include_directories( ./include 
-	./libs/PyNet.Models/include
-	./libs/PyNet.Models.Cuda/include
-	./libs/PyNet.Models.Cpu/include
-	./libs/PyNet.DI/include
+include_directories(
 	 ./tests
-	 ./src
-	./libs/di/src
+	 ./modules
 	"C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/include"
 )
 
 # target
 add_library(PyNet.Infrastructure SHARED
-	./include/PyNetwork_Functions.h
-	./src/Settings.h
-	./src/AdjustmentCalculator.h
-	./src/AdjustmentCalculator.cpp 
-	./src/InfrastructureModule.h
-	./src/LayerPropagator.h
-	./src/LayerPropagator.cpp 
-	./src/Logger.h
-	./src/Logger.cpp 
-	./src/SteepestDescent.h
-	./src/SteepestDescent.cpp
-	./src/PyNetwork.h 
-	./src/PyNetwork.cpp 
-	./src/PyNetwork_Functions.cpp
-	./src/QuadraticLoss.h
-	./src/QuadraticLoss.cpp
-	./src/Setup.h
-	./src/XmlWriter.h
-	./src/XmlWriter.cpp
-	./src/XmlReader.h
-	./src/XmlReader.cpp
-	./src/VariableLearningSettings.h
-	./src/TrainingAlgorithm.h
-	./src/GradientCalculator.h
-	./src/GradientCalculator.cpp
+	./modules/PyNetwork_Functions.ixx
+	./modules/Settings.ixx
+	./modules/AdjustmentCalculator.ixx
+	./modules/InfrastructureModule.ixx
+	./modules/Logger.ixx
+	./modules/SteepestDescent.ixx
+	./modules/PyNetwork.ixx
+	./modules/QuadraticLoss.ixx
+	./modules/LayerNormaliser.ixx
+	./modules/Setup.ixx
+	./modules/XmlWriter.ixx
+	./modules/XmlReader.ixx
+	./modules/VariableLearningSettings.ixx
+	./modules/TrainingAlgorithm.ixx
+	./modules/GradientCalculator.ixx
+	./modules/LayerPropagator.ixx
+	./modules/PyNet.Infrastructure.ixx
 )
 
 # 3rd party libs
@@ -65,10 +55,10 @@ target_link_libraries( PyNet.Infrastructure PyNet.DI )
 target_link_libraries(PyNet.Console PyNet.Infrastructure )
 
 add_library(PyNet.Infrastructure.Tests SHARED
-		./tests/LayerPropagatorTests.cpp
-	./tests/SteepestDescentTests.cpp
-	./tests/PyNetworkTests.cpp
-	./tests/UnitTest.h
+		./tests/LayerPropagatorTests.ixx
+	./tests/SteepestDescentTests.ixx
+	./tests/PyNetworkTests.ixx
+	./tests/UnitTest.ixx
 )
 
 target_link_libraries(PyNet.Infrastructure.Tests PyNet.Infrastructure)
