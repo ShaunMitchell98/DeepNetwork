@@ -87,35 +87,37 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 	}
 }
 
-int main()
-{
-	auto network = PyNetwork_New(false, true);
-	PyNetwork_AddLayer(network, 784, PyNet::Models::ActivationFunctionType::Logistic);
-	PyNetwork_AddLayer(network, 500, PyNet::Models::ActivationFunctionType::Logistic);
-	PyNetwork_AddLayer(network, 129, PyNet::Models::ActivationFunctionType::Logistic);
-	PyNetwork_AddLayer(network, 10, PyNet::Models::ActivationFunctionType::Logistic);
+extern "C" {
+	int main()
+	{
+		auto network = PyNetwork_New(false, true);
+		PyNetwork_AddLayer(network, 784, PyNet::Models::ActivationFunctionType::Logistic);
+		PyNetwork_AddLayer(network, 500, PyNet::Models::ActivationFunctionType::Logistic);
+		PyNetwork_AddLayer(network, 129, PyNet::Models::ActivationFunctionType::Logistic);
+		PyNetwork_AddLayer(network, 10, PyNet::Models::ActivationFunctionType::Logistic);
 
-	auto settings = VariableLearningSettings();
-	settings.ErrorThreshold = 0.04;
-	settings.LRDecrease = 0.7;
-	settings.LRIncrease = 1.05;
-	PyNetwork_SetVariableLearning(network, &settings);
+		auto settings = VariableLearningSettings();
+		settings.ErrorThreshold = 0.04;
+		settings.LRDecrease = 0.7;
+		settings.LRIncrease = 1.05;
+		PyNetwork_SetVariableLearning(network, &settings);
 
-	string folderPath = "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet.Infrastructure\\tests\\Resources\\";
-	string trainingExamplesFileName = "Training_Example";
-	string trainingLabelsFileName = "Training_Labels";
+		string folderPath = "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet.Infrastructure\\tests\\Resources\\";
+		string trainingExamplesFileName = "Training_Example";
+		string trainingLabelsFileName = "Training_Labels";
 
 
-	vector<double*> inputs;
-	vector<double*> labels;
+		vector<double*> inputs;
+		vector<double*> labels;
 
-	for (auto i = 0; i < 10; i++) {
-		inputs.push_back(new double[784]);
-		labels.push_back(new double[10]);
+		for (auto i = 0; i < 10; i++) {
+			inputs.push_back(new double[784]);
+			labels.push_back(new double[10]);
+		}
+
+		GetData(folderPath, trainingExamplesFileName, inputs);
+		GetLabels(folderPath, trainingLabelsFileName, labels);
+		PyNetwork_Train(network, inputs.data(), labels.data(), 10, 5, 0.01, 0, 10);
 	}
-
-	GetData(folderPath, trainingExamplesFileName, inputs);
-	GetLabels(folderPath, trainingLabelsFileName, labels);
-	PyNetwork_Train(network, inputs.data(), labels.data(), 10, 5, 0.01, 0, 10);
 }
 	

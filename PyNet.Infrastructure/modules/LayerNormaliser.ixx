@@ -12,7 +12,7 @@ private:
     shared_ptr<ILogger> _logger;
 public:
 
-    static auto factory(shared_ptr<ILogger> logger) {
+    __declspec(dllexport) static auto factory(shared_ptr<ILogger> logger) {
         return new LayerNormaliser{ logger };
     }
 

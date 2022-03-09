@@ -7,6 +7,7 @@ import PyNet.Models;
 import :UnitTest;
 
 using namespace PyNet::Models;
+using namespace PyNet::Infrastructure;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 TEST_CLASS(LayerPropagatorTests), public UnitTest

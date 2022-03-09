@@ -41,7 +41,7 @@ private:
 
 public:
 
-	static auto factory(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator, shared_ptr<ILogger> logger) {
+	__declspec(dllexport) static auto factory(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator, shared_ptr<ILogger> logger) {
 		return new GradientCalculator{ context, adjustmentCalculator, logger };
 	}
 

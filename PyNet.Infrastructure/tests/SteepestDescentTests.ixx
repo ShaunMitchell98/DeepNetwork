@@ -3,6 +3,7 @@ module;
 export module PyNet.Infrastructure.Tests:SteepestDescentTests;
 
 import :UnitTest;
+import PyNet.Models;
 
 using namespace PyNet::Models;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

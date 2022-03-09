@@ -7,7 +7,7 @@ import PyNet.DI;
 
 using namespace std;
 using namespace PyNet::DI;
-
+using namespace PyNet::Infrastructure;
 
 class UnitTest
 {

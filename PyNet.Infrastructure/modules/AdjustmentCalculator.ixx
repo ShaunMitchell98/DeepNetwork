@@ -25,7 +25,7 @@ private:
 
 public:
 
-	static auto factory(shared_ptr<Settings> settings, shared_ptr<Context> context) {
+	__declspec(dllexport) static auto factory(shared_ptr<Settings> settings, shared_ptr<Context> context) {
 		return new AdjustmentCalculator(settings, context);
 	}
 

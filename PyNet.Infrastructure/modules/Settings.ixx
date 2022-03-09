@@ -2,7 +2,7 @@ export module PyNet.Infrastructure:Settings;
 
 struct Settings {
 
-	static auto factory() {
+	__declspec(dllexport) static auto factory() {
 		return new Settings();
 	}
 

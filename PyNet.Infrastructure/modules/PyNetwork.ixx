@@ -20,7 +20,7 @@ using namespace std;
 using namespace PyNet::Models;
 using namespace PyNet::Infrastructure;
 
-class PyNetwork
+export class PyNetwork
 {
 private:
 	shared_ptr<LayerPropagator> _layerPropagator;
@@ -40,7 +40,7 @@ private:
 
 public:
 
-	static auto factory(shared_ptr<ILogger> logger, shared_ptr<LayerPropagator> layerPropagator, shared_ptr<PyNet::DI::Context> context,
+	__declspec(dllexport) static auto factory(shared_ptr<ILogger> logger, shared_ptr<LayerPropagator> layerPropagator, shared_ptr<PyNet::DI::Context> context,
 		shared_ptr<GradientCalculator> gradientCalculator, shared_ptr<AdjustmentCalculator> adjustmentCalculator,
 		shared_ptr<TrainingAlgorithm> trainingAlgorithm, shared_ptr<Settings> settings, shared_ptr<Loss> loss,
 		shared_ptr<LayerNormaliser> layerNormaliser) {

@@ -6,6 +6,7 @@ import PyNet.DI;
 import PyNet.Infrastructure;
 import :UnitTest;
 
+using namespace PyNet::Infrastructure;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace PyNet::Infrastructure::Tests

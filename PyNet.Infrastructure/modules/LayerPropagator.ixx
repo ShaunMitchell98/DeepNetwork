@@ -7,7 +7,7 @@ import PyNet.Models;
 using namespace PyNet::Models;
 using namespace std;
 
-namespace PyNet::Infrastructure {
+export namespace PyNet::Infrastructure {
 
     class __declspec(dllexport) LayerPropagator {
     private:
