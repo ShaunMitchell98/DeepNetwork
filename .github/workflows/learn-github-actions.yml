@@ -6,15 +6,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          repository: 'PyNet.Infrastructure'
           
       - name: Running cmake
         run: |
           cd ${{ github.workspace }}
           mkdir build
           cd build
-          cmake ..
+          cmake ../PyNet.Infrastructure
                 
       - name: Build Solution
         run: |
