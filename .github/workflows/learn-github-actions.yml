@@ -9,7 +9,7 @@ jobs:
         
       - name: Get CUDA 
         run: |
-          curl -o https://developer.download.nvidia.com/compute/cuda/11.6.1/network_installers/cuda_11.6.1_windows_network.exe > ../cuda_11.6.1_windows_network.exe
+          curl -o https://developer.download.nvidia.com/compute/cuda/11.6.1/local_installers/cuda_11.6.1_511.65_windows.exe > ../cuda_11.6.1_windows_network.exe
           cd ../
           dir
           .\cuda_11.6.1_windows_network.exe
