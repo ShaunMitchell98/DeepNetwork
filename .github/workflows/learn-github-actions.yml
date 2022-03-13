@@ -9,7 +9,8 @@ jobs:
         
       - name: Get CUDA 
         run: |
-          .\https://developer.download.nvidia.com/compute/cuda/11.6.0/network_installers/cuda_11.6.0_windows_network.exe
+          curl https://developer.download.nvidia.com/compute/cuda/11.6.0/network_installers/cuda_11.6.0_windows_network.exe
+          .\cuda_11.6.0_windows_network.exe
           
       - name: Running cmake
         run: |
