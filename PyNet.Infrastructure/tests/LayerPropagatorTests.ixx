@@ -10,31 +10,34 @@ using namespace PyNet::Models;
 using namespace PyNet::Infrastructure;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-TEST_CLASS(LayerPropagatorTests), public UnitTest
-{
-public:
+namespace PyNet::Infrastructure::Tests {
 
-	TEST_METHOD(Propagator_GivenWeightsAndInput_ReturnsOutput)
+	TEST_CLASS(LayerPropagatorTests), public UnitTest
 	{
-		double weights[4] = { 1, 2, 3, 4 };
-		auto weightMatrix = GetUniqueService<Matrix>();
-		weightMatrix->Set(2, 2, weights);
+	public:
 
-		double inputLayer[2] = { 1, 1 };
-		auto inputLayerVector = GetUniqueService<Vector>();
-		inputLayerVector->Set(2, inputLayer);
+		TEST_METHOD(Propagator_GivenWeightsAndInput_ReturnsOutput)
+		{
+			double weights[4] = { 1, 2, 3, 4 };
+			auto weightMatrix = GetUniqueService<Matrix>();
+			weightMatrix->Set(2, 2, weights);
 
-		auto outputLayerVector = GetUniqueService<Vector>();
-		outputLayerVector->Initialise(2, false);
+			double inputLayer[2] = { 1, 1 };
+			auto inputLayerVector = GetUniqueService<Vector>();
+			inputLayerVector->Set(2, inputLayer);
 
-		double biasesLayer[2] = { 0.1, 0.5 };
-		auto biasesVector = GetUniqueService<Vector>();
-		biasesVector->Set(2, biasesLayer);
+			auto outputLayerVector = GetUniqueService<Vector>();
+			outputLayerVector->Initialise(2, false);
 
-		auto layerPropagator = GetUniqueService<LayerPropagator>();
-		layerPropagator->PropagateLayer(*weightMatrix, *inputLayerVector, *biasesVector, *outputLayerVector);
+			double biasesLayer[2] = { 0.1, 0.5 };
+			auto biasesVector = GetUniqueService<Vector>();
+			biasesVector->Set(2, biasesLayer);
 
-		Assert::AreEqual(0.95689274505891386, (*outputLayerVector)[0]);
-		Assert::AreEqual(0.99944722136307640, (*outputLayerVector)[1]);
-	}
-};
+			auto layerPropagator = GetUniqueService<LayerPropagator>();
+			layerPropagator->PropagateLayer(*weightMatrix, *inputLayerVector, *biasesVector, *outputLayerVector);
+
+			Assert::AreEqual(0.95689274505891386, (*outputLayerVector)[0]);
+			Assert::AreEqual(0.99944722136307640, (*outputLayerVector)[1]);
+		}
+	};
+}

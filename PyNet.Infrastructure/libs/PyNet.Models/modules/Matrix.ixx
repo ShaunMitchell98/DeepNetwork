@@ -19,7 +19,6 @@ export namespace PyNet::Models {
 			}
 		}
 
-	protected:
 		int Rows = 0;
 		int Cols = 0;
 
@@ -66,7 +65,9 @@ export namespace PyNet::Models {
 
 		virtual int GetCols() const { return Cols; }
 		virtual int GetRows() const { return Rows; }
+
 		int GetSize() const { return GetCols() * GetRows(); }
+
 		double* GetAddress(size_t row, size_t col) { return &Values[row * Cols + col]; }
 
 		string ToString() const {
@@ -147,7 +148,11 @@ export namespace PyNet::Models {
 			Cols = expectedColNumber;
 		}
 
-		vector<double> GetCValues() const {
+		virtual vector<double> GetCValues() const {
+			return this->Values;
+		}
+
+		virtual vector<double>& GetValues() {
 			return this->Values;
 		}
 

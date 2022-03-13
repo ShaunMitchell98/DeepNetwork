@@ -18,18 +18,11 @@ namespace PyNet::Models::Cpu {
 			return new CpuVector{ activation };
 		}
 
-		typedef Vector base;
-
 		CpuVector(shared_ptr<Activation> activation) : Vector(activation) {}
 
 		CpuVector(Matrix&& m) : Vector(nullptr) {
-
-			if (&this->operator Matrix &() == &m) {
-				return;
-			}
-
-			Vector::Values = std::exchange(m.Values, vector<double>());
-			Vector::Rows = m.GetRows();
+			static_cast<Vector*>(this)->Set(m.GetRows(), m.Values.data());
+			m.Set(0, 0, nullptr);
 		}
 
 		unique_ptr<Matrix> operator*(const Matrix& m) const {
@@ -95,6 +88,14 @@ namespace PyNet::Models::Cpu {
 
 		int GetCols() const override {
 			return Vector::GetCols();
+		}
+
+		vector<double>& GetValues() override {
+			return Vector::GetValues();
+		}
+
+		vector<double> GetCValues() const override {
+			return Vector::GetCValues();
 		}
 
 		operator Matrix& () {

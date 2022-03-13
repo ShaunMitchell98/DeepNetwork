@@ -2,6 +2,7 @@ module;
 #include <functional>
 #include <typeindex>
 #include <memory>
+#include <any>
 export module PyNet.DI:Item;
 
 import :InstanceMode;
@@ -15,8 +16,8 @@ namespace PyNet::DI {
         shared_ptr<void*> instancePtr;                              
         bool marker = false; 
 
-        //function<void*(function<typename Args::element_type>()...)> factory;
-        std::type_index derivedType = std::type_index(typeid(void));    
+        std::type_index type = std::type_index(typeid(void));
+        function<void* (any&)> factory;
         InstanceMode instanceMode = InstanceMode::Shared;
 
         // non-copyable, non-moveable

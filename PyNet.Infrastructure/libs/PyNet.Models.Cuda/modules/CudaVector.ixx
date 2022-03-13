@@ -19,8 +19,6 @@ export namespace PyNet::Models::Cuda {
 			return new CudaVector{ activation };
 		}
 
-		typedef Vector base;
-
 		CudaVector(shared_ptr<Activation> activation) : Vector(activation) {}
 
 		CudaVector(Matrix&& m) : Vector(nullptr) {
@@ -97,6 +95,14 @@ export namespace PyNet::Models::Cuda {
 
 		int GetCols() const override {
 			return Vector::GetCols();
+		}
+
+		vector<double>& GetValues() override {
+			return Vector::GetValues();
+		}
+
+		vector<double> GetCValues() const override {
+			return Vector::GetCValues();
 		}
 
 		CudaVector(const CudaVector& v) : Vector(v._activation) {}

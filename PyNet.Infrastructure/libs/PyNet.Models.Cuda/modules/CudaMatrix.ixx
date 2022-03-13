@@ -9,12 +9,7 @@ using namespace PyNet::Models;
 using namespace std;
 
 export namespace PyNet::Models::Cuda {
-	class __declspec(dllexport) CudaMatrix
-#ifdef CUDA_VECTOR
-		: public virtual Matrix
-#else
-		: public Matrix
-#endif
+	class __declspec(dllexport) CudaMatrix : public Matrix
 	{
 	public:
 
@@ -22,51 +17,45 @@ export namespace PyNet::Models::Cuda {
 			return new CudaMatrix();
 		}
 
-		typedef Matrix base;
-
-		CudaMatrix()
-	#ifndef CUDA_VECTOR
-			: Matrix()
-	#endif
-		{}
+		CudaMatrix() : Matrix() {}
 
 		unique_ptr<Matrix> operator*(const Matrix& m) const override {
 			auto c = unique_ptr<Matrix>(new CudaMatrix());
-			c->Initialise(Rows, m.GetCols(), false);
-			cuda_matrix_multiply(this->GetCValues(), m.GetCValues(), c->Values, this->Rows, this->Cols, m.GetCols());
+			c->Initialise(GetRows(), m.GetCols(), false);
+			cuda_matrix_multiply(GetCValues(), m.GetCValues(), c->Values, GetRows(), GetCols(), m.GetCols());
 
 			return move(c);
 		}
 
 		unique_ptr<Matrix> operator*(const double d) const override {
 			auto c = unique_ptr<Matrix>(new CudaMatrix());
-			c->Initialise(Rows, Cols, false);
-			multiply_matrix_and_double(this->GetCValues(), d, c->Values, this->GetRows(), this->GetCols());
+			c->Initialise(GetRows(), GetCols(), false);
+			multiply_matrix_and_double(GetCValues(), d, c->GetValues(), GetRows(), GetCols());
 			return move(c);
 		}
 
 		unique_ptr<Matrix> operator+(const Matrix& m) const override {
 			auto c = unique_ptr<Matrix>(new CudaMatrix());
-			c->Initialise(Rows, Cols, false);
-			matrix_add(this->GetCValues(), m.GetCValues(), c->Values, this->Rows, this->Cols);
+			c->Initialise(GetRows(), GetCols(), false);
+			matrix_add(GetCValues(), m.GetCValues(), c->GetValues(), GetRows(), GetCols());
 			return move(c);
 		}
 
 		unique_ptr<Matrix> operator-(const Matrix& m) const override {
 			auto c = unique_ptr<Matrix>(new CudaMatrix());
-			c->Initialise(Rows, Cols, false);
-			matrix_subtract(this->GetCValues(), m.GetCValues(), c->Values, this->Rows, this->Cols);
+			c->Initialise(GetRows(), GetCols(), false);
+			matrix_subtract(GetCValues(), m.GetCValues(), c->Values, GetRows(), GetCols());
 			return move(c);
 		}
 
 		unique_ptr<Matrix> operator~() const override {
 			auto m = unique_ptr<Matrix>(new CudaMatrix());
-			m->Set(Cols, Rows, Values.data());
+			m->Set(GetCols(), GetRows(), ((Matrix*)this)->GetValues().data());
 			return move(m);
 		}
 
 		void operator+=(const Matrix& m) override {
-			matrix_addition_assignment(this->Values, m.GetCValues(), this->GetRows(), this->GetCols());
+			matrix_addition_assignment(GetValues(), m.GetCValues(), GetRows(), GetCols());
 		}
 	};
 }

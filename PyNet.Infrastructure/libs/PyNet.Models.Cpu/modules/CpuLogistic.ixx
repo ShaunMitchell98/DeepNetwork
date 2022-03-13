@@ -17,8 +17,6 @@ export namespace PyNet::Models::Cpu {
 			return new CpuLogistic{};
 		}
 
-		typedef Activation base;
-
 		void Apply(Matrix& input) {
 
 			for (auto i = 0; i < input.GetRows(); i++) {

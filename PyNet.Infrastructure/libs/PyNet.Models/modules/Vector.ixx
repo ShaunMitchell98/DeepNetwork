@@ -28,13 +28,13 @@ export namespace PyNet::Models {
 		void ApplyActivation() { _activation->Apply(*this); }
 
 		void SetValue(double value) {
-			for (auto i = 0; i < Rows; i++) {
+			for (auto i = 0; i < GetRows(); i++) {
 				(*this)[i] = value;
 			}
 		}
 
 		void AddValue(double value) {
-			for (auto i = 0; i < Rows; i++) {
+			for (auto i = 0; i < GetRows(); i++) {
 				(*this)[i] += value;
 			}
 		}
@@ -58,13 +58,13 @@ export namespace PyNet::Models {
 		}
 
 		double operator|(const Vector& v) const {
-			if (v.Rows != this->Rows) {
+			if (v.GetRows() != GetRows()) {
 				throw "Cannot calculate dot product for vectors with different lengths";
 			}
 
 			double result = 0;
 
-			for (auto i = 0; i < v.Rows; i++) {
+			for (auto i = 0; i < v.GetRows(); i++) {
 				result += (*this)[i] * v[i];
 			}
 

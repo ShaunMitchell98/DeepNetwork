@@ -13,7 +13,6 @@ class UnitTest
 {
 private:
 	shared_ptr<Context> _context;
-	unique_ptr<ContextBuilder> _builder;
 public:
 
 	UnitTest() {
@@ -23,7 +22,7 @@ public:
 		auto cudaModule = make_unique<CudaModule>();
 		cudaModule->Load(*builder);
 		
-		_context = _builder->Build();
+		_context = builder->Build();
 	}
 
 	template<class T>

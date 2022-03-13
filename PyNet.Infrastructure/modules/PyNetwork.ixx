@@ -151,7 +151,7 @@ public:
 					auto loss = _loss->CalculateLoss(*expectedVector, *_layers[_layers.size() - 1]);
 
 					totalLossForCurrentEpoch += loss;
-					//_logger->LogLine("The loss is: " + to_string(loss));
+					_logger->LogLine("The loss is: " + to_string(loss));
 					_losses.push_back(loss);
 
 					auto lossDerivative = _loss->CalculateDerivative(*expectedVector, *_layers[_layers.size() - 1]);
@@ -160,7 +160,7 @@ public:
 
 					if (batchNumber == batchSize) {
 
-						//_logger->LogLine("The learning rate is: " + to_string(learningRate));
+						_logger->LogLine("The learning rate is: " + to_string(learningRate));
 						_trainingAlgorithm->UpdateWeights(_weights, _biases, learningRate, false);
 
 						printf("Iteration %d, Error is %f\n", i, loss);

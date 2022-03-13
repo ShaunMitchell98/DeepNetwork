@@ -18,8 +18,6 @@ private:
 	Logger(bool log) : _enabled{ log } {};
 public:
 
-	typedef ILogger base;
-
 	static auto factory(shared_ptr<Settings> settings) {
 		return new Logger{ settings->LoggingEnabled };
 	}

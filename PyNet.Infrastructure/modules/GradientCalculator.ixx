@@ -1,5 +1,6 @@
 module;
 #include <memory>
+#include <vector>
 export module PyNet.Infrastructure:GradientCalculator;
 
 import PyNet.Models;

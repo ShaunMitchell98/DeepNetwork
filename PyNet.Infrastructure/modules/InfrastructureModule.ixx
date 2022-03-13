@@ -3,7 +3,9 @@ module;
 export module PyNet.Infrastructure:InfrastructureModule;
 
 import PyNet.Models.Cpu;
+import PyNet.Models;
 import :LayerPropagator;
+import :LayerNormaliser;
 import :AdjustmentCalculator;
 import :SteepestDescent;
 import :GradientCalculator;
@@ -13,11 +15,13 @@ import :Logger;
 import :PyNetwork;
 import PyNet.DI;
 
+using namespace PyNet::Models;
 using namespace PyNet::Models::Cpu;
+using namespace PyNet::DI;
 
 namespace PyNet::Infrastructure {
 
-	class InfrastructureModule : public PyNet::DI::Module {
+	class InfrastructureModule : public Module {
 
 	private:
 		const bool _logEnabled;
@@ -26,19 +30,27 @@ namespace PyNet::Infrastructure {
 
 		InfrastructureModule(bool logEnabled) : _logEnabled{ logEnabled } {}
 
-		void Load(PyNet::DI::ContextBuilder& builder) override {
+		void Load(ContextBuilder& builder) override {
 
-			builder
-				.RegisterType<CpuLogistic>()
-				.RegisterType<QuadraticLoss>()
-				.AddInstance<Settings>(new Settings{ _logEnabled }, PyNet::DI::InstanceMode::Shared)
-				.RegisterType<Logger>()
-				.RegisterType<LayerPropagator>()
-				.RegisterType<AdjustmentCalculator>()
-				.RegisterType<SteepestDescent>()
-				.RegisterType<GradientCalculator>()
-				.RegisterType<PyNetwork>(PyNet::DI::InstanceMode::Unique);
+			builder.RegisterType<CpuLogistic>().As<Activation>();
+				
+			builder.RegisterType<QuadraticLoss>().As<Loss>();
+			
+			builder.RegisterType<LayerNormaliser>().AsSelf();
+
+			builder.AddInstance<Settings>(new Settings{ _logEnabled }, InstanceMode::Shared);
+
+			builder.RegisterType<Logger>().AsSelf().As<ILogger>();
+				
+			builder.RegisterType<LayerPropagator>().AsSelf();
+				
+			builder.RegisterType<AdjustmentCalculator>().AsSelf();
+
+			builder.RegisterType<SteepestDescent>().As<TrainingAlgorithm>();
+
+			builder.RegisterType<GradientCalculator>().AsSelf();
+
+			builder.RegisterType<PyNetwork>(InstanceMode::Unique).AsSelf();
 		}
 	};
-
 }

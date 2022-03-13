@@ -3,6 +3,7 @@ module;
 #include <string>
 #include <stdexcept>
 #include <type_traits>
+#include <any>
 export module PyNet.DI:Context;
 
 import :ItemContainer;
@@ -33,39 +34,12 @@ import :ItemContainer;
 
 using namespace std;
 
-template<class T>
-concept Real = requires (T a) {
-    !std::is_abstract<T>();
-};
-
 export namespace PyNet::DI {
 
     class Context
     {
     private:
         shared_ptr<ItemContainer> _container;
-
-        template <class InstanceType, class... Args>
-        using FactoryFunction = InstanceType * (*)(Args...);
-
-        template<typename T>
-        T* Wrapper() {
-            return Resolve(T::factory);
-        }
-
-        template <class InstanceType, class... Args>
-        InstanceType* Resolve(FactoryFunction<InstanceType, Args...> factoryFunction) {
-            //return std::forward<typename Args::element_type>(GetShared<typename Args::element_type>())...;
-            return factoryFunction(GetShared<typename Args::element_type>()...);
-        }
-
-        template <typename InstanceType> requires std::is_abstract<InstanceType>::value
-        InstanceType* Wrapper() {
-            
-            //This should never be reached. Here to satisfy compiler.
-            return nullptr;
-        }
-
     public:
         Context(shared_ptr<ItemContainer> container) : _container{ container } {}
 
@@ -79,8 +53,8 @@ export namespace PyNet::DI {
             auto& item = _container->GetItem<T>();
 
             item.marker = true;
-            //void* temp = item.factory(*this);
-            T* temp = Wrapper<T>();
+            any cast = any(*this);
+            T* temp = static_cast<T*>(item.factory(cast));
             item.marker = false;
 
             auto result = unique_ptr<T>(temp);
@@ -94,7 +68,9 @@ export namespace PyNet::DI {
 
             if (!item.instancePtr)
             {
-                *item.instancePtr = Wrapper<T>();
+                auto cast = any(*this);
+                item.instancePtr = make_shared<void*>();
+                *item.instancePtr = item.factory(cast);
             }
 
             if (item.marker) {

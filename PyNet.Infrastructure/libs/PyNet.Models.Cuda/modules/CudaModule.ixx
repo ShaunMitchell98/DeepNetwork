@@ -13,8 +13,16 @@ export namespace PyNet::Models::Cuda {
 	public:
 		void Load(ContextBuilder& builder) override {
 
-			builder.RegisterType<CudaMatrix>(InstanceMode::Unique);
-			builder.RegisterType<CudaVector>(InstanceMode::Unique);
+			builder
+				.RegisterType<CudaMatrix>(InstanceMode::Unique)
+				.AsSelf()
+				.As<Matrix>();
+
+
+			builder
+				.RegisterType<CudaVector>(InstanceMode::Unique)
+				.AsSelf()
+				.As<Vector>();
 		}
 	};
 }

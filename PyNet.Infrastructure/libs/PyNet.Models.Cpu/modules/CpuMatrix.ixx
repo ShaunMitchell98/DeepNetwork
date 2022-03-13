@@ -9,12 +9,7 @@ using namespace std;
 
 namespace PyNet::Models::Cpu {
 
-	class CpuMatrix
-#ifdef CPU_VECTOR
-		: public virtual Matrix
-#else
-		: public Matrix
-#endif
+	class CpuMatrix : public Matrix
 	{
 	public:
 
@@ -22,25 +17,19 @@ namespace PyNet::Models::Cpu {
 			return new CpuMatrix();
 		}
 
-		typedef Matrix base;
-
-		CpuMatrix()
-	#ifndef CPU_VECTOR
-			: Matrix()
-	#endif
-		{}
+		CpuMatrix() : Matrix() {}
 
 		const double& operator()(size_t row, size_t col) const { return Matrix::operator()(row, col); }
 		double& operator()(size_t row, size_t col) { return Matrix::operator()(row, col); }
 
 		unique_ptr<Matrix> operator*(const Matrix& m) const override {
 			auto c = unique_ptr<Matrix>(new CpuMatrix());
-			c->Initialise(Rows, m.GetCols(), false);
+			c->Initialise(GetRows(), m.GetCols(), false);
 
-			for (auto i = 0; i < Rows; i++) {
+			for (auto i = 0; i < GetRows(); i++) {
 				for (auto j = 0; j < m.GetCols(); j++) {
 					double tempValue = 0;
-					for (auto k = 0; k < Cols; k++) {
+					for (auto k = 0; k < GetCols(); k++) {
 						tempValue += (*this)(i, k) * m(k, j);
 					}
 
@@ -54,8 +43,8 @@ namespace PyNet::Models::Cpu {
 		unique_ptr<Matrix> operator*(const double d) const override {
 			auto c = unique_ptr<Matrix>(new CpuMatrix(*this));
 
-			for (auto i = 0; i < Rows; i++) {
-				for (auto j = 0; j < Cols; j++) {
+			for (auto i = 0; i < GetRows(); i++) {
+				for (auto j = 0; j < GetCols(); j++) {
 					(*c)(i, j) = (*this)(i, j) * d;
 				}
 			}
@@ -67,8 +56,8 @@ namespace PyNet::Models::Cpu {
 
 			auto c = unique_ptr<Matrix>(new CpuMatrix(*this));
 
-			for (auto i = 0; i < Rows; i++) {
-				for (auto j = 0; j < Cols; j++) {
+			for (auto i = 0; i < GetRows(); i++) {
+				for (auto j = 0; j < GetCols(); j++) {
 					(*c)(i, j) = (*this)(i, j) + m(i, j);
 				}
 			}
@@ -79,8 +68,8 @@ namespace PyNet::Models::Cpu {
 		unique_ptr<Matrix> operator-(const Matrix& m) const override {
 			auto c = unique_ptr<Matrix>(new CpuMatrix(*this));
 
-			for (auto i = 0; i < Rows; i++) {
-				for (auto j = 0; j < Cols; j++) {
+			for (auto i = 0; i < GetRows(); i++) {
+				for (auto j = 0; j < GetCols(); j++) {
 					(*c)(i, j) = (*this)(i, j) - m(i, j);
 				}
 			}
@@ -90,7 +79,7 @@ namespace PyNet::Models::Cpu {
 
 		unique_ptr<Matrix> operator~() const override {
 			auto m = unique_ptr<Matrix>(new CpuMatrix());
-			m->Set(Cols, Rows, Values.data());
+			m->Set(GetCols(), GetRows(), Values.data());
 			return move(m);
 		}
 
