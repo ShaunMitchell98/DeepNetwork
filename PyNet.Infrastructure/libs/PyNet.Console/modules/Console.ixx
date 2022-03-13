@@ -90,7 +90,7 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 extern "C" {
 	int main()
 	{
-		auto network = PyNetwork_New(false, true);
+		auto network = PyNetwork_Initialise(false, true);
 		PyNetwork_AddLayer(network, 784, PyNet::Models::ActivationFunctionType::Logistic);
 		PyNetwork_AddLayer(network, 500, PyNet::Models::ActivationFunctionType::Logistic);
 		PyNetwork_AddLayer(network, 129, PyNet::Models::ActivationFunctionType::Logistic);

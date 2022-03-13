@@ -35,6 +35,9 @@ add_library(PyNet.Infrastructure SHARED
 	./modules/Setup.ixx
 	./modules/XmlWriter.ixx
 	./modules/XmlReader.ixx
+	./modules/Xml_Functions.ixx
+	./modules/NetworkRunner.ixx
+	./modules/NetworkTrainer.ixx
 	./modules/VariableLearningSettings.ixx
 	./modules/TrainingAlgorithm.ixx
 	./modules/GradientCalculator.ixx

@@ -12,6 +12,8 @@ import :GradientCalculator;
 import :QuadraticLoss;
 import :Settings;
 import :Logger;
+import :NetworkTrainer;
+import :NetworkRunner;
 import :PyNetwork;
 import PyNet.DI;
 
@@ -50,7 +52,11 @@ namespace PyNet::Infrastructure {
 
 			builder.RegisterType<GradientCalculator>().AsSelf();
 
-			builder.RegisterType<PyNetwork>(InstanceMode::Unique).AsSelf();
+			builder.RegisterType<PyNetwork>().AsSelf();
+
+			builder.RegisterType<NetworkRunner>().AsSelf();
+
+			builder.RegisterType<NetworkTrainer>().AsSelf();
 		}
 	};
 }
