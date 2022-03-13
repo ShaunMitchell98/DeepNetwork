@@ -1,7 +1,7 @@
-name: learn-github-actions
+name: PyNet CI
 on: [push]
 jobs:
-  check-bats-version:
+  Build-And-Test:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
