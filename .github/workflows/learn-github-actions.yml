@@ -9,10 +9,8 @@ jobs:
         
       - name: Get CUDA 
         run: |
-          curl -o https://developer.download.nvidia.com/compute/cuda/11.6.1/local_installers/cuda_11.6.1_511.65_windows.exe > ../../CUDA_Installer.exe
-          cd ../../
-          dir
-          .\CUDA_Installer
+          curl -o CUDA_Installer.exe https://developer.download.nvidia.com/compute/cuda/11.6.1/local_installers/cuda_11.6.1_511.65_windows.exe 
+          .\CUDA_Installer.exe
           
       - name: Running cmake
         run: |
