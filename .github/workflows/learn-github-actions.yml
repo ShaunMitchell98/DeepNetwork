@@ -17,7 +17,7 @@ jobs:
         run: |
           conda install cuda -c nvidia
           cd "C:\Miniconda\envs\test"
-          dir /s
+          Get-ChildItem -Recurse
           setx CUDA_PATH "C:\Miniconda\envs\test"
           
       - name: Running cmake
