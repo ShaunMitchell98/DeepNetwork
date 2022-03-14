@@ -11,7 +11,7 @@ jobs:
         run: |
           curl -o CUDA_Installer.exe https://developer.download.nvidia.com/compute/cuda/11.6.1/local_installers/cuda_11.6.1_511.65_windows.exe 
           .\CUDA_Installer.exe
-          cd "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.6"
+          cd "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA"
           dir
           setx CUDA_PATH "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.6"
           
