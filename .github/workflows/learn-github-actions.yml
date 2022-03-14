@@ -7,7 +7,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         
+      - name: Setup miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+        
       - name: Get CUDA 
+      
         run: |
           conda install cuda -c nvidia
           cd "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA"
