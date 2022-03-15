@@ -6,14 +6,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
-      - name: Setup miniconda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-update-conda: true
-        
+                
       - name: Get CUDA 
-      
         run: .github\workflows\install-cuda-windows.ps1
           
       - name: Running cmake
@@ -21,9 +15,9 @@ jobs:
           cd ${{ github.workspace }}
           mkdir build
           cd build
-          cmake -DCUDAToolkit_ROOT="C:\Miniconda\envs\test" ../PyNet.Infrastructure 
+          cmake ../PyNet.Infrastructure 
                 
       - name: Build Solution
         run: |
           cd build
-          MSBuild.exe PyNet.Infrastructure.sln
+          C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe PyNet.Infrastructure.sln
