@@ -17,6 +17,7 @@ jobs:
         run: |
           conda install cuda -c nvidia
           setx CUDA_PATH "C:\Miniconda\envs\test"
+          cd "C:\Miniconda\envs\test"
           Get-ChildItem -Recurse
           Copy-Item "C:\Miniconda\envs\test\extras\visual_studio_integration\MSBuildExtensions\*" -Destination "C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Microsoft\VC\v170\BuildCustomizations" -Force -Recurse
           
