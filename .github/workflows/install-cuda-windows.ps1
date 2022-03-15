@@ -13,7 +13,7 @@ $CUDA_PACKAGES_IN = @(
 
 $CUDA_PACKAGES = ""
 
-$CUDA_MAJOR == 11
+$CUDA_MAJOR = 11
 $CUDA_MINOR = 6
 
 Foreach ($package in $CUDA_PACKAGES_IN) {
