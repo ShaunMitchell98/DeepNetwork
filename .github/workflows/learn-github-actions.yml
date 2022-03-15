@@ -16,13 +16,14 @@ jobs:
       
         run: |
           conda install cuda -c nvidia
+          setx CUDA_PATH "C:\Miniconda\envs\test"
           
       - name: Running cmake
         run: |
           cd ${{ github.workspace }}
           mkdir build
           cd build
-          cmake -D CUDA_TOOLKIT_ROOT_DIR="C:\Miniconda\envs\test" ../PyNet.Infrastructure 
+          cmake -DCUDAToolkit_ROOT="C:\Miniconda\envs\test" ../PyNet.Infrastructure 
                 
       - name: Build Solution
         run: |
