@@ -20,5 +20,5 @@ jobs:
       - name: Build Solution
         run: |
           cd build
-          cmd "'C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe' PyNet.Infrastructure.sln"
+          cmd "'C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe' PyNet.Infrastructure.sln" /p:configuration=release /p:AllProjectBMIsArePublic=true
           dir
