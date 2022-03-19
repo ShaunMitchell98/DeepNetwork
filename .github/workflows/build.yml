@@ -21,7 +21,7 @@ jobs:
         run: | 
           cd .github
           .\Add-BmiSetting "${{ github.workspace }}/build/PyNet.Infrastructure.vcxproj"
-          .\Add-BmiSetting "${{ github.workspace }}/build/libs/PyNet.Models.Cuda/PyNet.Models.Cuda/vcxproj"
+          .\Add-BmiSetting "${{ github.workspace }}/build/libs/PyNet.Models.Cuda/PyNet.Models.Cuda.vcxproj"
         
                 
       - name: Build Solution
