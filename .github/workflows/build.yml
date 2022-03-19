@@ -26,5 +26,6 @@ jobs:
                 
       - name: Build Solution
         run: |
+          cd build
           cmake --build ./
           dir
