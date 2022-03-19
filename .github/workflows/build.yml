@@ -19,7 +19,7 @@ jobs:
       
       - name: Make Modules Public
         run: | 
-          cd ../../github
+          cd ../../.github
           .\Add-BmiSetting "PyNet.Infrastructure.vcxproj"
           .\Add-BmiSetting "libs/PyNet.Models.Cuda/PyNet.Models.Cuda/vcxproj"
         
