@@ -27,5 +27,5 @@ jobs:
       - name: Build Solution
         run: |
           cd build
-          cmake --build ./
+          cmake --build ./  --config release
           dir
