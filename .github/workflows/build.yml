@@ -1,0 +1,24 @@
+name: PyNet CI
+on: [push]
+jobs:
+  Build-And-Test:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+                
+      - name: Get CUDA 
+        run: .github\workflows\install-cuda-windows.ps1
+          
+      - name: Running cmake
+        run: |
+          cd ${{ github.workspace }}
+          mkdir build
+          cd build
+          cmake ../PyNet.Infrastructure 
+                
+      - name: Build Solution
+        run: |
+          cd build
+          cmd "'C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe' PyNet.Infrastructure.sln" /p:configuration=release /p:AllProjectBMIsArePublic=true
+          dir
