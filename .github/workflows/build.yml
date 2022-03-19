@@ -1,7 +1,7 @@
 name: PyNet CI
 on: [push]
 jobs:
-  Build-And-Test:
+  Build:
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -21,10 +21,17 @@ jobs:
         run: | 
           cd .github
           .\Add-BmiSetting "${{ github.workspace }}/build/PyNet.Infrastructure.vcxproj"
-          .\Add-BmiSetting "${{ github.workspace }}/build/libs/PyNet.Models.Cuda/PyNet.Models.Cuda/vcxproj"
+          .\Add-BmiSetting "${{ github.workspace }}/build/libs/PyNet.Models.Cuda/PyNet.Models.Cuda.vcxproj"
         
                 
       - name: Build Solution
         run: |
-          cmake --build ./
+          cd build
+          cmake --build ./  --config release
           dir
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: PyNet.Infrastructure
+          path: "${{ github.workspace }}/build/Release"
