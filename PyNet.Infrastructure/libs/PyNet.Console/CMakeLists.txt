@@ -1,7 +1,6 @@
 project(PyNet.Console)
 
 # include files
-include_directories( ./modules)
+include_directories( ./src )
 
-add_executable(PyNet.Console ./modules/Console.ixx)
-target_link_libraries( PyNet.Console PyNet.Infrastructure )
+add_executable(PyNet.Console ./src/PyNet.Console.cpp)

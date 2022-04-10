@@ -10,8 +10,8 @@ class PyNetwork:
     def __init__(self, log: bool, cudaEnabled: bool):
 
         self.lib = ctypes.windll.LoadLibrary(r"..\PyNet.Infrastructure\build\Release\PyNet.Infrastructure.dll")
-        self.lib.PyNetwork_Initialise.argtypes = [ctypes.c_bool, ctypes.c_bool]
-        self.lib.PyNetwork_Initialise.restype = ctypes.c_void_p
+        self.lib.PyNetwork_New.argtypes = [ctypes.c_bool, ctypes.c_bool]
+        self.lib.PyNetwork_New.restype = ctypes.c_void_p
 
         self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
         self.lib.PyNetwork_AddLayer.restype = ctypes.c_void_p
@@ -34,7 +34,7 @@ class PyNetwork:
         self.lib.PyNetwork_Load.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
         self.lib.PyNetwork_Load.restype = ctypes.c_int
 
-        self.obj = self.lib.PyNetwork_Initialise(log, cudaEnabled)
+        self.obj = self.lib.PyNetwork_New(log, cudaEnabled)
         self.outputNumber = 0
 
     def add_layer(self, count: int, activationFunctionType: int):

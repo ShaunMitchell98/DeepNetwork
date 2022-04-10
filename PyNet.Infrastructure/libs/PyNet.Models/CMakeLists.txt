@@ -1,10 +1,14 @@
 project(PyNet.Models)
 
+# include files
+include_directories( ./include/PyNet.Models ./src )
+
 # target
 add_library(PyNet.Models STATIC 
-	./modules/ILogger.ixx
-	./modules/Loss.ixx
-	./modules/Activation.ixx
-	./modules/Matrix.ixx
-	./modules/Vector.ixx
-	./modules/PyNet.Models.ixx)
+	./include/PyNet.Models/ILogger.h
+	./include/PyNet.Models/Loss.h
+	./include/PyNet.Models/Activation.h
+	./include/PyNet.Models/Matrix.h
+	./src/Matrix.cpp
+	./include/PyNet.Models/Vector.h
+	./src/Vector.cpp)
