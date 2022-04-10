@@ -36,8 +36,6 @@ add_library(PyNet.Infrastructure SHARED
 	./src/SteepestDescent.h
 	./src/SteepestDescent.cpp
 	./src/PyNetwork.h 
-	./src/PyNetwork.cpp 
-	./src/PyNetwork_Functions.cpp
 	./src/QuadraticLoss.h
 	./src/QuadraticLoss.cpp
 	./src/Setup.h
@@ -49,6 +47,11 @@ add_library(PyNet.Infrastructure SHARED
 	./src/TrainingAlgorithm.h
 	./src/GradientCalculator.h
 	./src/GradientCalculator.cpp
+	./src/NetworkRunner.h
+	./src/NetworkRunner.cpp
+	./src/NetworkTrainer.h
+	./src/NetworkTrainer.cpp
+	./src/Xml_Functions.h
 )
 
 # 3rd party libs

@@ -1,101 +1,61 @@
 #pragma once
-
 #include <map>
 #include <vector>
 #include <functional>
-#include <memory>
+#include <string>
 #include <typeinfo>
 #include <typeindex>
 #include <type_traits>
 #include <iostream>
-#include "Item.h"
-#include "Context.h"
+#include "ItemRegistrar.h"
+#include "InstanceMode.h"
+
+using namespace std;
 
 namespace PyNet::DI {
     class ContextBuilder {
 
     private:
-        // Factory signature
-        template <class InstanceType, class... Args> 
-        using FactoryFunction = InstanceType * (*)(Args...);
-
-        std::shared_ptr<ItemContainer> _container = std::make_shared<ItemContainer>();
+        shared_ptr<ItemContainer> _container;
 
     public:
 
-        ContextBuilder() {
-            AddInstance(new Context(_container), InstanceMode::Shared);
+        ContextBuilder() : _container{ make_shared<ItemContainer>()} {
+            auto context = new Context(_container);
+            AddInstance(context, InstanceMode::Shared);
         }
 
         // Add an already instantiated object to the context
-        template <typename InstanceType>
-        ContextBuilder* AddInstance(InstanceType* instance, InstanceMode instanceMode)
+        template <class InstanceType>
+        ContextBuilder& AddInstance(InstanceType* instance, InstanceMode instanceMode)
         {
             if (instance == nullptr)
-                throw std::runtime_error(std::string("Trying to add nullptr instance for type: ") + typeid(InstanceType).name());
+                throw runtime_error(string("Trying to add nullptr instance for type: ") + typeid(InstanceType).name());
 
-            auto& item = _container->GetInitialItem<InstanceType>();
+            auto& item = _container->RegisterItem<InstanceType>();
 
             if (item.instancePtr)
-                throw std::runtime_error(std::string("Instance already in Context for type: ") + typeid(InstanceType).name());
+                throw runtime_error(std::string("Instance already in Context for type: ") + typeid(InstanceType).name());
 
             if (instanceMode == InstanceMode::Shared) {
-                item.instancePtr = std::make_shared<void*>();
+                item.instancePtr = make_shared<void*>();
                 *item.instancePtr = static_cast<void*>(instance);
             }
 
-            return this;
-        }
-
-        // Add a factory function to context builder
-        template <class InstanceType, class... Args>
-        void AddFactoryPriv(FactoryFunction<InstanceType, Args...> factoryFunction, InstanceMode instanceMode = InstanceMode::Shared)
-        {
-            auto& item = _container->GetInitialItem<InstanceType>();
-
-            if (item.factory)
-                throw std::runtime_error(std::string("Factory already registed for type: ") + typeid(InstanceType).name());
-
-            item.factory = [factoryFunction, instanceMode](Context& context)
-            {
-                return factoryFunction(context.GetShared<typename Args::element_type>()...);
-            };
-
-            if (instanceMode == InstanceMode::Shared) {
-                item.instancePtr = std::make_shared<void*>();
-                *item.instancePtr = item.factory(*Build());
-            }
- 
-            item.instanceMode = instanceMode;
+            return *this;
         }
 
         template <typename InstanceType>
-        void AddFactoryPriv(InstanceType)
+        ItemRegistrar<InstanceType>& RegisterType(InstanceMode instanceMode = InstanceMode::Shared)
         {
-            // Use a dummy is_void type trait to force GCC to display instantiation type in error message
-            static_assert(std::is_void<InstanceType>::value, "Factory has incorrect signature, should take (const) references and return a pointer! Examlpe: Foo* Foo::factory(Bar& bar); ");
+            auto registrar = new ItemRegistrar<InstanceType>(type_index(typeid(InstanceType)), *_container);
+            return *registrar;
         }
 
-        // Variadic template to add a list of classes with factory methods
-        template <typename InstanceType1, typename InstanceType2, typename... ITs>
-        ContextBuilder* AddClass(InstanceMode instanceMode = InstanceMode::Shared)
-        {
-            AddFactoryPriv(InstanceType1::factory, instanceMode);
-            AddClass<InstanceType2, ITs...>();
-            return this;
-        }
-
-        template <typename InstanceTypeLast>
-        ContextBuilder* AddClass(InstanceMode instanceMode = InstanceMode::Shared)
-        {
-            AddFactoryPriv(InstanceTypeLast::factory, instanceMode);
-            return this;
-        }
-
-        std::shared_ptr<Context> Build() {
+        shared_ptr<Context> Build() {
             auto& item = _container->GetItem<Context>();
             Context* elementPtr = static_cast<Context*>(*item.instancePtr);
-            return std::shared_ptr<Context>(item.instancePtr, elementPtr);
+            return shared_ptr<Context>(item.instancePtr, elementPtr);
         }
     };
 }

@@ -1,27 +1,21 @@
 #pragma once
-
 #include <functional>
 #include <typeindex>
+#include <memory>
 #include <any>
+#include "InstanceMode.h"
 
 using namespace std;
 
 namespace PyNet::DI {
-
-    class Context;
-
-    enum class InstanceMode { 
-        Unique,
-        Shared
-    };
 
     struct Item
     {
         shared_ptr<void*> instancePtr;                              
         bool marker = false; 
 
-        function<void*(Context&)> factory;                              
-        type_index derivedType = type_index(typeid(void));    
+        std::type_index type = std::type_index(typeid(void));
+        function<void* (any&)> factory;
         InstanceMode instanceMode = InstanceMode::Shared;
 
         // non-copyable, non-moveable

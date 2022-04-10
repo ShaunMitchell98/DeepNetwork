@@ -1,20 +1,70 @@
 #pragma once
+#include <memory>
+#include "PyNet.DI/Context.h"
+#include "PyNetwork.h"
+#include "Setup.h"
 
-#include "PyNet.Models/Activation.h"
-#include "VariableLearningSettings.h"
+using namespace PyNet::DI;
+using namespace PyNet::Models;
 
 namespace PyNet::Infrastructure {
-
 	extern "C" {
 
-		void* PyNetwork_New(bool log, bool cudaEnabled);
-		int PyNetwork_Load(void* pyNetwork, const char* filePath);
-		void PyNetwork_AddLayer(void* pyNetwork, int count, PyNet::Models::ActivationFunctionType activationFunctionType);
-		double* PyNetwork_Run(void* pyNetwork, double* input_layer);
-		void PyNetwork_SetVariableLearning(void* pyNetwork, VariableLearningSettings* vlSettings);
-		void PyNetwork_Train(void* pyNetwork, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate,
-			double momentum, int epochs);
-		void PyNetwork_Save(void* pyNetwork, const char* filePath);
+		void* PyNetwork_Initialise(bool log, bool cudaEnabled) {
+			auto context = GetContext(cudaEnabled, log);
+			return context.get();
+		}
 
+		void PyNetwork_AddLayer(void* input, int count, ActivationFunctionType activationFunctionType) {
+			
+			auto context = static_cast<Context*>(input);
+			auto pyNetwork = context->GetShared<PyNetwork>();
+			auto adjustmentCalculator = context->GetShared<AdjustmentCalculator>();
+
+			if (pyNetwork->Layers.empty()) {
+				auto layer = context->GetUnique<Vector>();
+				layer->Initialise(count, false);
+				pyNetwork->Layers.push_back(move(layer));
+				return;
+			}
+
+			auto cols = pyNetwork->GetLastLayer().GetRows();
+
+			auto layer = context->GetUnique<Vector>();
+			layer->Initialise(count, false);
+			pyNetwork->Layers.push_back(move(layer));
+
+			auto weightMatrix = context->GetUnique<Matrix>();
+			weightMatrix->Initialise(count, cols, true);
+			pyNetwork->Weights.push_back(move(weightMatrix));
+
+			auto biasVector = context->GetUnique<Vector>();
+			biasVector->Initialise(count, true);
+
+			pyNetwork->Biases.push_back(move(biasVector));
+			adjustmentCalculator->AddMatrix(count, cols);
+		}
+
+		double* PyNetwork_Run(void* input, double* inputLayer) {
+
+			auto context = static_cast<Context*>(input);
+			auto networkRunner = context->GetShared<NetworkRunner>();
+			return networkRunner->Run(inputLayer);
+		}
+
+		void PyNetwork_SetVariableLearning(void* input, VariableLearningSettings* vlSettings) {
+
+			auto context = static_cast<Context*>(input);
+			auto networkTrainer = context->GetShared<NetworkTrainer>();
+			networkTrainer->SetVLSettings(vlSettings);
+		}
+
+		double* PyNetwork_Train(void* input, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate,
+			double momentum, int epochs) {
+
+			auto context = static_cast<Context*>(input);
+			auto networkTrainer = context->GetShared<NetworkTrainer>();
+			return networkTrainer->TrainNetwork(inputLayers, expectedOutputs, numberOfExamples, batchSize, learningRate, momentum, epochs);
+		}
 	}
 }

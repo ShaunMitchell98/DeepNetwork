@@ -8,18 +8,18 @@ namespace PyNet::Models {
 	void Matrix::Initialise(size_t rows, size_t cols, bool generateWeights) {
 
 		if (Rows > 0) {
-			Values.resize(rows * cols);
-		}
-		else {
-			Values = std::vector<double>(rows * cols);
-		}
+				Values.resize(rows * cols);
+			}
+			else {
+				Values = std::vector<double>(rows * cols);
+			}
 
-		Rows = rows;
-		Cols = cols;
+			Rows = rows;
+			Cols = cols;
 
-		if (generateWeights) {
-			generate_random_weights(Values.data(), rows * cols);
-		}
+			if (generateWeights) {
+				GenerateRandomWeights(Values.data(), rows * cols);
+			}
 	}
 
 	double& Matrix::operator()(size_t row, size_t col) {
@@ -44,57 +44,41 @@ namespace PyNet::Models {
 		return Values[row * Cols + col];
 	}
 
-	int Matrix::GetRows() const {
-		return Rows;
-	}
-
-	int Matrix::GetCols() const {
-		return Cols;
-	}
-
-	int Matrix::GetSize() const {
-		return GetCols() * GetRows();
-	}
-
-	double* Matrix::GetAddress(size_t row, size_t col) {
-		return &Values[row * Cols + col];
-	}
-
 	void Matrix::Load(std::string_view value) {
 
-		string currentValue;
-		int expectedColNumber = 0;
-		int currentRowNumber = 0;
-		int currentColNumber = 0;
-		Values = std::vector<double>();
+			string currentValue;
+			int expectedColNumber = 0;
+			int currentRowNumber = 0;
+			int currentColNumber = 0;
+			Values = std::vector<double>();
 
-		for (auto ch : value) {
+			for (auto ch : value) {
 
-			if (ch != ',' && ch != '\n') {
-				currentValue += ch;
-			}
-			else {
-				Values.push_back(stod(currentValue));
-				currentValue.erase();
-				currentColNumber++;
-			}
-
-			if (ch == '\n') {
-
-				if (expectedColNumber == 0) {
-					expectedColNumber = currentColNumber;
+				if (ch != ',' && ch != '\n') {
+					currentValue += ch;
 				}
-				else if (expectedColNumber != currentColNumber) {
-					throw std::runtime_error("Cannot load matrix with non-constant column number.");
+				else {
+					Values.push_back(stod(currentValue));
+					currentValue.erase();
+					currentColNumber++;
 				}
 
-				currentColNumber = 0;
-				currentRowNumber++;
-			}
-		}
+				if (ch == '\n') {
 
-		Rows = currentRowNumber;
-		Cols = expectedColNumber;
+					if (expectedColNumber == 0) {
+						expectedColNumber = currentColNumber;
+					}
+					else if (expectedColNumber != currentColNumber) {
+						throw runtime_error("Cannot load matrix with non-constant column number.");
+					}
+
+					currentColNumber = 0;
+					currentRowNumber++;
+				}
+			}
+
+			Rows = currentRowNumber;
+			Cols = expectedColNumber;
 	}
 
 	std::string Matrix::ToString() const {
@@ -110,24 +94,13 @@ namespace PyNet::Models {
 
 				if (col != Cols - 1) {
 					*text += ", ";
-				}	
+				}
 			}
 
 			*text += "\n";
 		}
 
 		return *text;
-	}
-
-	std::unique_ptr<Matrix> Matrix::operator/(const double d) const {
-
-		return std::move((*this) * (1 / d));
-	}
-
-	void Matrix::operator=(const Matrix& m) {
-		Rows = m.Rows;
-		Cols = m.Cols;
-		Values = m.Values;
 	}
 
 	void Matrix::Set(size_t rows, size_t cols, const double* values) {
@@ -140,10 +113,6 @@ namespace PyNet::Models {
 				Values.push_back(*(values + (i * Cols) + j));
 			}
 		}
-	}
-
-	std::vector<double> Matrix::GetCValues() const {
-		return this->Values;
 	}
 }
 

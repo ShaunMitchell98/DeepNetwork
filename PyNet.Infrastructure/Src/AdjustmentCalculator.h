@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "PyNet.Models/Vector.h"
+#include "PyNet.DI/Context.h"
 #include "Settings.h"
 
 using namespace std;

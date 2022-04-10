@@ -1,4 +1,11 @@
 #pragma once
+#include <memory>
+#include <string>
+#include <stdexcept>
+#include <type_traits>
+#include <any>
+#include "ItemContainer.h"
+#include "Item.h"
 
 /*
  * The MIT License (MIT)
@@ -24,48 +31,53 @@
  * SOFTWARE.
  */
 
-#include "ItemContainer.h"
+using namespace std;
 
 namespace PyNet::DI {
 
     class Context
     {
     private:
-        // The object storage
-        std::shared_ptr<ItemContainer> _container;
-
+        shared_ptr<ItemContainer> _container;
     public:
-        Context(std::shared_ptr<ItemContainer> container) : _container{ container} {}
+        Context(shared_ptr<ItemContainer> container) : _container{ container } {}
+
+        static auto factory(shared_ptr<ItemContainer> container) {
+            return new Context{ container };
+        }
 
         template <class T>
-        std::unique_ptr<T> GetUnique()
+        unique_ptr<T> GetUnique()
         {
             auto& item = _container->GetItem<T>();
 
             item.marker = true;
-            void* temp = item.factory(*this);
+            any cast = any(*this);
+            T* temp = static_cast<T*>(item.factory(cast));
             item.marker = false;
 
-            auto result = std::unique_ptr<T>(static_cast<T*>(temp));
-            return std::move(result);
+            auto result = unique_ptr<T>(temp);
+            return move(result);
         }
 
         template <class T>
-        std::shared_ptr<T> GetShared()
+        shared_ptr<T> GetShared()
         {
             Item& item = _container->GetItem<T>();
 
             if (!item.instancePtr)
             {
-                throw std::runtime_error(std::string("No instance of type ") + typeid(T).name() + " has been registed with the Context.");
+                auto cast = any(*this);
+                item.instancePtr = make_shared<void*>();
+                *item.instancePtr = item.factory(cast);
             }
 
             if (item.marker) {
-                throw std::runtime_error(std::string("Cyclic dependecy while instantiating type: ") + typeid(T).name());
+                throw runtime_error(string("Cyclic dependecy while instantiating type: ") + typeid(T).name());
             }
 
             T* elementPtr = static_cast<T*>(*item.instancePtr);
-            return std::shared_ptr<T>(item.instancePtr, elementPtr);
+            return shared_ptr<T>(item.instancePtr, elementPtr);
         }
     };
 }

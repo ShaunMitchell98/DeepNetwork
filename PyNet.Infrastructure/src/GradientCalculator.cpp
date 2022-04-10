@@ -2,42 +2,41 @@
 
 namespace PyNet::Infrastructure {
 
-    void GradientCalculator::CalculateGradients(const vector<unique_ptr<Matrix>>& weightMatrices,
-        const vector<unique_ptr<Vector>>& layers, const Vector& expectedLayer, const Vector& lossDerivative) {
+	unique_ptr<Matrix> GradientCalculator::CalculateWeightMatrixGradient(const Matrix& layerAboveMatrix, const Vector& inputLayer, Vector& outputLayer,
+		Vector& dLoss_dLayerAbove) {
+		auto dLoss_dActivatedLayerMatrix = *~layerAboveMatrix * dLoss_dLayerAbove;
+		auto dLoss_dActivatedLayer = _context->GetUnique<Vector>();
+		*dLoss_dActivatedLayer = move(*dLoss_dActivatedLayerMatrix);
 
-        auto dActivatedLayerAbove_dLayerAbove = layers[layers.size() - 1]->CalculateActivationDerivative();
-        auto dLoss_dLayerAbove = lossDerivative ^ *dActivatedLayerAbove_dLayerAbove;
-        _adjustmentCalculator->AddWeightAdjustment(weightMatrices.size() - 1, std::move(*dLoss_dLayerAbove * *~*layers[layers.size() - 2]));
-        _adjustmentCalculator->AddBiasAdjustment(weightMatrices.size() - 1, *dLoss_dLayerAbove | *dActivatedLayerAbove_dLayerAbove);
+		auto dLoss_dLayer = *dLoss_dActivatedLayer ^ *outputLayer.CalculateActivationDerivative();
 
-        for (int i = weightMatrices.size() - 2; i >= 0; i--) {
+		auto dLoss_dWeight = *dLoss_dLayer * *~inputLayer;
 
-            _adjustmentCalculator->AddWeightAdjustment(i, std::move(CalculateWeightMatrixGradient(*weightMatrices[i + 1.0], *layers[i], *layers[i + 1.0], *dLoss_dLayerAbove)));
-            _adjustmentCalculator->AddBiasAdjustment(i, CalculateBiasGradient(*weightMatrices[i + 1.0], *layers[i], *layers[i + 1.0], *dLoss_dLayerAbove));
-        }
+		dLoss_dLayerAbove = move(*dLoss_dLayer);
 
-        _logger->LogLine("Calculated gradient.");
+		return move(dLoss_dWeight);
+	}
 
-        _adjustmentCalculator->SetNewBatch(false);
-    }
+	void GradientCalculator::CalculateGradients(const vector<unique_ptr<Matrix>>& weightMatrices,
+		const vector<unique_ptr<Vector>>& layers, const Vector& expectedLayer, const Vector& lossDerivative) {
 
-    unique_ptr<Matrix> GradientCalculator::CalculateWeightMatrixGradient(const Matrix& layerAboveMatrix, const Vector& inputLayer, const Vector& outputLayer,
-        Vector& dLoss_dLayerAbove) {
+		auto dActivatedLayerAbove_dLayerAbove = layers[layers.size() - 1]->CalculateActivationDerivative();
+		auto dLoss_dLayerAbove = lossDerivative ^ *dActivatedLayerAbove_dLayerAbove;
+		_adjustmentCalculator->AddWeightAdjustment(weightMatrices.size() - 1, move(*dLoss_dLayerAbove * *~*layers[layers.size() - 2]));
+		_adjustmentCalculator->AddBiasAdjustment(weightMatrices.size() - 1, *dLoss_dLayerAbove | *dActivatedLayerAbove_dLayerAbove);
 
-        auto dLoss_dActivatedLayerMatrix = *~layerAboveMatrix * dLoss_dLayerAbove;
-        auto dLoss_dActivatedLayer = _context->GetUnique<Vector>();
-        *dLoss_dActivatedLayer = std::move(*dLoss_dActivatedLayerMatrix);
+		for (int i = weightMatrices.size() - 2; i >= 0; i--) {
 
-        auto dLoss_dLayer = *dLoss_dActivatedLayer ^ *outputLayer.CalculateActivationDerivative();
+			_adjustmentCalculator->AddWeightAdjustment(i, std::move(CalculateWeightMatrixGradient(*weightMatrices[i + 1.0], *layers[i], *layers[i + 1.0], *dLoss_dLayerAbove)));
+			_adjustmentCalculator->AddBiasAdjustment(i, CalculateBiasGradient(*weightMatrices[i + 1.0], *layers[i], *layers[i + 1.0], *dLoss_dLayerAbove));
+		}
 
-        auto dLoss_dWeight = *dLoss_dLayer * *~inputLayer;
+		_logger->LogLine("Calculated gradient.");
 
-        dLoss_dLayerAbove = std::move(*dLoss_dLayer);
+		_adjustmentCalculator->SetNewBatch(false);
+	}
 
-        return std::move(dLoss_dWeight);
-    }
-
-    double GradientCalculator::CalculateBiasGradient(const Matrix& layerAboveMatrix, const Vector& inputLayer, const Vector& outputLayer, Vector& dLoss_dLayerAbove) {
+    double GradientCalculator::CalculateBiasGradient(const Matrix& layerAboveMatrix, const Vector& inputLayer, Vector& outputLayer, Vector& dLoss_dLayerAbove) {
 
         return dLoss_dLayerAbove | *outputLayer.CalculateActivationDerivative();
     }

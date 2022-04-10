@@ -1,19 +1,27 @@
 #pragma once
-
+#include "PyNet.DI/ContextBuilder.h"
 #include "PyNet.DI/Module.h"
-#include "PyNet.DI/Item.h"
 #include "CpuMatrix.h"
 #include "CpuVector.h"
 
+using namespace PyNet::DI;
+
 namespace PyNet::Models::Cpu {
 
-	class CpuModule : public PyNet::DI::Module {
+	class CpuModule : public Module {
 
 	public:
-		void Load(PyNet::DI::ContextBuilder* builder) override {
+		void Load(ContextBuilder& builder) override {
 
-			builder->AddClass<CpuMatrix>(PyNet::DI::InstanceMode::Unique);
-			builder->AddClass<CpuVector>(PyNet::DI::InstanceMode::Unique);
+			builder
+				.RegisterType<CpuMatrix>(InstanceMode::Unique)
+				.AsSelf()
+				.As<Matrix>();
+
+			builder
+				.RegisterType<CpuVector>(InstanceMode::Unique)
+				.AsSelf()
+				.As<Vector>();
 		}
 	};
 }

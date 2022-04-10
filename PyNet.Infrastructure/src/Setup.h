@@ -1,35 +1,39 @@
 #pragma once
+#include <memory>
+#include "PyNet.DI/ContextBuilder.h"
+#include "PyNet.Models.Cpu/CpuModule.h"
+#include "InfrastructureModule.h"
 
 #ifdef CUDA
-#include <PyNet.Models.Cuda/CudaModule.h>
+#include "PyNet.Models.Cuda/CudaModule.h"
+using namespace PyNet::Models::Cuda;
 #endif
-#include <PyNet.Models.Cpu/CpuModule.h>
-#include "InfrastructureModule.h"
-#include <PyNet.DI/Context.h>
-#include "Settings.h"
+
+using namespace PyNet::Models::Cpu;
+using namespace PyNet::DI;
+using namespace std;
 
 namespace PyNet::Infrastructure {
+	shared_ptr<Context> GetContext(bool cudaEnabled, bool log) {
 
-	inline std::shared_ptr<PyNet::DI::Context> GetContext(bool cudaEnabled, bool log) {
-
-		auto builder = std::make_unique<PyNet::DI::ContextBuilder>();
+		auto builder = make_unique<ContextBuilder>();
 
 		if (cudaEnabled) {
 			#ifdef CUDA
-			auto cudaModule = std::make_unique<PyNet::Models::Cuda::CudaModule>();
-			cudaModule->Load(builder.get());
+			auto cudaModule = make_unique<CudaModule>();
+			cudaModule->Load(*builder);
 			#endif
 		}
 		else
 		{
-			auto cpuModule = std::make_unique<PyNet::Models::Cpu::CpuModule>();
-			cpuModule->Load(builder.get());
+			auto cpuModule = make_unique<CpuModule>();
+			cpuModule->Load(*builder);
 		}
 
-		auto infrastructureModule = std::make_unique<InfrastructureModule>(log);
-		infrastructureModule->Load(builder.get());
+		auto infrastructureModule = make_unique<InfrastructureModule>(log);
+		infrastructureModule->Load(*builder);
 
 		return builder->Build();
 	}
-}
 
+}
