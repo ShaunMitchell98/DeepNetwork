@@ -9,7 +9,7 @@ using namespace std;
 
 namespace PyNet::Infrastructure {
 
-	class __declspec(dllexport) LayerPropagator {
+	class LayerPropagator {
 	private:
 		shared_ptr<ILogger> _logger;
 	public:

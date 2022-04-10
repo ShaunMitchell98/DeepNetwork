@@ -13,4 +13,4 @@ add_library(PyNet.Models.Cpu STATIC
 	./include/PyNet.Models.Cpu/CpuLogistic.h
 	./include/PyNet.Models.Cpu/CpuModule.h)
 
-target_link_libraries(PyNet.Models.Cuda PyNet.Models)
+target_link_libraries(PyNet.Models.Cpu PyNet.Models)

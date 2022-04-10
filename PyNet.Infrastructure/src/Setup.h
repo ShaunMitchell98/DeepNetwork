@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef CUDA
 #include <PyNet.Models.Cuda/CudaModule.h>
+#endif
 #include <PyNet.Models.Cpu/CpuModule.h>
 #include "InfrastructureModule.h"
 #include <PyNet.DI/Context.h>
@@ -13,8 +15,10 @@ namespace PyNet::Infrastructure {
 		auto builder = std::make_unique<PyNet::DI::ContextBuilder>();
 
 		if (cudaEnabled) {
+			#ifdef CUDA
 			auto cudaModule = std::make_unique<PyNet::Models::Cuda::CudaModule>();
 			cudaModule->Load(builder.get());
+			#endif
 		}
 		else
 		{

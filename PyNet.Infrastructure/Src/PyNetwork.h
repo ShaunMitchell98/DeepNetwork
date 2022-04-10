@@ -48,12 +48,12 @@ namespace PyNet::Infrastructure {
 			_logger{ logger }, _layerPropagator{ layerPropagator }, _context{ context }, _gradientCalculator{ gradientCalculator }, _adjustmentCalculator{ adjustmentCalculator },
 			_trainingAlgorithm{ trainingAlgorithm }, _settings{ settings }, _loss{ loss } {}
 
-		__declspec(dllexport) int Load(const char* filePath);
-		__declspec(dllexport) void AddLayer(int rows);
-		__declspec(dllexport) double* Run(double* input_layer);
-		__declspec(dllexport) double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,
+	    int Load(const char* filePath);
+		void AddLayer(int rows);
+		double* Run(double* input_layer);
+		double* Train(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,
 			double momentum, int epochs);
-		__declspec(dllexport) void SetVLSettings(VariableLearningSettings* vlSettings);
-		__declspec(dllexport) void Save(const char* filePath);
+		void SetVLSettings(VariableLearningSettings* vlSettings);
+		void Save(const char* filePath);
 	};
 }

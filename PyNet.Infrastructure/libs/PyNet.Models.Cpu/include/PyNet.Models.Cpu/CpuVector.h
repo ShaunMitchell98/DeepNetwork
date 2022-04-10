@@ -30,19 +30,20 @@ namespace PyNet::Models::Cpu {
 			Vector::Rows = m.GetRows();
 		}
 
-		unique_ptr<Matrix> operator*(const Matrix& m) const {
-			return CpuMatrix::operator*(m);
+		unique_ptr<Matrix> operator*(const Matrix& m) const override {
+			//return CpuMatrix::operator*(m);
+			return make_unique<CpuMatrix>();
 		}
 
-		unique_ptr<Matrix> operator+(const Matrix& m) const {
+		unique_ptr<Matrix> operator+(const Matrix& m) const override {
 			return CpuMatrix::operator+(m);
 		}
 
-		unique_ptr<Matrix> operator-(const Matrix& m) const {
+		unique_ptr<Matrix> operator-(const Matrix& m) const override {
 			return CpuMatrix::operator-(m);
 		}
 
-		void operator+=(const Matrix& m) {
+		void operator+=(const Matrix& m) override {
 			CpuMatrix::operator+=(m);
 		}
 
@@ -55,7 +56,8 @@ namespace PyNet::Models::Cpu {
 		}
 
 		unique_ptr<Matrix> operator*(const double d) const override {
-			return CpuMatrix::operator*(d);
+			//return CpuMatrix::operator*(d);
+			return make_unique<CpuMatrix>();
 		}
 
 		unique_ptr<Vector> CalculateActivationDerivative() const override;

@@ -87,7 +87,9 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 
 int main()
 {
-	auto network = PyNetwork_New(false, true);
+	auto a = 5;
+	auto b = 7;
+	auto network = PyNetwork_New(false, false);
 	PyNetwork_AddLayer(network, 784, PyNet::Models::ActivationFunctionType::Logistic);
 	PyNetwork_AddLayer(network, 500, PyNet::Models::ActivationFunctionType::Logistic);
 	PyNetwork_AddLayer(network, 129, PyNet::Models::ActivationFunctionType::Logistic);
@@ -99,7 +101,7 @@ int main()
 	settings.LRIncrease = 1.05;
 	PyNetwork_SetVariableLearning(network, &settings);
 
-	string folderPath = "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet.Infrastructure\\tests\\Resources\\";
+	string folderPath = "/Users/shaunmitchell/pynet/PyNet.Infrastructure/tests/resources/";
 	string trainingExamplesFileName = "Training_Example";
 	string trainingLabelsFileName = "Training_Labels";
 

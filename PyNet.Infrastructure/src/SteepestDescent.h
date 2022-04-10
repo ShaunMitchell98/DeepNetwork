@@ -11,7 +11,7 @@ using namespace PyNet::DI;
 
 namespace PyNet::Infrastructure {
 
-	class __declspec(dllexport) SteepestDescent : public TrainingAlgorithm
+	class SteepestDescent : public TrainingAlgorithm
 	{
 	private:
 		shared_ptr<Context> _context;

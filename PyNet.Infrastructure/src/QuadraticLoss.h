@@ -3,7 +3,7 @@
 #include "PyNet.Models/Loss.h"
 
 namespace PyNet::Infrastructure {
-	class __declspec(dllexport) QuadraticLoss : public Models::Loss {
+	class QuadraticLoss : public Models::Loss {
 	public:
 
 		static auto factory() {

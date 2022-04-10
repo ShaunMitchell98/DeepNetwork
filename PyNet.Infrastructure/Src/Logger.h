@@ -6,7 +6,7 @@
 
 namespace PyNet::Infrastructure {
 
-	class __declspec(dllexport) Logger : public PyNet::Models::ILogger {
+	class Logger : public PyNet::Models::ILogger {
 	private:
 		bool _enabled;
 		const char* _fileName = "PyNet_Logs.txt";

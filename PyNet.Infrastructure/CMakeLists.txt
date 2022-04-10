@@ -14,13 +14,12 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 # include files
 include_directories( ./include 
 	./libs/PyNet.Models/include
-	./libs/PyNet.Models.Cuda/include
 	./libs/PyNet.Models.Cpu/include
 	./libs/PyNet.DI/include
 	 ./tests
 	 ./src
 	./libs/di/src
-	"C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/include"
+#	"C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/include"
 )
 
 # target
@@ -54,22 +53,20 @@ add_library(PyNet.Infrastructure SHARED
 
 # 3rd party libs
 add_subdirectory( ./libs/PyNet.Models )
-add_subdirectory( ./libs/PyNet.Models.Cuda )
 add_subdirectory( ./libs/PyNet.Models.Cpu )
 add_subdirectory( ./libs/PyNet.DI)
 add_subdirectory( ./libs/PyNet.Console )
 target_link_libraries( PyNet.Infrastructure PyNet.Models )
-target_link_libraries( PyNet.Infrastructure PyNet.Models.Cuda )
 target_link_libraries( PyNet.Infrastructure PyNet.Models.Cpu )
 target_link_libraries( PyNet.Infrastructure PyNet.DI )
 target_link_libraries(PyNet.Console PyNet.Infrastructure )
 
-add_library(PyNet.Infrastructure.Tests SHARED
-		./tests/LayerPropagatorTests.cpp
-	./tests/SteepestDescentTests.cpp
-	./tests/PyNetworkTests.cpp
-	./tests/UnitTest.h
-)
+#add_library(PyNet.Infrastructure.Tests SHARED
+#		./tests/LayerPropagatorTests.cpp
+#	./tests/SteepestDescentTests.cpp
+#	./tests/PyNetworkTests.cpp
+#	./tests/UnitTest.h
+#)
 
-target_link_libraries(PyNet.Infrastructure.Tests PyNet.Infrastructure)
-link_directories("C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/lib/x64/Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib")
+#target_link_libraries(PyNet.Infrastructure.Tests PyNet.Infrastructure)
+#link_directories("C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/lib/x64/Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib")

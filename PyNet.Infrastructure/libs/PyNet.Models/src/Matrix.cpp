@@ -1,5 +1,7 @@
 #include "Matrix.h"
 #include "WeightMatrixGenerator.h"
+#include <stdexcept>
+#include <string>
 
 namespace PyNet::Models {
 
@@ -83,7 +85,7 @@ namespace PyNet::Models {
 					expectedColNumber = currentColNumber;
 				}
 				else if (expectedColNumber != currentColNumber) {
-					throw std::exception("Cannot load matrix with non-constant column number.");
+					throw std::runtime_error("Cannot load matrix with non-constant column number.");
 				}
 
 				currentColNumber = 0;
