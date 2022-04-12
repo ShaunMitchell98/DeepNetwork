@@ -53,12 +53,12 @@ namespace PyNet::Models {
 		void Set(size_t rows, size_t cols, const double* values);
 		void Load(string_view value);
 
-		virtual vector<double> GetCValues() const {
-			return this->Values;
+		virtual const vector<double>& GetCValues() const {
+			return Values;
 		}
 
 		virtual vector<double>& GetValues() {
-			return this->Values;
+			return Values;
 		}
 
 		//Virtual Methods
@@ -69,5 +69,6 @@ namespace PyNet::Models {
 		virtual unique_ptr<Matrix> operator-(const Matrix& m) const = 0;
 		virtual unique_ptr<Matrix> operator~() const = 0;
 		virtual void operator+=(const Matrix& m) = 0;
+		virtual ~Matrix() = default;
 	};
 }

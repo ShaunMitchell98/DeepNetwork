@@ -48,7 +48,5 @@ namespace PyNet::DI {
 			RegisterFactory(item, T::factory);
 			return *this;
 		}
-
-
 	};
 }

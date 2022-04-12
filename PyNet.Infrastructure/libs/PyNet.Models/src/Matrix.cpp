@@ -23,25 +23,25 @@ namespace PyNet::Models {
 	}
 
 	double& Matrix::operator()(size_t row, size_t col) {
-		if (row >= this->Rows) {
+		if (row >= GetRows()) {
 			throw "Row out of bounds";
 		}
-		else if (col > this->Cols) {
+		else if (col > GetCols()) {
 			throw "Col out of bounds";
 		}
 
-		return Values[row * Cols + col];
+		return GetValues()[row * GetCols() + col];
 	}
 
 	const double& Matrix::operator()(size_t row, size_t col) const {
-		if (row >= this->Rows) {
+		if (row >= GetRows()) {
 			throw "Row out of bounds";
 		}
-		else if (col > this->Cols) {
+		else if (col > GetCols()) {
 			throw "Col out of bounds";
 		}
 
-		return Values[row * Cols + col];
+		return GetCValues()[row * GetCols() + col];
 	}
 
 	void Matrix::Load(std::string_view value) {
@@ -81,9 +81,9 @@ namespace PyNet::Models {
 			Cols = expectedColNumber;
 	}
 
-	std::string Matrix::ToString() const {
+	string Matrix::ToString() const {
 
-		auto text = new std::string();
+		auto text = new string();
 		char buffer[30];
 
 		for (auto row = 0; row < Rows; row++) {

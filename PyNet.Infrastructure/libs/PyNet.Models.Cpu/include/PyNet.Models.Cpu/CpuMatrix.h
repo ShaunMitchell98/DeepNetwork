@@ -7,7 +7,12 @@ using namespace std;
 
 namespace PyNet::Models::Cpu {
 
-	class CpuMatrix : public Matrix
+	class CpuMatrix 
+	#ifdef CPU_VECTOR
+	 : public virtual Matrix
+	 #else 
+	 : public Matrix
+	 #endif
 	{
 	public:
 
@@ -15,10 +20,6 @@ namespace PyNet::Models::Cpu {
 			return new CpuMatrix();
 		}
 
-		CpuMatrix() : Matrix() {}
-
-		const double& operator()(size_t row, size_t col) const { return Matrix::operator()(row, col); }
-		double& operator()(size_t row, size_t col) { return Matrix::operator()(row, col); }
 
 		unique_ptr<Matrix> operator*(const Matrix& m) const override {
 			auto c = unique_ptr<Matrix>(new CpuMatrix());
@@ -40,6 +41,7 @@ namespace PyNet::Models::Cpu {
 
 		unique_ptr<Matrix> operator*(const double d) const override {
 			auto c = unique_ptr<Matrix>(new CpuMatrix());
+			c->Initialise(GetRows(), GetCols(), false);
 
 			for (auto i = 0; i < GetRows(); i++) {
 				for (auto j = 0; j < GetCols(); j++) {
@@ -53,6 +55,7 @@ namespace PyNet::Models::Cpu {
 		unique_ptr<Matrix> operator+(const Matrix& m) const override {
 
 			auto c = unique_ptr<Matrix>(new CpuMatrix());
+			c->Initialise(GetRows(), GetCols(), false);
 
 			for (auto i = 0; i < GetRows(); i++) {
 				for (auto j = 0; j < GetCols(); j++) {
@@ -65,6 +68,7 @@ namespace PyNet::Models::Cpu {
 
 		unique_ptr<Matrix> operator-(const Matrix& m) const override {
 			auto c = unique_ptr<Matrix>(new CpuMatrix());
+			c->Initialise(GetRows(), GetCols(), false);
 
 			for (auto i = 0; i < GetRows(); i++) {
 				for (auto j = 0; j < GetCols(); j++) {
@@ -77,7 +81,7 @@ namespace PyNet::Models::Cpu {
 
 		unique_ptr<Matrix> operator~() const override {
 			auto m = unique_ptr<Matrix>(new CpuMatrix());
-			m->Set(GetCols(), GetRows(), Values.data());
+			m->Set(GetCols(), GetRows(), GetCValues().data());
 			return move(m);
 		}
 
@@ -89,6 +93,5 @@ namespace PyNet::Models::Cpu {
 				}
 			}
 		}
-
 	};
 }

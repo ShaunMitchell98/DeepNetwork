@@ -2,6 +2,9 @@
 #include <memory>
 #include "PyNet.Models/Vector.h"
 #include "PyNet.Models/Matrix.h"
+#include "CpuMatrix.h"
+
+#define CPU_VECTOR 
 
 using namespace std;
 
@@ -50,7 +53,7 @@ namespace PyNet::Models::Cpu {
 		}
 
 		unique_ptr<Vector> CalculateActivationDerivative() override {
-			auto derivative = _activation->CalculateDerivative(this->operator const PyNet::Models::Matrix &());
+			auto derivative = _activation->CalculateDerivative(static_cast<Matrix&>(static_cast<Vector&>(*this)));
 			return move(unique_ptr<Vector>(new CpuVector(move(*derivative))));
 		}
 
@@ -66,11 +69,19 @@ namespace PyNet::Models::Cpu {
 		}
 
 		unique_ptr<Vector> operator+(const Vector& v) const override {
-			return std::unique_ptr<Vector>(dynamic_cast<Vector*>(CpuMatrix::operator+(v).get()));
+			return unique_ptr<Vector>(dynamic_cast<Vector*>(CpuMatrix::operator+(v).get()));
 		}
 
 		unique_ptr<Vector> operator-(const Vector& v) const override {
-			return std::unique_ptr<Vector>(dynamic_cast<Vector*>(CpuMatrix::operator-(v).get()));
+
+			auto c = unique_ptr<Vector>(new CpuVector(nullptr));
+			c->Initialise(GetRows(), false);
+
+			for (auto i = 0; i < GetRows(); i++) {
+				(*c)[i] = (*this)[i] - v[i];
+			}
+
+			return move(c);
 		}
 
 		unique_ptr<Vector> operator/(const double d) const override {
@@ -90,18 +101,15 @@ namespace PyNet::Models::Cpu {
 			return Vector::GetValues();
 		}
 
-		vector<double> GetCValues() const override {
+		const vector<double>& GetCValues() const override {
 			return Vector::GetCValues();
 		}
 
-		operator Matrix& () {
-			return static_cast<Matrix&>(static_cast<Vector&>(*this));
-		}
-
-		operator const Matrix& () {
-			return static_cast<Matrix&>(static_cast<Vector&>(*this));
-		}
 
 		CpuVector(const CpuVector& v) : Vector(v._activation) {}
+
+		~CpuVector() override = default;
 	};
 }
+
+#undef CPU_VECTOR

@@ -9,13 +9,7 @@ namespace PyNet::Infrastructure {
         _logger->LogLine("Forward propagation input: ");
         _logger->LogMessage(inputLayer.ToString());
 
-        try {
         outputLayer = *(weights * inputLayer);
-
-        }
-        catch (const char* message) {
-            auto a = 5;
-        }
 
         _logger->LogLine("Forward propagation output: ");
         _logger->LogMessage(outputLayer.ToString());
