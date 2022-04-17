@@ -3,12 +3,13 @@
 #include "PyNetwork.h"
 #include "LayerPropagator.h"
 #include "LayerNormaliser.h"
+#include "Headers.h"
 
 using namespace std;
 
 namespace PyNet::Infrastructure {
 
-	class NetworkRunner {
+	class EXPORT NetworkRunner {
 
 		shared_ptr<PyNetwork> _pyNetwork;
 		shared_ptr<LayerPropagator> _layerPropagator;

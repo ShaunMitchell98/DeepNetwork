@@ -3,6 +3,8 @@
 #include <vector>
 #include <typeindex>
 #include <stdexcept>
+#include <type_traits>
+#include "IItem.h"
 #include "Item.h"
 
 using namespace std;
@@ -13,7 +15,7 @@ namespace PyNet::DI {
     {
     private:
 
-        map<type_index, Item> _items;
+        map<type_index, IItem*> _items;
 
     public:
 
@@ -21,27 +23,40 @@ namespace PyNet::DI {
             return new ItemContainer();
         }
 
-        template<class InstanceType>
-        Item& RegisterItem() 
-        {
-            return _items[type_index(typeid(InstanceType))];
+        ~ItemContainer() {
+
+            for (auto& item : _items) {
+                item.second->Reset();
+            }
         }
 
-        template <class T>
-        Item& GetItem()
+        template<class RequiredType>
+        Item<RequiredType>& Add() 
         {
-            auto it = _items.find(type_index(typeid(T)));
+            auto key = type_index(typeid(RequiredType));
+            auto item = new Item<RequiredType>();
+            _items.insert({ key, item  });
+            return *item;
+        }
+
+        template <class RequiredType>
+        Item<RequiredType>& GetItem()
+        {
+            auto it = _items.find(type_index(typeid(RequiredType)));
 
             if (it == _items.end())
             {
-                throw runtime_error(string("No type ") + typeid(T).name() + " has been registered with the Container.");
-            }
-            else
-            {
-                auto& item = it->second;
+                throw runtime_error(string("No type ") + typeid(RequiredType).name() + " has been registered with the Container.");
             }
 
-            return it->second;
+            return *static_cast<Item<RequiredType>*>(it->second);
+        }
+
+        void MakeReferencesWeak() {
+
+            for (auto& i : _items) {
+                i.second->MakeReferenceWeak();
+            }
         }
     };
 }

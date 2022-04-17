@@ -6,12 +6,13 @@
 #include "PyNet.DI/Context.h"
 #include "AdjustmentCalculator.h"
 #include "TrainingAlgorithm.h"
+#include "Headers.h"
 
 using namespace PyNet::DI;
 
 namespace PyNet::Infrastructure {
 
-	class SteepestDescent : public TrainingAlgorithm
+	class EXPORT SteepestDescent : public TrainingAlgorithm
 	{
 	private:
 		shared_ptr<Context> _context;
@@ -26,6 +27,7 @@ namespace PyNet::Infrastructure {
 		typedef TrainingAlgorithm base;
 
 		void UpdateWeights(vector<unique_ptr<Matrix>>& weightMatrices, vector<unique_ptr<Vector>>& biases, double learningRate, bool reverse = false) override;
+		~SteepestDescent() override = default;
 	};
 
 }

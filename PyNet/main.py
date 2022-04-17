@@ -1,5 +1,4 @@
 from PyNet.PyNet.PyNetwork import PyNetwork
-from PyNet.PyNet.VariableLearningSettings import VariableLearningSettings
 from PyNet.PyNet import ActivationFunctionType
 import tensorflow as tf
 import numpy as np
@@ -17,21 +16,17 @@ train_images = train_images / 255.0
 test_images = test_images / 255.0
 
 batch_sizes = [5]
-learning_rates = [2]
+learning_rates = [0.2]
 momenta = [0.7]
-epochs = 5
-number: int = 10000
+epochs = 1
+number: int = 30000
 
 for learning_rate in learning_rates:
     for batch_size in batch_sizes:
         for momentum in momenta:
 
-            network = PyNetwork(False, True)
-            vlSettings = VariableLearningSettings()
-            vlSettings.ErrorThreshold = 0.04
-            vlSettings.LRDecrease = 0.7
-            vlSettings.LRIncrease = 1.05
-            network.SetVariableLearning(vlSettings)
+            network = PyNetwork(False, False)
+            network.SetVariableLearning(0.04, 0.7, 1.05)
             network.add_layer(784, ActivationFunctionType.LOGISTIC)
             network.add_layer(1000, ActivationFunctionType.LOGISTIC)
             network.add_layer(10, ActivationFunctionType.LOGISTIC)
@@ -54,3 +49,5 @@ for learning_rate in learning_rates:
             with open('successes.txt', 'a') as success_file:
                 success_file.write(f'There were {success_count} successes out of 2000 tests with a learning rate of'
                     f' {learning_rate} and a batch size of {batch_size}.\n')
+
+            network.destruct()

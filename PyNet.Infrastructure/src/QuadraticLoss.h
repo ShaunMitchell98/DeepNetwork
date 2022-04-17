@@ -1,9 +1,10 @@
 #pragma once
 
 #include "PyNet.Models/Loss.h"
+#include "Headers.h"
 
 namespace PyNet::Infrastructure {
-	class QuadraticLoss : public Models::Loss {
+	class EXPORT QuadraticLoss : public Models::Loss {
 	public:
 
 		static auto factory() {
@@ -14,5 +15,6 @@ namespace PyNet::Infrastructure {
 
 		double CalculateLoss(Models::Vector& expected, Models::Vector& actual) override;
 		std::unique_ptr<Models::Vector> CalculateDerivative(Models::Vector& expected, Models::Vector& actual) override;
+		~QuadraticLoss() override = default;
 	};
 }

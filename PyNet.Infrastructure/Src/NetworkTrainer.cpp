@@ -80,8 +80,11 @@ namespace PyNet::Infrastructure {
         return _pyNetwork->Losses.data();
 	}
 
-    void NetworkTrainer::SetVLSettings(VariableLearningSettings* vlSettings) {
-        _vlSettings = unique_ptr<VariableLearningSettings>(vlSettings);
+    void NetworkTrainer::SetVLSettings(double errorThreshold, double lrDecrease, double lrIncrease) {
+        _vlSettings = make_unique<VariableLearningSettings>();
+        _vlSettings->ErrorThreshold = errorThreshold;
+        _vlSettings->LRDecrease = lrDecrease;
+        _vlSettings->LRIncrease = lrIncrease;
 	}
 }
 

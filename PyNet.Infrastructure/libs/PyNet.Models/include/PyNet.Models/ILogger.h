@@ -9,5 +9,6 @@ namespace PyNet::Models {
 		virtual void LogMessage(std::string_view message) = 0;
 		virtual void LogMessageWithoutDate(std::string_view message) = 0;
 		virtual void LogLine(std::string_view message) = 0;
+		virtual ~ILogger() = default;
 	};
 }

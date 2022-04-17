@@ -2,11 +2,15 @@
 
 #include "PyNet.Models/ILogger.h"
 #include "Settings.h"
+#include "Headers.h"
 #include <fstream>
+
+using namespace std;
+using namespace PyNet::Models;
 
 namespace PyNet::Infrastructure {
 
-	class Logger : public PyNet::Models::ILogger {
+	class EXPORT Logger : public ILogger {
 	private:
 		bool _enabled;
 		const char* _fileName = "PyNet_Logs.txt";
@@ -15,13 +19,14 @@ namespace PyNet::Infrastructure {
 
 		typedef ILogger base;
 
-		static auto factory(std::shared_ptr<Settings> settings) {
+		static auto factory(shared_ptr<Settings> settings) {
 			return new Logger{ settings->LoggingEnabled };
 		}
 
-		void LogMessage(std::string_view message) override;
-		void LogMessageWithoutDate(std::string_view message) override;
-		void LogLine(std::string_view message) override;
+		void LogMessage(string_view message) override;
+		void LogMessageWithoutDate(string_view message) override;
+		void LogLine(string_view message) override;
+		~Logger() override = default;
 	};
 }
 

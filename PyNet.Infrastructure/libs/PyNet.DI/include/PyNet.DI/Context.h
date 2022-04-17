@@ -5,7 +5,6 @@
 #include <type_traits>
 #include <any>
 #include "ItemContainer.h"
-#include "Item.h"
 
 /*
  * The MIT License (MIT)
@@ -42,42 +41,48 @@ namespace PyNet::DI {
     public:
         Context(shared_ptr<ItemContainer> container) : _container{ container } {}
 
+        void MakeReferencesWeak() {
+            _container->MakeReferencesWeak();
+        }
+
         static auto factory(shared_ptr<ItemContainer> container) {
             return new Context{ container };
         }
 
-        template <class T>
-        unique_ptr<T> GetUnique()
+        template <class RequiredType>
+        unique_ptr<RequiredType> GetUnique()
         {
-            auto& item = _container->GetItem<T>();
+            auto& item = _container->GetItem<RequiredType>();
 
-            item.marker = true;
+            item.Marker = true;
             any cast = any(*this);
-            T* temp = static_cast<T*>(item.factory(cast));
-            item.marker = false;
+            auto temp = static_cast<RequiredType*>(item.GetInstance(cast));
+            item.Marker = false;
 
-            auto result = unique_ptr<T>(temp);
+            auto result = unique_ptr<RequiredType>(temp);
             return move(result);
         }
 
-        template <class T>
-        shared_ptr<T> GetShared()
+        template <class RequiredType>
+        shared_ptr<RequiredType> GetShared()
         {
-            Item& item = _container->GetItem<T>();
+            auto& item = _container->GetItem<RequiredType>();
 
-            if (!item.instancePtr)
+            shared_ptr<RequiredType> sharedPtr;
+
+            if (!item.HasInstance() && !item.Marker)
             {
                 auto cast = any(*this);
-                item.instancePtr = make_shared<void*>();
-                *item.instancePtr = item.factory(cast);
-            }
+                sharedPtr = item.GenerateInstance(cast);
 
-            if (item.marker) {
-                throw runtime_error(string("Cyclic dependecy while instantiating type: ") + typeid(T).name());
-            }
+                if (item.Marker) {
+                    throw runtime_error(string("Cyclic dependecy while instantiating type: ") + typeid(RequiredType).name());
+                }
 
-            T* elementPtr = static_cast<T*>(*item.instancePtr);
-            return shared_ptr<T>(item.instancePtr, elementPtr);
+                return sharedPtr;
+            }
+         
+            return item.GetShared();
         }
     };
 }

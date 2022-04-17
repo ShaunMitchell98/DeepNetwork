@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include "PyNet.Models/Activation.h"
-#include "VariableLearningSettings.h"
 
 using namespace std;
 using namespace PyNet::Infrastructure;
@@ -87,19 +86,19 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 
 int main()
 {
-	auto network = PyNetwork_Initialise(false, false);
-	PyNetwork_AddLayer(network, 784, PyNet::Models::ActivationFunctionType::Logistic);
-	PyNetwork_AddLayer(network, 500, PyNet::Models::ActivationFunctionType::Logistic);
-	PyNetwork_AddLayer(network, 129, PyNet::Models::ActivationFunctionType::Logistic);
-	PyNetwork_AddLayer(network, 10, PyNet::Models::ActivationFunctionType::Logistic);
+	auto intermediary = PyNetwork_Initialise(false, false);
+	PyNetwork_AddLayer(intermediary, 784, PyNet::Models::ActivationFunctionType::Logistic);
+	PyNetwork_AddLayer(intermediary, 500, PyNet::Models::ActivationFunctionType::Logistic);
+	PyNetwork_AddLayer(intermediary, 129, PyNet::Models::ActivationFunctionType::Logistic);
+	PyNetwork_AddLayer(intermediary, 10, PyNet::Models::ActivationFunctionType::Logistic);
+	PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
 
-	auto settings = VariableLearningSettings();
-	settings.ErrorThreshold = 0.04;
-	settings.LRDecrease = 0.7;
-	settings.LRIncrease = 1.05;
-	PyNetwork_SetVariableLearning(network, &settings);
 
+#ifdef _WIN32
+	string folderPath = "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet.Infrastructure\\tests\\Resources\\";
+#else
 	string folderPath = "/Users/shaunmitchell/pynet/PyNet.Infrastructure/tests/resources/";
+#endif
 	string trainingExamplesFileName = "Training_Example";
 	string trainingLabelsFileName = "Training_Labels";
 
@@ -114,6 +113,7 @@ int main()
 
 	GetData(folderPath, trainingExamplesFileName, inputs);
 	GetLabels(folderPath, trainingLabelsFileName, labels);
-	PyNetwork_Train(network, inputs.data(), labels.data(), 10, 5, 0.01, 0, 10);
+	PyNetwork_Train(intermediary, inputs.data(), labels.data(), 10, 5, 0.01, 0, 10);
+	PyNetwork_Destruct(intermediary);
 }
 	
