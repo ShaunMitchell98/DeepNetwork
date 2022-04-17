@@ -1,5 +1,5 @@
 #pragma once
-
+#include <math.h>
 #include "PyNet.Models/Activation.h"
 
 using namespace std;
