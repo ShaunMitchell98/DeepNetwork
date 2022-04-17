@@ -1,6 +1,12 @@
 cmake_minimum_required( VERSION 3.20 )
 
-project(PyNet.Infrastructure)
+find_package(CUDAToolkit)
+
+IF (CUDAToolkit_FOUND)
+  project(PyNet.Infrastructure LANGUAGES CXX CUDA)
+ELSE()
+  project(PyNet.Infrastructure)
+ENDIF()
 
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -19,6 +25,10 @@ include_directories( ./include
 	 ./tests
 	 ./src
 	./libs/di/src
+
+	IF (CUDAToolkit_FOUND)
+  		./libs/PyNet.Models.Cuda/include
+	ENDIF()
 #	"C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/include"
 )
 
@@ -58,10 +68,21 @@ add_library(PyNet.Infrastructure SHARED
 )
 
 # 3rd party libs
+
+IF (CUDAToolkit_FOUND)
+	add_subdirectory( ./libs/PyNet.Models.Cuda )
+ENDIF()
+
 add_subdirectory( ./libs/PyNet.Models )
 add_subdirectory( ./libs/PyNet.Models.Cpu )
 add_subdirectory( ./libs/PyNet.DI)
 add_subdirectory( ./libs/PyNet.Console )
+
+
+IF (CUDAToolkit_FOUND)
+	target_link_libraries( PyNet.Infrastructure PyNet.Models.Cuda )
+ENDIF()
+
 target_link_libraries( PyNet.Infrastructure PyNet.Models )
 target_link_libraries( PyNet.Infrastructure PyNet.Models.Cpu )
 target_link_libraries( PyNet.Infrastructure PyNet.DI )
