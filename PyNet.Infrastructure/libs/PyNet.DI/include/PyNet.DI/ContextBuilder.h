@@ -7,8 +7,11 @@
 #include <typeindex>
 #include <type_traits>
 #include <iostream>
-#include "ItemRegistrar.h"
+#include "Context.h"
+#include "ItemContainer.h"
+#include "Item.h"
 #include "InstanceMode.h"
+#include "ItemRegistrar.h"
 
 using namespace std;
 
@@ -17,45 +20,44 @@ namespace PyNet::DI {
 
     private:
         shared_ptr<ItemContainer> _container;
+        shared_ptr<Context> _context;
 
     public:
 
         ContextBuilder() : _container{ make_shared<ItemContainer>()} {
-            auto context = new Context(_container);
-            AddInstance(context, InstanceMode::Shared);
+            _context = make_shared<Context>(_container);
+            RegisterInstance(_context, InstanceMode::Shared);
         }
 
         // Add an already instantiated object to the context
         template <class InstanceType>
-        ContextBuilder& AddInstance(InstanceType* instance, InstanceMode instanceMode)
+        ContextBuilder& RegisterInstance(shared_ptr<InstanceType> instance, InstanceMode instanceMode)
         {
             if (instance == nullptr)
                 throw runtime_error(string("Trying to add nullptr instance for type: ") + typeid(InstanceType).name());
 
-            auto& item = _container->RegisterItem<InstanceType>();
+            auto& item = _container->Add<InstanceType>();
 
-            if (item.instancePtr)
+            if (item.HasInstance())
                 throw runtime_error(std::string("Instance already in Context for type: ") + typeid(InstanceType).name());
 
             if (instanceMode == InstanceMode::Shared) {
-                item.instancePtr = make_shared<void*>();
-                *item.instancePtr = static_cast<void*>(instance);
+                item.SetInstance(instance);
             }
 
             return *this;
         }
 
         template <typename InstanceType>
-        ItemRegistrar<InstanceType>& RegisterType(InstanceMode instanceMode = InstanceMode::Shared)
+        unique_ptr<ItemRegistrar<InstanceType>> RegisterType(InstanceMode instanceMode = InstanceMode::Shared)
         {
-            auto registrar = new ItemRegistrar<InstanceType>(type_index(typeid(InstanceType)), *_container);
-            return *registrar;
+            auto registrar = make_unique<ItemRegistrar<InstanceType>>(type_index(typeid(InstanceType)), *_container);
+            return move(registrar);
         }
 
         shared_ptr<Context> Build() {
             auto& item = _container->GetItem<Context>();
-            Context* elementPtr = static_cast<Context*>(*item.instancePtr);
-            return shared_ptr<Context>(item.instancePtr, elementPtr);
+            return item.GetShared();
         }
     };
 }

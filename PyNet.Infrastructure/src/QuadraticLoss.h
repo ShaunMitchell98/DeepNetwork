@@ -14,5 +14,6 @@ namespace PyNet::Infrastructure {
 
 		double CalculateLoss(Models::Vector& expected, Models::Vector& actual) override;
 		std::unique_ptr<Models::Vector> CalculateDerivative(Models::Vector& expected, Models::Vector& actual) override;
+		~QuadraticLoss() override = default;
 	};
 }

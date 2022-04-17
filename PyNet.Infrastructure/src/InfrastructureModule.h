@@ -1,13 +1,13 @@
 #pragma once
-
+#include <compare>
+#include <memory>
+#include "LayerPropagator.h"
+#include "Settings.h"
 #include "PyNet.Models.Cpu/CpuLogistic.h"
 #include "PyNet.DI/Module.h"
-#include "PyNet.DI/ContextBuilder.h"
 #include "QuadraticLoss.h"
 #include "LayerNormaliser.h"
-#include "Settings.h"
 #include "Logger.h"
-#include "LayerPropagator.h"
 #include "AdjustmentCalculator.h"
 #include "SteepestDescent.h"
 #include "GradientCalculator.h"
@@ -18,43 +18,44 @@
 using namespace PyNet::Models;
 using namespace PyNet::Models::Cpu;
 using namespace PyNet::DI;
+using namespace std;
 
 namespace PyNet::Infrastructure {
 
 	class InfrastructureModule : public Module {
 
 	private:
-		const bool _logEnabled;
+		shared_ptr<Settings> _settings;
 
 	public:
 
-		InfrastructureModule(bool logEnabled) : _logEnabled{ logEnabled } {}
+		InfrastructureModule(shared_ptr<Settings> settings) : _settings{ settings } {}
 
 		void Load(ContextBuilder& builder) override {
 
-			builder.RegisterType<CpuLogistic>().As<Activation>();
+			builder.RegisterType<CpuLogistic>()->As<Activation>();
 				
-			builder.RegisterType<QuadraticLoss>().As<Loss>();
+			builder.RegisterType<QuadraticLoss>()->As<Loss>();
 			
-			builder.RegisterType<LayerNormaliser>().AsSelf();
+			builder.RegisterType<LayerNormaliser>()->AsSelf();
 
-			builder.AddInstance<Settings>(new Settings{ _logEnabled }, InstanceMode::Shared);
+			builder.RegisterInstance<Settings>(_settings, InstanceMode::Shared);
 
-			builder.RegisterType<Logger>().AsSelf().As<ILogger>();
+			builder.RegisterType<Logger>()->As<ILogger>();
 				
-			builder.RegisterType<LayerPropagator>().AsSelf();
+			builder.RegisterType<LayerPropagator>()->AsSelf();
 				
-			builder.RegisterType<AdjustmentCalculator>().AsSelf();
+			builder.RegisterType<AdjustmentCalculator>()->AsSelf();
 
-			builder.RegisterType<SteepestDescent>().As<TrainingAlgorithm>();
+			builder.RegisterType<SteepestDescent>()->As<TrainingAlgorithm>();
 
-			builder.RegisterType<GradientCalculator>().AsSelf();
+			builder.RegisterType<GradientCalculator>()->AsSelf();
 
-			builder.RegisterType<PyNetwork>().AsSelf();
+			builder.RegisterType<PyNetwork>()->AsSelf();
 
-			builder.RegisterType<NetworkRunner>().AsSelf();
+			builder.RegisterType<NetworkRunner>()->AsSelf();
 
-			builder.RegisterType<NetworkTrainer>().AsSelf();
+			builder.RegisterType<NetworkTrainer>()->AsSelf();
 		}
 	};
 }

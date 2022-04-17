@@ -29,7 +29,7 @@ namespace PyNet::Infrastructure {
 		shared_ptr<ILogger> _logger;
 		shared_ptr<PyNetwork> _pyNetwork;
 		shared_ptr<Loss> _loss;
-		unique_ptr<VariableLearningSettings> _vlSettings = nullptr;
+		unique_ptr<VariableLearningSettings> _vlSettings;
 
 		NetworkTrainer(shared_ptr<AdjustmentCalculator> adjustmentCalculator, shared_ptr<Context> context,
 			shared_ptr<NetworkRunner> networkRunner, shared_ptr<GradientCalculator> gradientCalculator,
@@ -49,6 +49,6 @@ namespace PyNet::Infrastructure {
 		double* TrainNetwork(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,
 			double momentum, int epochs);
 
-		void SetVLSettings(VariableLearningSettings* vlSettings);
+		void SetVLSettings(double errorThreshold, double lrDecrease, double lrIncrease);
 	};
 }

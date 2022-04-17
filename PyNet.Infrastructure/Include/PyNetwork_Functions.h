@@ -1,23 +1,38 @@
 #pragma once
 #include <memory>
-#include "PyNet.DI/Context.h"
-#include "PyNetwork.h"
+#include "Settings.h"
+#include "Intermediary.h"
 #include "Setup.h"
+#include "PyNetwork.h"
 
 using namespace PyNet::DI;
 using namespace PyNet::Models;
+using namespace std;
 
 namespace PyNet::Infrastructure {
 	extern "C" {
 
 		void* PyNetwork_Initialise(bool log, bool cudaEnabled) {
-			auto context = GetContext(cudaEnabled, log);
-			return context.get();
+			auto settings = make_shared<Settings>();
+			settings->LoggingEnabled = log;
+
+			auto context = GetContext(settings, cudaEnabled);
+			auto intermediary = new Intermediary(context, settings);
+			return intermediary;
+		}
+
+		void PyNetwork_Destruct(void* input) {
+			auto intermediary = static_cast<Intermediary*>(input);
+			auto context = intermediary->GetContext();
+			context->MakeReferencesWeak();
+			delete intermediary;
 		}
 
 		void PyNetwork_AddLayer(void* input, int count, ActivationFunctionType activationFunctionType) {
+
+			auto intermediary = static_cast<Intermediary*>(input);
+			auto context = intermediary->GetContext();
 			
-			auto context = static_cast<Context*>(input);
 			auto pyNetwork = context->GetShared<PyNetwork>();
 			auto adjustmentCalculator = context->GetShared<AdjustmentCalculator>();
 
@@ -47,22 +62,25 @@ namespace PyNet::Infrastructure {
 
 		double* PyNetwork_Run(void* input, double* inputLayer) {
 
-			auto context = static_cast<Context*>(input);
+			auto intermediary = static_cast<Intermediary*>(input);
+			auto context = intermediary->GetContext();
 			auto networkRunner = context->GetShared<NetworkRunner>();
 			return networkRunner->Run(inputLayer);
 		}
 
-		void PyNetwork_SetVariableLearning(void* input, VariableLearningSettings* vlSettings) {
+		void PyNetwork_SetVariableLearning(void* input, double errorThreshold, double lrDecrease, double lrIncrease) {
 
-			auto context = static_cast<Context*>(input);
+			auto intermediary = static_cast<Intermediary*>(input);
+			auto context = intermediary->GetContext();
 			auto networkTrainer = context->GetShared<NetworkTrainer>();
-			networkTrainer->SetVLSettings(vlSettings);
+			networkTrainer->SetVLSettings(errorThreshold, lrDecrease, lrIncrease);
 		}
 
 		double* PyNetwork_Train(void* input, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate,
 			double momentum, int epochs) {
 
-			auto context = static_cast<Context*>(input);
+			auto intermediary = static_cast<Intermediary*>(input);
+			auto context = intermediary->GetContext();
 			auto networkTrainer = context->GetShared<NetworkTrainer>();
 			return networkTrainer->TrainNetwork(inputLayers, expectedOutputs, numberOfExamples, batchSize, learningRate, momentum, epochs);
 		}

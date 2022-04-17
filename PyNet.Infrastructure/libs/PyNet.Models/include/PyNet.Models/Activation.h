@@ -14,5 +14,6 @@ namespace PyNet::Models {
 	public:
 		virtual void Apply(Matrix& input) = 0;
 		virtual std::unique_ptr<Matrix> CalculateDerivative(const Matrix& input) = 0;
+		virtual ~Activation() = default;
 	};
 }

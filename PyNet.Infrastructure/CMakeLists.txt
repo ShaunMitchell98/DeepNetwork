@@ -29,6 +29,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/AdjustmentCalculator.h
 	./src/AdjustmentCalculator.cpp 
 	./src/InfrastructureModule.h
+	./src/Intermediary.h
 	./src/LayerPropagator.h
 	./src/LayerPropagator.cpp 
 	./src/Logger.h

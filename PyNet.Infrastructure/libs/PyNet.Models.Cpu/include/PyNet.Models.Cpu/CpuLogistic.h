@@ -21,7 +21,7 @@ namespace PyNet::Models::Cpu {
 
 		typedef Activation base;
 
-		void Apply(Matrix& input) {
+		void Apply(Matrix& input) override {
 
 			for (int i = 0; i < input.GetRows(); i++) {
 				for (auto j = 0; j < input.GetCols(); j++) {
@@ -31,7 +31,7 @@ namespace PyNet::Models::Cpu {
 			}
 		}
 
-		unique_ptr<Matrix> CalculateDerivative(const Matrix& input) {
+		unique_ptr<Matrix> CalculateDerivative(const Matrix& input) override {
 
 			auto output = _context->GetUnique<Matrix>();
 			output->Initialise(input.GetRows(), input.GetCols(), false);
@@ -44,5 +44,7 @@ namespace PyNet::Models::Cpu {
 
 			return move(output);
 		}
+
+		~CpuLogistic() override = default;
 	};
 }

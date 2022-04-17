@@ -1,8 +1,7 @@
 #pragma once
 #include <memory>
-#include "PyNet.DI/ContextBuilder.h"
-#include "PyNet.Models.Cpu/CpuModule.h"
 #include "InfrastructureModule.h"
+#include "PyNet.Models.Cpu/CpuModule.h"
 
 #ifdef CUDA
 #include "PyNet.Models.Cuda/CudaModule.h"
@@ -14,7 +13,7 @@ using namespace PyNet::DI;
 using namespace std;
 
 namespace PyNet::Infrastructure {
-	shared_ptr<Context> GetContext(bool cudaEnabled, bool log) {
+	shared_ptr<Context> GetContext(shared_ptr<Settings> settings, bool cudaEnabled) {
 
 		auto builder = make_unique<ContextBuilder>();
 
@@ -30,7 +29,7 @@ namespace PyNet::Infrastructure {
 			cpuModule->Load(*builder);
 		}
 
-		auto infrastructureModule = make_unique<InfrastructureModule>(log);
+		auto infrastructureModule = make_unique<InfrastructureModule>(settings);
 		infrastructureModule->Load(*builder);
 
 		return builder->Build();
