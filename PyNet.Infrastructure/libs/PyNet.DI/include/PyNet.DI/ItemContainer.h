@@ -25,17 +25,8 @@ namespace PyNet::DI {
 
         ~ItemContainer() {
 
-            auto i = _items.begin();
-
-            while (i != _items.end()) {
-                auto usageCount = i->second->GetUsageCount();
-                if (usageCount == 0) {
-                    i->second->Reset();
-                    i = _items.begin();
-                }
-                else {
-                    i++;
-                }
+            for (auto& item : _items) {
+                item.second->Reset();
             }
         }
 

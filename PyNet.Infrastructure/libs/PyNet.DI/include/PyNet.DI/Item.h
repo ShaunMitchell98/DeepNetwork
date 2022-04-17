@@ -30,10 +30,6 @@ namespace PyNet::DI {
         Item(Item&& rhs) = delete;
         Item& operator=(Item&& rhs) = delete;
 
-        int GetUsageCount() override {
-            return _weakReference ? _weakPtr.use_count() : _sharedPtr.use_count();
-        }
-
         void Reset() override {
            _weakReference ? _weakPtr.reset() : _sharedPtr.reset();
         }

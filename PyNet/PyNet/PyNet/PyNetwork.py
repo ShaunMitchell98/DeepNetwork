@@ -33,7 +33,7 @@ class PyNetwork:
         self.lib.PyNetwork_Load.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
         self.lib.PyNetwork_Load.restype = ctypes.c_int
 
-        self.lib.PyNetwork_Destruct.argtype = [ctypes.c_void_p]
+        self.lib.PyNetwork_Destruct.argtypes = [ctypes.c_void_p]
 
         self.obj = self.lib.PyNetwork_Initialise(log, cudaEnabled)
         self.outputNumber = 0
