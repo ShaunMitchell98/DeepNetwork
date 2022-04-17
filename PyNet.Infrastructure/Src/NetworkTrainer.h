@@ -10,6 +10,7 @@
 #include "PyNetwork.h"
 #include "PyNet.Models/Loss.h"
 #include "VariableLearningSettings.h"
+#include "Headers.h"
 
 using namespace PyNet::DI;
 using namespace PyNet::Models;
@@ -17,7 +18,7 @@ using namespace std;
 
 namespace PyNet::Infrastructure {
 
-	class NetworkTrainer {
+	class EXPORT NetworkTrainer {
 
 	private:
 

@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include "PyNet.Models/Activation.h"
-#include "VariableLearningSettings.h"
 
 using namespace std;
 using namespace PyNet::Infrastructure;
@@ -94,7 +93,12 @@ int main()
 	PyNetwork_AddLayer(intermediary, 10, PyNet::Models::ActivationFunctionType::Logistic);
 	PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
 
+
+#ifdef _WIN32
+	string folderPath = "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet.Infrastructure\\tests\\Resources\\";
+#else
 	string folderPath = "/Users/shaunmitchell/pynet/PyNet.Infrastructure/tests/resources/";
+#endif
 	string trainingExamplesFileName = "Training_Example";
 	string trainingLabelsFileName = "Training_Labels";
 

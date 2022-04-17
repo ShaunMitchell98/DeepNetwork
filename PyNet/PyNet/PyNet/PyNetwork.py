@@ -1,8 +1,6 @@
 import numpy as np
 import ctypes
-import os
 from PyNet.PyNet.NumpyArrayConversion import convert_numpy_array_to_2d_double_array
-from PyNet.PyNet.VariableLearningSettings import VariableLearningSettings
 
 
 class PyNetwork:
@@ -10,8 +8,8 @@ class PyNetwork:
     def __init__(self, log: bool, cudaEnabled: bool):
 
         self.lib = ctypes.windll.LoadLibrary(r"..\PyNet.Infrastructure\build\Release\PyNet.Infrastructure.dll")
-        self.lib.PyNetwork_New.argtypes = [ctypes.c_bool, ctypes.c_bool]
-        self.lib.PyNetwork_New.restype = ctypes.c_void_p
+        self.lib.PyNetwork_Initialise.argtypes = [ctypes.c_bool, ctypes.c_bool]
+        self.lib.PyNetwork_Initialise.restype = ctypes.c_void_p
 
         self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
         self.lib.PyNetwork_AddLayer.restype = ctypes.c_void_p
@@ -28,13 +26,16 @@ class PyNetwork:
 
         self.lib.PyNetwork_Train.restype = ctypes.POINTER(ctypes.c_double)
 
-        self.lib.PyNetwork_SetVariableLearning.argtypes = [ctypes.c_void_p, ctypes.POINTER(VariableLearningSettings)]
+        self.lib.PyNetwork_SetVariableLearning.argtypes = [ctypes.c_void_p, ctypes.c_double, ctypes.c_double,
+                                                           ctypes.c_double]
 
         self.lib.PyNetwork_Save.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
         self.lib.PyNetwork_Load.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
         self.lib.PyNetwork_Load.restype = ctypes.c_int
 
-        self.obj = self.lib.PyNetwork_New(log, cudaEnabled)
+        self.lib.PyNetwork_Destruct.argtype = [ctypes.c_void_p]
+
+        self.obj = self.lib.PyNetwork_Initialise(log, cudaEnabled)
         self.outputNumber = 0
 
     def add_layer(self, count: int, activationFunctionType: int):
@@ -68,11 +69,14 @@ class PyNetwork:
                                           learning_rate, momentum, epochs)
         return np.ctypeslib.as_array(errors, shape=(input_layers.shape[0],))
 
-    def SetVariableLearning(self, vlSettings: VariableLearningSettings):
-        self.lib.PyNetwork_SetVariableLearning(self.obj, ctypes.byref(vlSettings))
+    def SetVariableLearning(self, errorThreshold: float, lrDecrease: float, lrIncrease: float):
+        self.lib.PyNetwork_SetVariableLearning(self.obj, errorThreshold, lrDecrease, lrIncrease)
 
     def save(self, filePath):
         self.lib.PyNetwork_Save(self.obj, ctypes.c_char_p(filePath.encode('utf-8')))
 
     def load(self, filePath):
         self.outputNumber = self.lib.PyNetwork_Load(self.obj, ctypes.c_char_p(filePath.encode('utf-8')))
+
+    def destruct(self):
+        self.lib.PyNetwork_Destruct(self.obj)

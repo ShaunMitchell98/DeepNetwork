@@ -25,6 +25,7 @@ include_directories( ./include
 # target
 add_library(PyNet.Infrastructure SHARED
 	./include/PyNetwork_Functions.h
+	./src/Headers.h
 	./src/Settings.h
 	./src/AdjustmentCalculator.h
 	./src/AdjustmentCalculator.cpp 
@@ -37,6 +38,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/SteepestDescent.h
 	./src/SteepestDescent.cpp
 	./src/PyNetwork.h 
+	./src/PyNetwork_Functions.cpp
 	./src/QuadraticLoss.h
 	./src/QuadraticLoss.cpp
 	./src/Setup.h
@@ -44,7 +46,6 @@ add_library(PyNet.Infrastructure SHARED
 	./src/XmlWriter.cpp
 	./src/XmlReader.h
 	./src/XmlReader.cpp
-	./src/VariableLearningSettings.h
 	./src/TrainingAlgorithm.h
 	./src/GradientCalculator.h
 	./src/GradientCalculator.cpp
@@ -53,6 +54,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/NetworkTrainer.h
 	./src/NetworkTrainer.cpp
 	./src/Xml_Functions.h
+	./src/Xml_Functions.cpp
 )
 
 # 3rd party libs

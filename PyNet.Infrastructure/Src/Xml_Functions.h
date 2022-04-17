@@ -2,8 +2,11 @@
 #include <memory>
 #include <fstream>
 #include "XmlReader.h"
+#include "XmlWriter.h"
 #include "PyNet.DI/Context.h"
 #include "AdjustmentCalculator.h"
+#include "PyNetwork.h"
+#include "Headers.h"
 
 using namespace PyNet::DI;
 using namespace PyNet::Models;
@@ -12,7 +15,7 @@ using namespace std;
 namespace PyNet::Infrastructure {
 	extern "C" {
 
-		int PyNetwork_Load(void* input, const char* filePath) {
+		EXPORT int PyNetwork_Load(void* input, const char* filePath) {
 
 			auto reader = XmlReader::Create(filePath);
 			auto context = static_cast<Context*>(input);
@@ -51,7 +54,7 @@ namespace PyNet::Infrastructure {
 			return pyNetwork->GetLastLayer().GetRows();
 		}
 
-		void PyNetwork_Save(void* input, const char* filePath) {
+		EXPORT void PyNetwork_Save(void* input, const char* filePath) {
 
 			auto writer = XmlWriter::Create(filePath);
 			auto context = static_cast<Context*>(input);

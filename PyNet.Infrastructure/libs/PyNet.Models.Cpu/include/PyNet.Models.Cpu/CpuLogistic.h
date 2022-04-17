@@ -1,7 +1,6 @@
 #pragma once
 
 #include "PyNet.Models/Activation.h"
-#include <ctgmath>
 
 using namespace std;
 

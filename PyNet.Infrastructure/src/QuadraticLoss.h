@@ -1,9 +1,10 @@
 #pragma once
 
 #include "PyNet.Models/Loss.h"
+#include "Headers.h"
 
 namespace PyNet::Infrastructure {
-	class QuadraticLoss : public Models::Loss {
+	class EXPORT QuadraticLoss : public Models::Loss {
 	public:
 
 		static auto factory() {
