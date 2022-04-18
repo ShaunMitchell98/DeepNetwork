@@ -11,4 +11,5 @@
 	virtual bool HasInstance() = 0;
     virtual void MakeReferenceWeak() = 0;
 	bool Marker = false;
+	virtual ~IItem() = default;
  };
