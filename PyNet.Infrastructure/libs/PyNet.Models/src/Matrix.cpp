@@ -83,24 +83,24 @@ namespace PyNet::Models {
 
 	string Matrix::ToString() const {
 
-		auto text = new string();
+		string text;
 		char buffer[30];
 
 		for (auto row = 0; row < Rows; row++) {
 			for (auto col = 0; col < Cols; col++) {
 				auto value = (*this)(row, col);
 				sprintf(buffer, "%.20f", value);
-				*text += buffer;
+				text += buffer;
 
 				if (col != Cols - 1) {
-					*text += ", ";
+					text += ", ";
 				}
 			}
 
-			*text += "\n";
+			text += "\n";
 		}
 
-		return *text;
+		return move(text);
 	}
 
 	void Matrix::Set(size_t rows, size_t cols, const double* values) {

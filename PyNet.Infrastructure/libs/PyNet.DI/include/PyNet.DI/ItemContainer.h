@@ -27,6 +27,7 @@ namespace PyNet::DI {
 
             for (auto& item : _items) {
                 item.second->Reset();
+                delete item.second;
             }
         }
 

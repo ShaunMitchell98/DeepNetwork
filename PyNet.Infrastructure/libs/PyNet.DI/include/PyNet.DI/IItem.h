@@ -10,5 +10,5 @@
 	virtual void* GetInstance(any& context) = 0;
 	virtual bool HasInstance() = 0;
     virtual void MakeReferenceWeak() = 0;
-	bool Marker;
+	bool Marker = false;
  };
