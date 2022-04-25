@@ -75,12 +75,19 @@ namespace PyNet::Models::Cuda {
 			return Vector::GetCValues();
 		}
 
-		CudaVector(const CudaVector& v) : Vector(v._activation) {}
+		CudaVector(const CudaVector& v) : Vector(v._activation) {
+			Vector::Initialise(v.GetRows(), false);
+		}
 
 		operator const Matrix& () const {
 			auto& temp1 = static_cast<const Vector&>(*this);
 			auto& temp2 = static_cast<const Matrix&>(temp1);
 			return temp2;
+		}
+
+		unique_ptr<Vector> Copy() const override {
+
+			return unique_ptr<Vector>(new CudaVector(*this));
 		}
 	};
 }

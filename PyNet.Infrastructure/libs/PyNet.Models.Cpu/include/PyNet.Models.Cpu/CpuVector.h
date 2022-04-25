@@ -106,9 +106,16 @@ namespace PyNet::Models::Cpu {
 		}
 
 
-		CpuVector(const CpuVector& v) : Vector(v._activation) {}
+		CpuVector(const CpuVector& v) : Vector(v._activation) {
+			Vector::Initialise(v.GetRows(), false);
+		}
 
 		~CpuVector() override = default;
+
+		unique_ptr<Vector> Copy() const override {
+
+			return unique_ptr<Vector>(new CpuVector(*this));
+		}
 	};
 }
 

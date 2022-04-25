@@ -11,17 +11,25 @@ namespace PyNet::Models {
 	{
 	protected:
 		shared_ptr<Activation> _activation;
+		double _dropoutRate = 1;
 	public:
 
 		Vector(shared_ptr<Activation> activation) : _activation{ activation } {}
 
-		void Initialise(int rows, bool generateWeights) { Matrix::Initialise(rows, 1, generateWeights); }
+		void Initialise(int rows, bool generateWeights, double dropoutRate = 1) { 
+			Matrix::Initialise(rows, 1, generateWeights); 
+			_dropoutRate = dropoutRate;
+		}
 
 		const double& operator[](size_t row) const { return Values[row]; }
 
 		double& operator[](size_t row) { return Values[row]; }
 
 		double* GetAddress(int row) const { return ((Matrix*)(this))->GetAddress(row, 0); }
+
+		const double GetDropoutRate() const {
+			return _dropoutRate;
+		}
 
 		void ApplyActivation() { _activation->Apply(*this); }
 
@@ -48,7 +56,7 @@ namespace PyNet::Models {
 	    double operator|(const Vector& v) const;
 
 		void Set(size_t rows, double* d) {
-			Initialise(rows, false);
+			Initialise(rows, false, _dropoutRate);
 
 			for (auto i = 0; i < rows; i++) {
 				(*this)[i] = *(d + i);
@@ -63,5 +71,6 @@ namespace PyNet::Models {
 		virtual unique_ptr<Vector> operator-(const Vector& v) const = 0;
 		virtual unique_ptr<Vector> operator^(const Vector& v) const = 0;
 		virtual unique_ptr<Vector> operator/(const double d) const = 0;
+		virtual unique_ptr<Vector> Copy() const = 0;
 	};
 }

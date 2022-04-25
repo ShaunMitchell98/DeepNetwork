@@ -14,6 +14,8 @@
 #include "PyNetwork.h"
 #include "NetworkRunner.h"
 #include "NetworkTrainer.h"
+#include "BernoulliGenerator.h"
+#include "DropoutRunner.h"
 
 using namespace PyNet::Models;
 using namespace PyNet::Models::Cpu;
@@ -56,6 +58,10 @@ namespace PyNet::Infrastructure {
 			builder.RegisterType<NetworkRunner>()->AsSelf();
 
 			builder.RegisterType<NetworkTrainer>()->AsSelf();
+
+			builder.RegisterType<BernoulliGenerator>()->AsSelf();
+
+			builder.RegisterType<DropoutRunner>()->AsSelf();
 		}
 	};
 }

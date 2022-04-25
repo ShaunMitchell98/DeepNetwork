@@ -15,7 +15,7 @@ public:
 	vector<unique_ptr<Vector>> Biases = vector<unique_ptr<Vector>>();
 	vector<unique_ptr<Matrix>> Weights = vector<unique_ptr<Matrix>>();
 
-	Vector& GetLastLayer() {
+	Vector& GetOutputLayer() {
 		return *Layers[Layers.size() - 1];
 	}
 

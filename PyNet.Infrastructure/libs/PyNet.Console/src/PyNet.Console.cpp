@@ -87,10 +87,10 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 int main()
 {
 	auto intermediary = PyNetwork_Initialise(false, false);
-	PyNetwork_AddLayer(intermediary, 784, PyNet::Models::ActivationFunctionType::Logistic);
-	PyNetwork_AddLayer(intermediary, 500, PyNet::Models::ActivationFunctionType::Logistic);
-	PyNetwork_AddLayer(intermediary, 129, PyNet::Models::ActivationFunctionType::Logistic);
-	PyNetwork_AddLayer(intermediary, 10, PyNet::Models::ActivationFunctionType::Logistic);
+	PyNetwork_AddLayer(intermediary, 784, PyNet::Models::ActivationFunctionType::Logistic, 0.8);
+	PyNetwork_AddLayer(intermediary, 500, PyNet::Models::ActivationFunctionType::Logistic, 0.5);
+	PyNetwork_AddLayer(intermediary, 129, PyNet::Models::ActivationFunctionType::Logistic, 0.5);
+	PyNetwork_AddLayer(intermediary, 10, PyNet::Models::ActivationFunctionType::Logistic, 0.5);
 	PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
 
 
@@ -114,6 +114,8 @@ int main()
 	GetData(folderPath, trainingExamplesFileName, inputs);
 	GetLabels(folderPath, trainingLabelsFileName, labels);
 	PyNetwork_Train(intermediary, inputs.data(), labels.data(), 10, 5, 0.01, 0, 10);
+	PyNetwork_Run(intermediary, inputs[0]);
 	PyNetwork_Destruct(intermediary);
+
 }
 	

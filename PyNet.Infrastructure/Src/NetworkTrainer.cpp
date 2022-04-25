@@ -20,15 +20,15 @@ namespace PyNet::Infrastructure {
 
                     _networkRunner->Run(inputLayers[i]);
 
-                    expectedVector->Set(_pyNetwork->GetLastLayer().GetRows(), expectedOutputs[i]);
+                    expectedVector->Set(_pyNetwork->GetOutputLayer().GetRows(), expectedOutputs[i]);
 
-                    auto loss = _loss->CalculateLoss(*expectedVector, _pyNetwork->GetLastLayer());
+                    auto loss = _loss->CalculateLoss(*expectedVector, _pyNetwork->GetOutputLayer());
 
                     totalLossForCurrentEpoch += loss;
                     _logger->LogLine("The loss is: " + to_string(loss));
                     _pyNetwork->Losses.push_back(loss);
 
-                    auto lossDerivative = _loss->CalculateDerivative(*expectedVector, _pyNetwork->GetLastLayer());
+                    auto lossDerivative = _loss->CalculateDerivative(*expectedVector, _pyNetwork->GetOutputLayer());
 
                     _gradientCalculator->CalculateGradients(_pyNetwork->Weights, _pyNetwork->Layers, *expectedVector, *lossDerivative);
 
@@ -52,8 +52,8 @@ namespace PyNet::Infrastructure {
                     auto adjustedTotalLossForCurrentEpoch = 0.0;
                     for (auto j = 0; j < numberOfExamples; j++) {
                         _networkRunner->Run(inputLayers[j]);
-                        expectedVector->Set(_pyNetwork->GetLastLayer().GetRows(), expectedOutputs[j]);
-                        adjustedTotalLossForCurrentEpoch += _loss->CalculateLoss(*expectedVector, _pyNetwork->GetLastLayer());
+                        expectedVector->Set(_pyNetwork->GetOutputLayer().GetRows(), expectedOutputs[j]);
+                        adjustedTotalLossForCurrentEpoch += _loss->CalculateLoss(*expectedVector, _pyNetwork->GetOutputLayer());
                     }
 
                     if (adjustedTotalLossForCurrentEpoch > (1 + _vlSettings->ErrorThreshold) * totalLossForCurrentEpoch) {

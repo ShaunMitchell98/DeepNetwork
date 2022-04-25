@@ -11,7 +11,7 @@ namespace PyNet::Infrastructure {
 
 		EXPORT void PyNetwork_Destruct(void* input);
 
-		EXPORT void PyNetwork_AddLayer(void* input, int count, ActivationFunctionType activationFunctionType);
+		EXPORT void PyNetwork_AddLayer(void* input, int count, ActivationFunctionType activationFunctionType, double dropoutRate);
 
 		EXPORT double* PyNetwork_Run(void* input, double* inputLayer);
 

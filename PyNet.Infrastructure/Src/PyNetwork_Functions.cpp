@@ -4,6 +4,7 @@
 #include "Setup.h"
 #include "PyNetwork.h"
 #include "AdjustmentCalculator.h"
+#include "RunMode.h"
 #include <memory>
 
 using namespace PyNet::DI;
@@ -27,7 +28,7 @@ namespace PyNet::Infrastructure {
 		delete intermediary;
 	}
 
-	EXPORT void PyNetwork_AddLayer(void* input, int count, ActivationFunctionType activationFunctionType) {
+	EXPORT void PyNetwork_AddLayer(void* input, int count, ActivationFunctionType activationFunctionType, double dropoutRate) {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
@@ -37,15 +38,15 @@ namespace PyNet::Infrastructure {
 
 		if (pyNetwork->Layers.empty()) {
 			auto layer = context->GetUnique<Vector>();
-			layer->Initialise(count, false);
+			layer->Initialise(count, false, dropoutRate);
 			pyNetwork->Layers.push_back(move(layer));
 			return;
 		}
 
-		auto cols = pyNetwork->GetLastLayer().GetRows();
+		auto cols = pyNetwork->GetOutputLayer().GetRows();
 
 		auto layer = context->GetUnique<Vector>();
-		layer->Initialise(count, false);
+		layer->Initialise(count, false, dropoutRate);
 		pyNetwork->Layers.push_back(move(layer));
 
 		auto weightMatrix = context->GetUnique<Matrix>();
@@ -63,6 +64,8 @@ namespace PyNet::Infrastructure {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
+		auto settings = context->GetShared<Settings>();
+		settings->RunMode = RunMode::Running;
 		auto networkRunner = context->GetShared<NetworkRunner>();
 		return networkRunner->Run(inputLayer);
 	}
@@ -80,6 +83,8 @@ namespace PyNet::Infrastructure {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
+		auto settings = context->GetShared<Settings>();
+		settings->RunMode = RunMode::Training;
 		auto networkTrainer = context->GetShared<NetworkTrainer>();
 		return networkTrainer->TrainNetwork(inputLayers, expectedOutputs, numberOfExamples, batchSize, learningRate, momentum, epochs);
 	}

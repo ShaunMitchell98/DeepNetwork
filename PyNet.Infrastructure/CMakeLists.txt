@@ -65,6 +65,10 @@ add_library(PyNet.Infrastructure SHARED
 	./src/NetworkTrainer.cpp
 	./src/Xml_Functions.h
 	./src/Xml_Functions.cpp
+	./src/BernoulliGenerator.h
+	./src/BernoulliGenerator.cpp
+	./src/DropoutRunner.h
+	./src/DropoutRunner.cpp
 )
 
 # 3rd party libs

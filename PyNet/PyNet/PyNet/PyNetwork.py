@@ -11,7 +11,7 @@ class PyNetwork:
         self.lib.PyNetwork_Initialise.argtypes = [ctypes.c_bool, ctypes.c_bool]
         self.lib.PyNetwork_Initialise.restype = ctypes.c_void_p
 
-        self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
+        self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_double]
         self.lib.PyNetwork_AddLayer.restype = ctypes.c_void_p
 
         self.lib.PyNetwork_Run.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double)]
@@ -38,8 +38,8 @@ class PyNetwork:
         self.obj = self.lib.PyNetwork_Initialise(log, cudaEnabled)
         self.outputNumber = 0
 
-    def add_layer(self, count: int, activationFunctionType: int):
-        self.lib.PyNetwork_AddLayer(self.obj, count, activationFunctionType)
+    def add_layer(self, count: int, activationFunctionType: int, dropoutRate: float):
+        self.lib.PyNetwork_AddLayer(self.obj, count, activationFunctionType, dropoutRate)
         self.outputNumber = count
 
     def run(self, input_layer: np.ndarray) -> np.ndarray:

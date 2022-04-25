@@ -51,7 +51,7 @@ namespace PyNet::Infrastructure {
 				}
 			}
 
-			return pyNetwork->GetLastLayer().GetRows();
+			return pyNetwork->GetOutputLayer().GetRows();
 		}
 
 		EXPORT void PyNetwork_Save(void* input, const char* filePath) {
