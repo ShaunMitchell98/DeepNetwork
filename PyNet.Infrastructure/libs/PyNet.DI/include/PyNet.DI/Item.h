@@ -67,5 +67,6 @@ namespace PyNet::DI {
         }
 
         bool Marker = false;
+        ~Item() override = default;
     };
 }
