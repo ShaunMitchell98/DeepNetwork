@@ -7,20 +7,20 @@ namespace PyNet::Infrastructure {
         _logger->LogLine("Forward propagating layer.");
 
         _logger->LogLine("Forward propagation input: ");
-        _logger->LogMessage(inputLayer.ToString());
+        _logger->LogVector(inputLayer);
 
         outputLayer = *(weights * inputLayer);
 
         _logger->LogLine("Forward propagation output: ");
-        _logger->LogMessage(outputLayer.ToString());
+        _logger->LogVector(outputLayer);
 
         outputLayer += bias;
 
         _logger->LogLine("Output after adding biases: ");
-        _logger->LogMessage(outputLayer.ToString());
+        _logger->LogVector(outputLayer);
 
         outputLayer.ApplyActivation();
         _logger->LogLine("Output after activation");
-        _logger->LogMessage(outputLayer.ToString());
+        _logger->LogVector(outputLayer);
     }
 }

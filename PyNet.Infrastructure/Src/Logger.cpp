@@ -5,7 +5,7 @@
 
 namespace PyNet::Infrastructure {
 
-	void Logger::LogMessageWithoutDate(std::string_view message) {
+	void Logger::LogMessageWithoutDate(std::string_view message) const {
 
 		if (_enabled) {
 			auto stream = std::ofstream(_fileName, std::ios_base::app);
@@ -14,7 +14,7 @@ namespace PyNet::Infrastructure {
 		}
 	}
 
-	void Logger::LogMessage(std::string_view message) {
+	void Logger::LogMessage(std::string_view message) const {
 		if (_enabled) {
 
 			auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -25,8 +25,14 @@ namespace PyNet::Infrastructure {
 		}
 	}
 
-	void Logger::LogLine(std::string_view message) {
+	void Logger::LogLine(std::string_view message) const {
 		LogMessage(message);
 		LogMessageWithoutDate("\n");
+	}
+
+	void Logger::LogVector(const Vector& v) const {
+		if (_enabled) {
+			LogMessage(v.ToString());
+		}
 	}
 }

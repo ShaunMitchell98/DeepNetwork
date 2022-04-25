@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string_view>
+#include "PyNet.Models/Vector.h"
 
 namespace PyNet::Models {
 
@@ -14,9 +15,10 @@ namespace PyNet::Models {
 		/// Generates a log message prepended with the current date and time.
 		/// </summary>
 		/// <param name="message">The message to be logged.</param>
-		virtual void LogMessage(std::string_view message) = 0;
-		virtual void LogMessageWithoutDate(std::string_view message) = 0;
-		virtual void LogLine(std::string_view message) = 0;
+		virtual void LogMessage(std::string_view message) const = 0;
+		virtual void LogMessageWithoutDate(std::string_view message) const = 0;
+		virtual void LogLine(std::string_view message) const = 0;
 		virtual ~ILogger() = default;
+		virtual void LogVector(const PyNet::Models::Vector& v) const = 0;
 	};
 }

@@ -23,9 +23,10 @@ namespace PyNet::Infrastructure {
 			return new Logger{ settings->LoggingEnabled };
 		}
 
-		void LogMessage(string_view message) override;
-		void LogMessageWithoutDate(string_view message) override;
-		void LogLine(string_view message) override;
+		void LogMessage(string_view message) const override;
+		void LogMessageWithoutDate(string_view message) const override;
+		void LogLine(string_view message) const override;
+		void LogVector(const Vector& v) const override;
 		~Logger() override = default;
 	};
 }
