@@ -3,6 +3,7 @@
 #include "PyNet.DI/Module.h"
 #include "CpuMatrix.h"
 #include "CpuVector.h"
+#include "CpuLogistic.h"
 
 using namespace PyNet::DI;
 
@@ -22,6 +23,11 @@ namespace PyNet::Models::Cpu {
 				.RegisterType<CpuVector>(InstanceMode::Unique))
 				.AsSelf()
 				.As<Vector>();
+
+			(*builder
+				.RegisterType<CpuLogistic>())
+				.As<Logistic>()
+				.As<Activation>();
 		}
 	};
 }

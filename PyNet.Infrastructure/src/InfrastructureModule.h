@@ -3,7 +3,6 @@
 #include <memory>
 #include "LayerPropagator.h"
 #include "Settings.h"
-#include "PyNet.Models.Cpu/CpuLogistic.h"
 #include "PyNet.DI/Module.h"
 #include "QuadraticLoss.h"
 #include "LayerNormaliser.h"
@@ -18,7 +17,6 @@
 #include "DropoutRunner.h"
 
 using namespace PyNet::Models;
-using namespace PyNet::Models::Cpu;
 using namespace PyNet::DI;
 using namespace std;
 
@@ -34,8 +32,6 @@ namespace PyNet::Infrastructure {
 		InfrastructureModule(shared_ptr<Settings> settings) : _settings{ settings } {}
 
 		void Load(ContextBuilder& builder) override {
-
-			builder.RegisterType<CpuLogistic>()->As<Activation>();
 				
 			builder.RegisterType<QuadraticLoss>()->As<Loss>();
 			

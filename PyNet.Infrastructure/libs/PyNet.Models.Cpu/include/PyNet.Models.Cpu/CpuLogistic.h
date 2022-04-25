@@ -1,12 +1,12 @@
 #pragma once
 #include <math.h>
-#include "PyNet.Models/Activation.h"
+#include "PyNet.Models/Logistic.h"
 
 using namespace std;
 
 namespace PyNet::Models::Cpu {
 
-	class CpuLogistic : public Activation {
+	class CpuLogistic : public Logistic {
 
 		shared_ptr<PyNet::DI::Context> _context;
 

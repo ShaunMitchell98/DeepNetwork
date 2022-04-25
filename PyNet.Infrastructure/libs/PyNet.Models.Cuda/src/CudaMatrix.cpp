@@ -6,7 +6,7 @@ namespace PyNet::Models::Cuda {
 	unique_ptr<Matrix> CudaMatrix::operator*(const Matrix& m) const {
 		auto c = unique_ptr<Matrix>(new CudaMatrix());
 		c->Initialise(GetRows(), m.GetCols(), false);
-		cuda_matrix_multiply(GetCValues(), m.GetCValues(), c->Values, GetRows(), GetCols(), m.GetCols());
+		matrix_multiply(GetCValues(), m.GetCValues(), c->Values, GetRows(), GetCols(), m.GetCols());
 
 		return move(c);
 	}

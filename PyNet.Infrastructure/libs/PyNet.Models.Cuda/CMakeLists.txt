@@ -19,7 +19,11 @@ add_library(PyNet.Models.Cuda SHARED
 	./src/Matrix_Addition_Assignment.cu
 	./src/Matrix_Double_Multiplication.cu
 	./src/Matrix_Addition.cu
-	./include/PyNet.Models.Cuda/CudaModule.h)
+	./src/Matrix_Logistic.cu
+	./src/Matrix_Logistic_Derivative.cu
+	./include/PyNet.Models.Cuda/CudaModule.h
+	./include/PyNet.Models.Cuda/CudaLogistic.h
+	./src/CudaLogistic.cpp)
 
 target_link_libraries(PyNet.Models.Cuda PyNet.Models)
 target_link_libraries(PyNet.Models.Cuda PyNet.DI)

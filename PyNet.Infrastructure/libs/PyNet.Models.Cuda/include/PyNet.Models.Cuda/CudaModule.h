@@ -5,6 +5,7 @@
 #include "PyNet.DI/ItemRegistrar.h"
 #include "CudaMatrix.h"
 #include "CudaVector.h"
+#include "CudaLogistic.h"
 
 using namespace PyNet::DI;
 
@@ -25,6 +26,11 @@ namespace PyNet::Models::Cuda {
 				.RegisterType<CudaVector>(InstanceMode::Unique))
 				.AsSelf()
 				.As<Vector>();
+
+			(*builder
+				.RegisterType<CudaLogistic>())
+				.As<Logistic>()
+				.As<Activation>();
 		}
 	};
 }

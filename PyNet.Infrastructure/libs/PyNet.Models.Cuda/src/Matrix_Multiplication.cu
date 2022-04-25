@@ -42,7 +42,7 @@ void internalMatrixMultiply(double* A, double* B, double* C, int Arows, int Acol
     cudaDeviceSynchronize();
 }
 
-void cuda_matrix_multiply(const vector<double>& A, const vector<double>& B, vector<double>& C, int Arows, int Acols, int Bcols) {
+void matrix_multiply(const vector<double>& A, const vector<double>& B, vector<double>& C, int Arows, int Acols, int Bcols) {
 
     CudaArray<double> d_A(A.size());
     CudaArray<double> d_B(B.size());

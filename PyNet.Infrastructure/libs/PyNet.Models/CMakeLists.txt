@@ -11,4 +11,5 @@ add_library(PyNet.Models STATIC
 	./include/PyNet.Models/Matrix.h
 	./src/Matrix.cpp
 	./include/PyNet.Models/Vector.h
-	./src/Vector.cpp)
+	./src/Vector.cpp
+	./include/PyNet.Models/Logistic.h)
