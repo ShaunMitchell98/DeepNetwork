@@ -10,16 +10,13 @@ namespace PyNet::Infrastructure::Layers {
 	private:
 
 		int _filterSize = 0;
+		unique_ptr<Matrix> _input;
 		shared_ptr<ReceptiveFieldProvider> _receptiveFieldProvider;
 		shared_ptr<MatrixPadder> _matrixPadder;
 
 		MaxPoolingLayer(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder) : _receptiveFieldProvider{ receptiveFieldProvider },
 			_matrixPadder{ matrixPadder } {}
 
-		double Maximum(const Matrix& input) const {
-
-			
-		}
 	public:
 
 		static auto factory(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder) {
@@ -32,19 +29,18 @@ namespace PyNet::Infrastructure::Layers {
 
 		unique_ptr<Matrix> Apply(unique_ptr<Matrix> input) override {
 
-			auto paddedMatrix = _matrixPadder->PadMatrix(*input, _filterSize);
+			_input.swap(input);
+			auto paddedMatrix = _matrixPadder->PadMatrix(*_input, _filterSize);
 
-			auto featureMap = input->Copy();
+			auto featureMap = _input->Copy();
+			
+			for(auto& element : *featureMap)
+			{
+				auto receptiveField = _receptiveFieldProvider->GetReceptiveField(*paddedMatrix, _filterSize);
 
-			for (auto row = 0; row < featureMap->GetRows(); row++) {
-				for (auto col = 0; col < featureMap->GetCols(); col++) {
+				auto values = receptiveField->GetCValues();
 
-					auto receptiveField = _receptiveFieldProvider->GetReceptiveField(*paddedMatrix, _filterSize);
-
-					auto values = receptiveField->GetCValues();
-
-					(*featureMap)(row, col) = *ranges::max_element(values);
-				}
+				element = *ranges::max_element(values);
 			}
 
 			return featureMap;

@@ -33,14 +33,22 @@ namespace PyNet::Models {
 			return Values.end();
 		}
 
+		auto begin() const noexcept {
+			return Values.cbegin();
+		}
+
+		auto end() const noexcept {
+			return Values.cend();
+		}
+
 		double& operator()(size_t row, size_t col);
 
 		const double& operator()(size_t row, size_t col) const;
 
 		void Initialise(size_t rows, size_t cols, bool generateWeights);
 
-		virtual int GetCols() const { return Cols; }
-		virtual int GetRows() const { return Rows; }
+		virtual size_t GetCols() const { return Cols; }
+		virtual size_t GetRows() const { return Rows; }
 
 		int GetSize() const { return GetCols() * GetRows(); }
 

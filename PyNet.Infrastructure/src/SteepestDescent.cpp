@@ -10,11 +10,6 @@ namespace PyNet::Infrastructure {
             return dynamic_cast<TrainableLayer*>(&layer);
         };
 
-        //auto trainableLayers = views::all(layers)
-        //    | views::filter([castOp](Layer& layer) {return castOp(layer); }) 
-        //    | views::transform([castOp](Layer& layer) {return castOp(layer); }) 
-        //    | views::reverse;
-
         for (auto layer : layers)
         {
             auto average_dLoss_dBias = layer->GetdLoss_dBiasSum() / _settings->BatchSize;

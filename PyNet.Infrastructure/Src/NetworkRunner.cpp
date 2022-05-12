@@ -10,7 +10,7 @@ namespace PyNet::Infrastructure {
 
 		unique_ptr<Matrix> output;
 
-		for (auto& layer : _pyNetwork->Layers) {
+		for (const auto& layer : _pyNetwork->Layers) {
 			output = layer->Apply(move(output));
 		}
 

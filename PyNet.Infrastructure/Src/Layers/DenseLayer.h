@@ -4,6 +4,7 @@
 #include "PyNet.DI/Context.h"
 #include "PyNet.Models/ILogger.h"
 #include "TrainableLayer.h"
+#include <numeric>
 #include <memory>
 
 using namespace std;
@@ -32,15 +33,7 @@ namespace PyNet::Infrastructure::Layers {
 
 		double dLoss_dBias(const Matrix& dLoss_dOutput) const {
 
-			auto dLoss_dBias = 0.0;
-
-			for (size_t row = 0; row < dLoss_dOutput.GetRows(); row++) {
-				for (size_t col = 0; col < dLoss_dOutput.GetCols(); col++) {
-					dLoss_dBias += dLoss_dOutput(row, col);
-				}
-			}
-
-			return dLoss_dBias;
+			return accumulate(dLoss_dOutput.begin(), dLoss_dOutput.end(), 0);
 		}
 
 	public:
