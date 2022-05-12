@@ -10,16 +10,16 @@
 
 using namespace std;
 
-__global__ void matrixLogisticKernel(double* A, double* B, int rows, int cols) {
+__global__ void matrixDotProductKernel(double* A, double* B, double* C, int rows, int cols) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     int j = blockIdx.y * blockDim.y + threadIdx.y;
 
     if (i < rows && j < cols) {
-        B[i * cols + j] = 1 / (1 + exp(-A[i * cols + j]));
+        A[i * cols + j] = A[i * cols + j] + B[i * cols + j];
     }
 }
 
-void internalMatrixLogistic(double* A, double* B, int rows, int cols) {
+void internalMatrixDotProduct(double* A, double* B, double* C, int rows, int cols) {
 
     // declare the number of blocks per grid and the number of threads per block
     // use 1 to 512 threads per block
@@ -35,18 +35,19 @@ void internalMatrixLogistic(double* A, double* B, int rows, int cols) {
         blocksPerGrid.y = static_cast<int>(ceil(double(cols) / double(threadsPerBlock.y)));
     }
 
-    matrixLogisticKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, rows, cols);
+    matrixDotProductKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, C, rows, cols);
     cudaDeviceSynchronize();
 }
 
-void matrix_logistic(const vector<double> A, vector<double>& B, int Arows, int Acols) {
+void matrix_dot_product(const vector<double> A, const vector<double>& B, vector<double>& C, int Arows, int Acols) {
 
     CudaArray<double> d_A(A.size());
     CudaArray<double> d_B(B.size());
+    CudaArray<double> d_C(C.size());
 
     d_A.set(A);
     d_B.set(B);
 
-    internalMatrixLogistic(d_A.getData(), d_B.getData(), Arows, Acols);
-    d_B.get(B.data(), B.size());
+    internalMatrixDotProduct(d_A.getData(), d_B.getData(), d_C.getData(), Arows, Acols);
+    d_C.get(C.data(), C.size());
 }

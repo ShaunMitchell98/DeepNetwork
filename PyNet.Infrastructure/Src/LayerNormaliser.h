@@ -16,22 +16,22 @@ public:
 
     LayerNormaliser(shared_ptr<ILogger> logger) : _logger(logger) {}
 
-	void NormaliseLayer(Vector& v) {
+	void NormaliseLayer(Matrix& mat) {
 
         _logger->LogLine("Normalising final layer");
-        _logger->LogMessage(v.ToString());
+        _logger->LogMatrix(mat);
 
         auto sum = 0.0;
 
-        for (auto i = 0; i < v.GetRows(); i++) {
-            sum += v[i];
+        for (auto& i : mat) {
+            sum += i;
         }
 
-        for (auto i = 0; i < v.GetRows(); i++) {
-            v[i] = v[i] / sum;
+        for (auto& i : mat) {
+            i = i / sum;
         }
 
         _logger->LogLine("Final layer after normalisation: ");
-        _logger->LogMessage(v.ToString());
+        _logger->LogMatrix(mat);
 	}
 };

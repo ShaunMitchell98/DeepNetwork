@@ -11,8 +11,17 @@ class PyNetwork:
         self.lib.PyNetwork_Initialise.argtypes = [ctypes.c_bool, ctypes.c_bool]
         self.lib.PyNetwork_Initialise.restype = ctypes.c_void_p
 
-        self.lib.PyNetwork_AddLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_double]
-        self.lib.PyNetwork_AddLayer.restype = ctypes.c_void_p
+        self.lib.PyNetwork_AddInputLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
+
+        self.lib.PyNetwork_AddDenseLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
+        self.lib.PyNetwork_AddDenseLayer.restype = ctypes.c_void_p
+
+        self.lib.PyNetwork_AddConvolutionLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
+        self.lib.PyNetwork_AddConvolutionLayer.restype = ctypes.c_void_p
+
+        self.lib.PyNetwork_AddMaxPoolingLayer.argtypes = [ctypes.c_void_p, ctypes.c_int]
+
+        self.lib.PyNetwork_AddDropoutLayer.argtypes = [ctypes.c_void_p, ctypes.c_double, ctypes.c_int, ctypes.c_int]
 
         self.lib.PyNetwork_Run.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double)]
         self.lib.PyNetwork_Run.restype = ctypes.POINTER(ctypes.c_double)
@@ -23,8 +32,6 @@ class PyNetwork:
                                              ctypes.c_double,
                                              ctypes.c_double,
                                              ctypes.c_int]
-
-        self.lib.PyNetwork_Train.restype = ctypes.POINTER(ctypes.c_double)
 
         self.lib.PyNetwork_SetVariableLearning.argtypes = [ctypes.c_void_p, ctypes.c_double, ctypes.c_double,
                                                            ctypes.c_double]
@@ -38,9 +45,23 @@ class PyNetwork:
         self.obj = self.lib.PyNetwork_Initialise(log, cudaEnabled)
         self.outputNumber = 0
 
-    def add_layer(self, count: int, activationFunctionType: int, dropoutRate: float):
-        self.lib.PyNetwork_AddLayer(self.obj, count, activationFunctionType, dropoutRate)
+    def add_input_layer(self, rows: int, cols: int):
+        self.lib.PyNetwork_AddInputLayer(self.obj, rows, cols)
+        self.outputNumber = rows
+
+    def add_dense_layer(self, count: int, activationFunctionType: int):
+        self.lib.PyNetwork_AddDenseLayer(self.obj, count, activationFunctionType)
         self.outputNumber = count
+
+    def add_convolution_layer(self, filterSize: int, activationFunctionType: int):
+        self.lib.PyNetwork_AddDenseLayer(self.obj, filterSize, activationFunctionType)
+        self.outputNumber = filterSize
+
+    def add_max_pooling_layer(self, filterSize: int):
+        self.lib.PyNetwork_AddMaxPoolingLayer(filterSize)
+
+    def add_dropout_layer(self, rate: float, rows: int, cols: int):
+        self.lib.PyNetwork_AddDropoutLayer(self.obj, rate, rows, cols)
 
     def run(self, input_layer: np.ndarray) -> np.ndarray:
         results = self.lib.PyNetwork_Run(self.obj, input_layer.ctypes.data_as(ctypes.POINTER(ctypes.c_double)))
@@ -65,9 +86,8 @@ class PyNetwork:
 
         expected_arr_ptr = convert_numpy_array_to_2d_double_array(expected_arrays)
 
-        errors = self.lib.PyNetwork_Train(self.obj, input_arr_ptr, expected_arr_ptr, input_layers.shape[0], batch_size,
+        self.lib.PyNetwork_Train(self.obj, input_arr_ptr, expected_arr_ptr, input_layers.shape[0], batch_size,
                                           learning_rate, momentum, epochs)
-        return np.ctypeslib.as_array(errors, shape=(input_layers.shape[0],))
 
     def SetVariableLearning(self, errorThreshold: float, lrDecrease: float, lrIncrease: float):
         self.lib.PyNetwork_SetVariableLearning(self.obj, errorThreshold, lrDecrease, lrIncrease)

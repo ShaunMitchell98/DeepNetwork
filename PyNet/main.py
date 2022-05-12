@@ -18,7 +18,7 @@ test_images = test_images / 255.0
 batch_sizes: list[int] = [1]
 learning_rates: list[float] = [0.05]
 momenta: list[float] = [0.7]
-epochs: list[int] = [3]
+epochs: list[int] = [1]
 numbers: list[int] = [20000]
 dropoutRates: list[float] = [0.9]
 
@@ -31,13 +31,16 @@ for learning_rate in learning_rates:
 
                         network = PyNetwork(False, True)
                         network.SetVariableLearning(0.04, 0.7, 1.05)
-                        network.add_layer(784, ActivationFunctionType.LOGISTIC, 0.8)
-                        network.add_layer(500, ActivationFunctionType.LOGISTIC, dropoutRate)
-                        network.add_layer(129, ActivationFunctionType.LOGISTIC, dropoutRate)
-                        network.add_layer(10, ActivationFunctionType.LOGISTIC, dropoutRate)
+                        network.add_input_layer(784, 1)
+                        network.add_dropout_layer(0.8, 784, 1)
+                        network.add_dense_layer(500, ActivationFunctionType.LOGISTIC)
+                        network.add_dropout_layer(dropoutRate, 500, 1)
+                        network.add_dense_layer(129, ActivationFunctionType.LOGISTIC)
+                        network.add_dropout_layer(dropoutRate, 129, 1)
+                        network.add_dense_layer(10, ActivationFunctionType.LOGISTIC)
 
                         start = timeit.default_timer()
-                        errors = network.train(train_images[1:number], train_labels[1:number], 10, batch_size,
+                        network.train(train_images[1:number], train_labels[1:number], 10, batch_size,
                                                learning_rate,
                                                epoch,
                                                momentum)

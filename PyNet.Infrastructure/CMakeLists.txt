@@ -41,8 +41,6 @@ add_library(PyNet.Infrastructure SHARED
 	./src/AdjustmentCalculator.cpp 
 	./src/InfrastructureModule.h
 	./src/Intermediary.h
-	./src/LayerPropagator.h
-	./src/LayerPropagator.cpp 
 	./src/Logger.h
 	./src/Logger.cpp 
 	./src/SteepestDescent.h
@@ -67,8 +65,20 @@ add_library(PyNet.Infrastructure SHARED
 	./src/Xml_Functions.cpp
 	./src/BernoulliGenerator.h
 	./src/BernoulliGenerator.cpp
-	./src/DropoutRunner.h
-	./src/DropoutRunner.cpp
+	./src/Layers/Layer.h
+	./src/Layers/DenseLayer.h
+	./src/Layers/ConvolutionalLayer.h
+	./src/Layers/DropoutLayer.h
+	./src/Layers/LayerModule.h
+	./src/Layers/MaxPoolingLayer.h
+	./src/Layers/TrainableLayer.h
+	./src/ReceptiveFieldProvider.h
+	./src/MatrixPadder.h
+	./src/Activations/Activation.h
+	./src/Activations/Logistic.h
+	./src/Activations/Relu.h
+	./src/Activations/ActivationModule.h
+	./src/LayerNormaliser.h
 )
 
 # 3rd party libs

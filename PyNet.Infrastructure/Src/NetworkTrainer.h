@@ -10,6 +10,7 @@
 #include "PyNetwork.h"
 #include "PyNet.Models/Loss.h"
 #include "VariableLearningSettings.h"
+#include "Settings.h"
 #include "Headers.h"
 
 using namespace PyNet::DI;
@@ -31,23 +32,24 @@ namespace PyNet::Infrastructure {
 		shared_ptr<PyNetwork> _pyNetwork;
 		shared_ptr<Loss> _loss;
 		unique_ptr<VariableLearningSettings> _vlSettings;
+		shared_ptr<Settings> _settings;
 
 		NetworkTrainer(shared_ptr<AdjustmentCalculator> adjustmentCalculator, shared_ptr<Context> context,
 			shared_ptr<NetworkRunner> networkRunner, shared_ptr<GradientCalculator> gradientCalculator,
 			shared_ptr<TrainingAlgorithm> trainingAlgirithm, shared_ptr<ILogger> logger, shared_ptr<PyNetwork> pyNetwork,
-			shared_ptr<Loss> loss) : _adjustmentCalculator(adjustmentCalculator),
+			shared_ptr<Loss> loss, shared_ptr<Settings> settings) : _adjustmentCalculator(adjustmentCalculator),
 		_context(context), _networkRunner(networkRunner), _gradientCalculator(gradientCalculator), _trainingAlgorithm(trainingAlgirithm),
-			_logger(logger), _pyNetwork(pyNetwork), _loss(loss) {}
+			_logger(logger), _pyNetwork(pyNetwork), _loss(loss), _settings(settings) {}
 
 	public:
 
 		static auto factory(shared_ptr<AdjustmentCalculator> adjustmentCalculator, shared_ptr<Context> context,
 			shared_ptr<NetworkRunner> networkRunner, shared_ptr<GradientCalculator> gradientCalculator, shared_ptr<TrainingAlgorithm> trainingAlgorithm,
-			shared_ptr<ILogger> logger, shared_ptr<PyNetwork> pyNetwork, shared_ptr<Loss> loss) {
-			return new NetworkTrainer(adjustmentCalculator, context, networkRunner, gradientCalculator, trainingAlgorithm, logger, pyNetwork, loss);
+			shared_ptr<ILogger> logger, shared_ptr<PyNetwork> pyNetwork, shared_ptr<Loss> loss, shared_ptr<Settings> settings) {
+			return new NetworkTrainer(adjustmentCalculator, context, networkRunner, gradientCalculator, trainingAlgorithm, logger, pyNetwork, loss, settings);
 		}
 
-		double* TrainNetwork(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,
+		void TrainNetwork(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,
 			double momentum, int epochs);
 
 		void SetVLSettings(double errorThreshold, double lrDecrease, double lrIncrease);

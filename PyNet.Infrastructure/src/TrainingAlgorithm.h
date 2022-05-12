@@ -1,15 +1,16 @@
 #pragma once
 
 #include <memory>
-#include "PyNet.Models/Vector.h"
+#include "Layers/TrainableLayer.h"
 
 using namespace PyNet::Models;
+using namespace PyNet::Infrastructure::Layers;
 using namespace std;
 
 class TrainingAlgorithm
 {
 public:
-	virtual void UpdateWeights(vector<unique_ptr<Matrix>>& weightMatrices, vector<unique_ptr<Vector>>& biases, double learningRate, bool reverse = false) = 0;
+	virtual void UpdateWeights(vector<TrainableLayer*> layers, double learningRate, bool reverse = false) const = 0;
 	virtual ~TrainingAlgorithm() = default;
 };
 

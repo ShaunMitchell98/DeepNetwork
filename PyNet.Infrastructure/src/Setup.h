@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 #include "InfrastructureModule.h"
+#include "Layers/LayerModule.h"
+#include "Activations/ActivationModule.h"
 #include "PyNet.Models.Cpu/CpuModule.h"
 #include "Headers.h"
 
@@ -32,6 +34,12 @@ namespace PyNet::Infrastructure {
 
 		auto infrastructureModule = make_unique<InfrastructureModule>(settings);
 		infrastructureModule->Load(*builder);
+
+		auto layerModule = make_unique<Layers::LayerModule>();
+		layerModule->Load(*builder);
+
+		auto activationModule = make_unique<ActivationModule>();
+		activationModule->Load(*builder);
 
 		return builder->Build();
 	}

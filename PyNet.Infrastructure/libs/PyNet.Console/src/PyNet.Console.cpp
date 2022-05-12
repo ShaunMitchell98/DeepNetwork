@@ -4,10 +4,11 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "PyNet.Models/Activation.h"
+#include "Activations/Activation.h"
 
 using namespace std;
 using namespace PyNet::Infrastructure;
+using namespace PyNet::Infrastructure::Activations;
 
 void GetData(string folderPath, string fileName, vector<double*>& inputs) {
 
@@ -86,11 +87,14 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 
 int main()
 {
-	auto intermediary = PyNetwork_Initialise(false, false);
-	PyNetwork_AddLayer(intermediary, 784, PyNet::Models::ActivationFunctionType::Logistic, 0.8);
-	PyNetwork_AddLayer(intermediary, 500, PyNet::Models::ActivationFunctionType::Logistic, 0.5);
-	PyNetwork_AddLayer(intermediary, 129, PyNet::Models::ActivationFunctionType::Logistic, 0.5);
-	PyNetwork_AddLayer(intermediary, 10, PyNet::Models::ActivationFunctionType::Logistic, 0.5);
+	auto intermediary = PyNetwork_Initialise(false, true);
+	PyNetwork_AddInputLayer(intermediary, 784, 1);
+	PyNetwork_AddDropoutLayer(intermediary, 0.8, 784, 1);
+	PyNetwork_AddDenseLayer(intermediary, 500, ActivationFunctionType::Logistic);
+	PyNetwork_AddDropoutLayer(intermediary, 0.8, 500, 1);
+	PyNetwork_AddDenseLayer(intermediary, 129, ActivationFunctionType::Logistic);
+	PyNetwork_AddDropoutLayer(intermediary, 0.8, 129, 1);
+	PyNetwork_AddDenseLayer(intermediary, 10, ActivationFunctionType::Logistic);
 	PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
 
 

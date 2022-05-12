@@ -2,13 +2,13 @@
 
 namespace PyNet::Infrastructure {
 
-	double QuadraticLoss::CalculateLoss(Models::Vector& expected, Models::Vector& actual) {
+	double QuadraticLoss::CalculateLoss(Matrix& expected, Matrix& actual) {
 
 		auto difference = expected - actual;
 		return 0.5 * (*difference | *difference);
 	}
 
-	std::unique_ptr<Models::Vector> QuadraticLoss::CalculateDerivative(Models::Vector& expected, Models::Vector& actual) {
+	unique_ptr<Matrix> QuadraticLoss::CalculateDerivative(Matrix& expected, Matrix& actual) {
 		return actual - expected;
 	}
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include <compare>
 #include <memory>
-#include "LayerPropagator.h"
 #include "Settings.h"
 #include "PyNet.DI/Module.h"
 #include "QuadraticLoss.h"
@@ -31,7 +30,7 @@ namespace PyNet::Infrastructure {
 
 		InfrastructureModule(shared_ptr<Settings> settings) : _settings{ settings } {}
 
-		void Load(ContextBuilder& builder) override {
+		void Load(const ContextBuilder& builder) const override {
 				
 			builder.RegisterType<QuadraticLoss>()->As<Loss>();
 			
@@ -40,8 +39,6 @@ namespace PyNet::Infrastructure {
 			builder.RegisterInstance<Settings>(_settings, InstanceMode::Shared);
 
 			builder.RegisterType<Logger>()->As<ILogger>();
-				
-			builder.RegisterType<LayerPropagator>()->AsSelf();
 				
 			builder.RegisterType<AdjustmentCalculator>()->AsSelf();
 

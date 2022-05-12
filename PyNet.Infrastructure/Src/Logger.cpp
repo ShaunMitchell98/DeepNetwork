@@ -30,9 +30,9 @@ namespace PyNet::Infrastructure {
 		LogMessageWithoutDate("\n");
 	}
 
-	void Logger::LogVector(const Vector& v) const {
+	void Logger::LogMatrix(const Matrix& m) const {
 		if (_enabled) {
-			LogMessage(v.ToString());
+			LogMessage(m.ToString());
 		}
 	}
 }

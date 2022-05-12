@@ -100,13 +100,15 @@ namespace PyNet::Models {
 			text += "\n";
 		}
 
-		return move(text);
+		return text;
 	}
 
 	void Matrix::Set(size_t rows, size_t cols, const double* values) {
 
 		Rows = rows;
 		Cols = cols;
+
+		Values.clear();
 
 		for (size_t i = 0; i < Rows; i++) {
 			for (size_t j = 0; j < Cols; j++) {

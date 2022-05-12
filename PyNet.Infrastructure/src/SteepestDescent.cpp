@@ -1,28 +1,38 @@
 #include "SteepestDescent.h"
-#include <algorithm>
+#include "Layers/TrainableLayer.h"
+#include <ranges>
 
 namespace PyNet::Infrastructure {
 
-    void SteepestDescent::UpdateWeights(std::vector<std::unique_ptr<Matrix>>& weightMatrices, vector<unique_ptr<Vector>>& biases, double learningRate, bool reverse) {
+    void SteepestDescent::UpdateWeights(vector<TrainableLayer*> layers, double learningRate, bool reverse) const {
 
-        auto biasAdjustmentVector = _context->GetUnique<Vector>();
+        auto castOp = [](Layer& layer) {
+            return dynamic_cast<TrainableLayer*>(&layer);
+        };
 
-        for (int index = weightMatrices.size() - 1; index >= 0; index--) {
+        //auto trainableLayers = views::all(layers)
+        //    | views::filter([castOp](Layer& layer) {return castOp(layer); }) 
+        //    | views::transform([castOp](Layer& layer) {return castOp(layer); }) 
+        //    | views::reverse;
 
-            auto biasAdjustmentMatrix = *_adjustmentCalculator->GetBiasAdjustment(index) * learningRate;
-            biasAdjustmentVector->Set(biasAdjustmentMatrix->GetRows(), biasAdjustmentMatrix->Values.data());
+        for (auto layer : layers)
+        {
+            auto average_dLoss_dBias = layer->GetdLoss_dBiasSum() / _settings->BatchSize;
+            auto biasAdjustment = average_dLoss_dBias * learningRate;
+
+            auto average_dLoss_dWeight = layer->GetdLoss_dWeightSum() / _settings->BatchSize;
+            auto weightAdjustment = *average_dLoss_dWeight * learningRate;
 
             if (reverse) {
-                weightMatrices[index] = *weightMatrices[index] + *(*_adjustmentCalculator->GetWeightAdjustment(index) * learningRate);
-                biases[index] = *biases[index] + *biasAdjustmentVector;
+                
+                layer->GetWeights() = *(layer->GetWeights() + *weightAdjustment);
+                layer->GetBias() = layer->GetBias() + biasAdjustment;
             }
             else {
-                weightMatrices[index] = *weightMatrices[index] - *(*_adjustmentCalculator->GetWeightAdjustment(index) * learningRate);
-                biases[index] = *biases[index] - *biasAdjustmentVector;
+                layer->GetWeights() = *(layer->GetWeights() - *weightAdjustment);
+                layer->GetBias() = layer->GetBias() - biasAdjustment;
             }
         }
-
-        _adjustmentCalculator->SetNewBatch(true);
     }
 }
 

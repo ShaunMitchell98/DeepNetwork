@@ -4,8 +4,6 @@
 #include "PyNet.DI/ContextBuilder.h"
 #include "PyNet.DI/ItemRegistrar.h"
 #include "CudaMatrix.h"
-#include "CudaVector.h"
-#include "CudaLogistic.h"
 
 using namespace PyNet::DI;
 
@@ -14,23 +12,12 @@ namespace PyNet::Models::Cuda {
 	class __declspec(dllexport) CudaModule : public Module {
 
 	public:
-		void Load(ContextBuilder& builder) override {
+		void Load(const ContextBuilder& builder) const override {
 
 			(*builder
 				.RegisterType<CudaMatrix>(InstanceMode::Unique))
 				.AsSelf()
 				.As<Matrix>();
-
-
-			(*builder
-				.RegisterType<CudaVector>(InstanceMode::Unique))
-				.AsSelf()
-				.As<Vector>();
-
-			(*builder
-				.RegisterType<CudaLogistic>())
-				.As<Logistic>()
-				.As<Activation>();
 		}
 	};
 }

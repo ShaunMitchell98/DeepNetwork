@@ -3,18 +3,18 @@
 #include "PyNet.Models/Loss.h"
 #include "Headers.h"
 
+using namespace PyNet::Models;
+
 namespace PyNet::Infrastructure {
-	class EXPORT QuadraticLoss : public Models::Loss {
+	class EXPORT QuadraticLoss : public Loss {
 	public:
 
 		static auto factory() {
 			return new QuadraticLoss();
 		}
 
-		typedef PyNet::Models::Loss base;
-
-		double CalculateLoss(Models::Vector& expected, Models::Vector& actual) override;
-		std::unique_ptr<Models::Vector> CalculateDerivative(Models::Vector& expected, Models::Vector& actual) override;
+		double CalculateLoss(Matrix& expected, Matrix& actual) override;
+		unique_ptr<Matrix> CalculateDerivative(Matrix& expected, Matrix& actual) override;
 		~QuadraticLoss() override = default;
 	};
 }

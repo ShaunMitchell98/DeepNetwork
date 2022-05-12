@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string_view>
-#include "PyNet.Models/Vector.h"
+#include "PyNet.Models/Matrix.h"
 
 namespace PyNet::Models {
 
@@ -19,6 +19,6 @@ namespace PyNet::Models {
 		virtual void LogMessageWithoutDate(std::string_view message) const = 0;
 		virtual void LogLine(std::string_view message) const = 0;
 		virtual ~ILogger() = default;
-		virtual void LogVector(const PyNet::Models::Vector& v) const = 0;
+		virtual void LogMatrix(const PyNet::Models::Matrix& m) const = 0;
 	};
 }

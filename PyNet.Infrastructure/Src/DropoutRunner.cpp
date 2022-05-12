@@ -9,7 +9,7 @@ namespace PyNet::Infrastructure {
 			droppedVector = _bernoulliGenerator->GetBernoulliVector(input);
 		}
 		else {
-			droppedVector = input.Copy();
+			droppedVector = input.CopyAsVector();
 			droppedVector->SetValue(input.GetDropoutRate());
 		}
 

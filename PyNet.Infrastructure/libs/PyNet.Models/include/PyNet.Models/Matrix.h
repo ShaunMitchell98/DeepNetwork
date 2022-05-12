@@ -4,6 +4,7 @@
 #include <memory>
 #include <cstdlib> 
 #include <exception>
+#include <functional>
 
 using namespace std;
 
@@ -24,6 +25,13 @@ namespace PyNet::Models {
 
 	public:
 		vector<double> Values;
+
+		auto begin() noexcept {
+			return Values.begin();
+		}
+		auto end() noexcept {
+			return Values.end();
+		}
 
 		double& operator()(size_t row, size_t col);
 
@@ -47,7 +55,7 @@ namespace PyNet::Models {
 		}
 
 		unique_ptr<Matrix> operator/(const double d) const {
-			return move((*this) * (1 / d));
+			return (*this) * (1 / d);
 		}
 
 		void Set(size_t rows, size_t cols, const double* values);
@@ -61,14 +69,44 @@ namespace PyNet::Models {
 			return Values;
 		}
 
+		double operator|(const Matrix& m) const {
+			if (m.GetRows() != GetRows() || m.GetCols() != GetCols()) {
+				throw "Cannot calculate dot product for matrices with different dimensions.";
+			}
+
+			double result = 0;
+
+			for (auto i = 0; i < m.GetRows(); i++) {
+				for (auto j = 0; j < m.GetCols(); j++) {
+					result += (*this)(i, j) * m(i, j);
+				}
+			}
+
+			return result;
+		}
+
+		unique_ptr<Matrix> operator~() const {
+			auto m = this->Copy();
+			m->Set(GetCols(), GetRows(), ((Matrix*)this)->GetValues().data());
+			return m;
+		}
+
 		//Virtual Methods
 
+		//Performs matrix multiplication between two matrices;
 		virtual unique_ptr<Matrix> operator*(const Matrix& m) const = 0;
 		virtual unique_ptr<Matrix> operator*(const double d) const = 0;
+		virtual unique_ptr<Matrix> operator+(const double d) const = 0;
 		virtual unique_ptr<Matrix> operator+(const Matrix& m) const = 0;
 		virtual unique_ptr<Matrix> operator-(const Matrix& m) const = 0;
-		virtual unique_ptr<Matrix> operator~() const = 0;
+		virtual unique_ptr<Matrix> operator-() const = 0;
+		virtual unique_ptr<Matrix> operator^(const Matrix& m) const = 0;
+		virtual unique_ptr<Matrix> Reciprocal() const = 0;
+		virtual unique_ptr<Matrix> Exp() const = 0;
 		virtual void operator+=(const Matrix& m) = 0;
 		virtual ~Matrix() = default;
+		virtual unique_ptr<Matrix> Copy() const = 0;
+		virtual unique_ptr<Matrix> Max(double input) const = 0;
+		virtual unique_ptr<Matrix> Step() const = 0;
 	};
 }

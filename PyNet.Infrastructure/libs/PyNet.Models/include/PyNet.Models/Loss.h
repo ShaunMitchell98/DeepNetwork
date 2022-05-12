@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Vector.h"
+#include "Matrix.h"
 
 namespace PyNet::Models {
 
 	class Loss {
 	public:
-		virtual	double CalculateLoss(Vector& expected, Vector& actual) = 0;
-		virtual std::unique_ptr<Vector> CalculateDerivative(Vector& expected, Vector& actual) = 0;
+		virtual	double CalculateLoss(Matrix& expected, Matrix& actual) = 0;
+		virtual std::unique_ptr<Matrix> CalculateDerivative(Matrix& expected, Matrix& actual) = 0;
 		virtual ~Loss() = default;
 	};
 }

@@ -3,22 +3,22 @@
 
 namespace PyNet::Infrastructure {
 
-	unique_ptr<Vector> BernoulliGenerator::GetBernoulliVector(const Vector& input) const {
+	unique_ptr<Matrix> BernoulliGenerator::GetBernoulliVector(const Matrix& input, double probability) const {
 
 		default_random_engine gen;
-		bernoulli_distribution dist(input.GetDropoutRate());
+		bernoulli_distribution dist(probability);
 
 		auto output = input.Copy();
 
-		for (auto i = 0; i < input.GetRows(); i++) {
+		for (auto& m : *output) {
 			if (dist(gen)) {
-				(*output)[i] = 1;
+				m = 1;
 			}
 			else {
-				(*output)[i] = 0;
+				m = 0;
 			}
 		}
 
-		return move(output);
+		return output;
 	}
 }

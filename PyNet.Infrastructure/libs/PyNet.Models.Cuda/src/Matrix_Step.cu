@@ -10,16 +10,16 @@
 
 using namespace std;
 
-__global__ void matrixLogisticDerivativeKernel(double* A, double* B, int rows, int cols) {
+__global__ void matrixStepKernel(double* A, double* B, int rows, int cols) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     int j = blockIdx.y * blockDim.y + threadIdx.y;
 
     if (i < rows && j < cols) {
-        B[i * cols + j] = exp(A[i * cols + j]) / ((1 + exp(A[i * cols + j] * (1 + exp(A[i * cols + j])))));
+        B[i * cols + j] = A[i * cols + j] <= 0 ? 0 : 1;
     }
 }
 
-void internalMatrixLogisticDerivative(double* A, double* B, int rows, int cols) {
+void internalMatrixStep(double* A, double* B, int rows, int cols) {
 
     // declare the number of blocks per grid and the number of threads per block
     // use 1 to 512 threads per block
@@ -35,18 +35,17 @@ void internalMatrixLogisticDerivative(double* A, double* B, int rows, int cols) 
         blocksPerGrid.y = static_cast<int>(ceil(double(cols) / double(threadsPerBlock.y)));
     }
 
-    matrixLogisticDerivativeKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, rows, cols);
+    matrixStepKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, rows, cols);
     cudaDeviceSynchronize();
 }
 
-void matrix_logistic_derivative(const vector<double> A, vector<double>& B, int Arows, int Acols) {
+void matrix_step(const vector<double> A, vector<double>& B, int Arows, int Acols) {
 
     CudaArray<double> d_A(A.size());
     CudaArray<double> d_B(B.size());
 
     d_A.set(A);
-    d_B.set(B);
 
-    internalMatrixLogisticDerivative(d_A.getData(), d_B.getData(), Arows, Acols);
+    internalMatrixStep(d_A.getData(), d_B.getData(), Arows, Acols);
     d_B.get(B.data(), B.size());
 }

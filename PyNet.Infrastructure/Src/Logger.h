@@ -26,7 +26,7 @@ namespace PyNet::Infrastructure {
 		void LogMessage(string_view message) const override;
 		void LogMessageWithoutDate(string_view message) const override;
 		void LogLine(string_view message) const override;
-		void LogVector(const Vector& v) const override;
+		void LogMatrix(const Matrix& m) const override;
 		~Logger() override = default;
 	};
 }

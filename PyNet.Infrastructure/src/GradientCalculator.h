@@ -3,11 +3,12 @@
 #include <vector>
 #include "PyNet.DI/Context.h"
 #include "AdjustmentCalculator.h"
-#include "PyNet.Models/ILogger.h"
+#include "Layers/TrainableLayer.h"
 
 using namespace std;
 using namespace PyNet::Models;
 using namespace PyNet::DI;
+using namespace PyNet::Infrastructure::Layers;
 
 namespace PyNet::Infrastructure {
 
@@ -15,22 +16,16 @@ namespace PyNet::Infrastructure {
 	private:
 		shared_ptr<Context> _context;
 		shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
-		shared_ptr<ILogger> _logger;
 
-		unique_ptr<Matrix> CalculateWeightMatrixGradient(const Matrix& layerAboveMatrix, const Vector& inputLayer, Vector& outputLayer,
-			Vector& dLoss_dLayerAbove);
-		double CalculateBiasGradient(const Matrix& layerAboveMatrix, const Vector& inputLayer, Vector& outputLayer, Vector& dLoss_dLayerAbove);
-
-		GradientCalculator(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator, shared_ptr<ILogger> logger) :
-			_context{ context }, _adjustmentCalculator{ adjustmentCalculator }, _logger{ logger }{}
+		GradientCalculator(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator) :
+			_context{ context }, _adjustmentCalculator{ adjustmentCalculator } {}
 
 	public:
 
-		static auto factory(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator, shared_ptr<ILogger> logger) {
-			return new GradientCalculator{ context, adjustmentCalculator, logger };
+		static auto factory(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator) {
+			return new GradientCalculator{ context, adjustmentCalculator };
 		}
 
-		void CalculateGradients(const vector<unique_ptr<Matrix>>& weightMatrices,
-			const vector<unique_ptr<Vector>>& layers, const Vector& expectedLayer, const Vector& lossDerivative);
+		void CalculateGradients(vector<TrainableLayer*> layers, Matrix& lossDerivative);
 	};
 }

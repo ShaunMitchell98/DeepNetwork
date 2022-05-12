@@ -1,29 +1,20 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "PyNet.Models/Vector.h"
-#include "PyNet.Models/Matrix.h"
+#include "Layers/Layer.h"
 
 using namespace std;
-using namespace PyNet::Models;
+using namespace PyNet::Infrastructure::Layers;
 
-struct PyNetwork
-{
-public:
-	vector<double> Losses = vector<double>();
-	vector<unique_ptr<Vector>> Layers = vector<unique_ptr<Vector>>();
-	vector<unique_ptr<Vector>> Biases = vector<unique_ptr<Vector>>();
-	vector<unique_ptr<Matrix>> Weights = vector<unique_ptr<Matrix>>();
+namespace PyNet::Infrastructure {
+	struct PyNetwork
+	{
+	public:
+		vector<unique_ptr<Layer>> Layers = vector<unique_ptr<Layer>>();
 
-	Vector& GetOutputLayer() {
-		return *Layers[Layers.size() - 1];
-	}
+		static auto factory() {
+			return new PyNetwork();
+		}
+	};
+}
 
-	double GetInputSize() const {
-		return Layers[0]->GetRows();
-	}
-
-	static auto factory() {
-		return new PyNetwork();
-	}
-};

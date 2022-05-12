@@ -50,7 +50,7 @@ namespace PyNet::DI {
         }
 
         template <class RequiredType>
-        unique_ptr<RequiredType> GetUnique()
+        unique_ptr<RequiredType> GetUnique() const
         {
             auto& item = _container->GetItem<RequiredType>();
 
@@ -60,11 +60,11 @@ namespace PyNet::DI {
             item.Marker = false;
 
             auto result = unique_ptr<RequiredType>(temp);
-            return move(result);
+            return result;
         }
 
         template <class RequiredType>
-        shared_ptr<RequiredType> GetShared()
+        shared_ptr<RequiredType> GetShared() const
         {
             auto& item = _container->GetItem<RequiredType>();
 

@@ -14,6 +14,9 @@ struct Settings {
 	/// <summary>
 	/// Determines whether logging messages should be outputted.
 	/// </summary>
-	bool LoggingEnabled;
-	RunMode RunMode;
+	bool LoggingEnabled = false;
+	RunMode RunMode = RunMode::Training;
+	bool NewBatch = true;
+	int BatchSize = 0;
+	double Momentum = 0;
 };
