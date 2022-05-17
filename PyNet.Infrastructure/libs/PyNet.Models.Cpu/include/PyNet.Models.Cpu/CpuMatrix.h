@@ -8,12 +8,7 @@ using namespace std;
 
 namespace PyNet::Models::Cpu {
 
-	class CpuMatrix
-#ifdef CPU_VECTOR
-		: public virtual Matrix
-#else 
-		: public Matrix
-#endif
+	class CpuMatrix : public Matrix
 	{
 	public:
 
