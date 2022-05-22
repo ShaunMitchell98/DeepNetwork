@@ -22,6 +22,7 @@ include_directories( ./include
 	./libs/PyNet.Models/include
 	./libs/PyNet.Models.Cpu/include
 	./libs/PyNet.DI/include
+	./build/gtest/src/gtest/googletest/include
 	 ./tests
 	 ./src
 	./libs/di/src
@@ -93,6 +94,7 @@ add_subdirectory( ./libs/PyNet.Models )
 add_subdirectory( ./libs/PyNet.Models.Cpu )
 add_subdirectory( ./libs/PyNet.DI)
 add_subdirectory( ./libs/PyNet.Console )
+add_subdirectory( ./libs/PyNet.Models.Cpu/tests )
 
 
 IF (CUDAToolkit_FOUND)
@@ -113,3 +115,5 @@ target_link_libraries(PyNet.Console PyNet.Infrastructure )
 
 #target_link_libraries(PyNet.Infrastructure.Tests PyNet.Infrastructure)
 #link_directories("C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/lib/x64/Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib")
+#FIND_PACKAGE(GTest REQUIRED)
+#INCLUDE(GoogleTest)

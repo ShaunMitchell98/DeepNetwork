@@ -1,4 +1,7 @@
 #include "NetworkTrainer.h"
+#include <ranges>
+
+using namespace std::views;
 
 namespace PyNet::Infrastructure {
     
@@ -41,6 +44,12 @@ namespace PyNet::Infrastructure {
                     _gradientCalculator->CalculateGradients(tempLayers, *lossDerivative);
 
                     if (batchNumber == batchSize) {
+
+                        auto tempTrainableLayers = all(tempLayers)
+                            | filter([](Layer* layer) { return dynamic_cast<TrainableLayer*>(layer); })
+                            | transform([](Layer* layer) { return dynamic_cast<TrainableLayer*>(layer); });
+
+                        trainableLayers = vector<TrainableLayer*>(tempTrainableLayers.begin(), tempTrainableLayers.end());
 
                         _logger->LogLine("The learning rate is: " + to_string(learningRate));
                         _trainingAlgorithm->UpdateWeights(trainableLayers, learningRate, false);

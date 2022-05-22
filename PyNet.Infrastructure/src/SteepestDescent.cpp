@@ -1,14 +1,9 @@
 #include "SteepestDescent.h"
 #include "Layers/TrainableLayer.h"
-#include <ranges>
 
 namespace PyNet::Infrastructure {
 
     void SteepestDescent::UpdateWeights(vector<TrainableLayer*> layers, double learningRate, bool reverse) const {
-
-        auto castOp = [](Layer& layer) {
-            return dynamic_cast<TrainableLayer*>(&layer);
-        };
 
         for (auto layer : layers)
         {
