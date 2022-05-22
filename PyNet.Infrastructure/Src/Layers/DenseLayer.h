@@ -15,7 +15,6 @@ namespace PyNet::Infrastructure::Layers {
 	class DenseLayer : public TrainableLayer {
 	private:
 		unique_ptr<Matrix> _weights;
-		unique_ptr<Matrix> _input;
 		unique_ptr<Matrix> _dLoss_dWeightSum;
 		double _bias = 0.01;
 		double _dLoss_dBiasSum;
@@ -25,6 +24,7 @@ namespace PyNet::Infrastructure::Layers {
 			_weights = context->GetUnique<Matrix>();
 			_dLoss_dWeightSum = context->GetUnique<Matrix>();
 			_adjustmentCalculator = adjustmentCalculator;
+			Input = context->GetUnique<Matrix>();
 		}
 
 		unique_ptr<Matrix> dLoss_dWeight(const Matrix& inputLayer, const Matrix& dLoss_dOutput) const {
@@ -33,7 +33,7 @@ namespace PyNet::Infrastructure::Layers {
 
 		double dLoss_dBias(const Matrix& dLoss_dOutput) const {
 
-			return accumulate(dLoss_dOutput.begin(), dLoss_dOutput.end(), 0);
+			return accumulate(dLoss_dOutput.begin(), dLoss_dOutput.end(), 0.0);
 		}
 
 	public:
@@ -42,28 +42,21 @@ namespace PyNet::Infrastructure::Layers {
 			return new DenseLayer(context, adjustmentCalculator);
 		}
 
-		size_t GetRows() const override {
-			return _weights->GetCols();
-		}
-
-		size_t GetCols() const override {
-			return 1;
-		}
-
 		void Initialise(size_t rows, size_t cols) {
 			_weights->Initialise(rows, cols, true);
 			_dLoss_dBiasSum = 0;
 			_dLoss_dWeightSum->Initialise(rows, cols, false);
+			Input->Initialise(cols, 1, false);
 		}
 
-		unique_ptr<Matrix> Apply(unique_ptr<Matrix> input) override {
+		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override {
 
-			_input.swap(input);
-			auto outputLayer = *_weights * *_input;
+			Input = input;
+			Output = *_weights * *Input;
 
-			*outputLayer = *(* outputLayer + _bias);
+			*Output = *(* Output + _bias);
 
-			return outputLayer;
+			return Output;
 		}
 
 		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override {
@@ -73,7 +66,7 @@ namespace PyNet::Infrastructure::Layers {
 		void UpdateAdjustments(const Matrix& dLoss_dOutput) override {
 
 			_dLoss_dBiasSum = _adjustmentCalculator->CalculateBiasAdjustment(dLoss_dBias(dLoss_dOutput), _dLoss_dBiasSum);
-			_adjustmentCalculator->CalculateWeightAdjustment(*dLoss_dWeight(*_input, dLoss_dOutput), *_dLoss_dWeightSum);
+			_adjustmentCalculator->CalculateWeightAdjustment(*dLoss_dWeight(*Input, dLoss_dOutput), *_dLoss_dWeightSum);
 		}
 
 		Matrix& GetdLoss_dWeightSum() const override {

@@ -52,7 +52,10 @@ namespace PyNet::Models {
 
 		int GetSize() const { return GetCols() * GetRows(); }
 
-		double* GetAddress(size_t row, size_t col) { return &Values[row * Cols + col]; }
+		const double* GetAddress(size_t row, size_t col) inline const 
+		{
+			return &Values[(row-1) * Cols + (col-1)];
+		}
 
 		string ToString() const;
 
@@ -84,9 +87,9 @@ namespace PyNet::Models {
 
 			double result = 0;
 
-			for (auto i = 0; i < m.GetRows(); i++) {
-				for (auto j = 0; j < m.GetCols(); j++) {
-					result += (*this)(i, j) * m(i, j);
+			for (auto row = 1; row <= m.GetRows(); row++) {
+				for (auto col = 1; col <= m.GetCols(); col++) {
+					result += (*this)(row, col) * m(row, col);
 				}
 			}
 

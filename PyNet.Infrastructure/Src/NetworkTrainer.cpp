@@ -1,7 +1,4 @@
 #include "NetworkTrainer.h"
-#include <ranges>
-
-using namespace std::views;
 
 namespace PyNet::Infrastructure {
     
@@ -10,7 +7,7 @@ namespace PyNet::Infrastructure {
         auto currentIteration = 1;
         auto totalLossForCurrentEpoch = 0.0;
         auto learningRate = baseLearningRate;
-        unique_ptr<Matrix> actualMatrix;
+        shared_ptr<Matrix> actualMatrix;
         vector<TrainableLayer*> trainableLayers;
 
         auto expectedMatrix = _context->GetUnique<Matrix>();
@@ -33,26 +30,15 @@ namespace PyNet::Infrastructure {
                     totalLossForCurrentEpoch += loss;
                     _logger->LogLine("The loss is: " + to_string(loss));
 
-                    auto castOp = [](Layer* layer) {
-                        return dynamic_cast<TrainableLayer*>(layer);
-                    };
-
                     vector<Layer*> tempLayers;
 
                     for (auto& layer : _pyNetwork->Layers) {
                         tempLayers.push_back(layer.get());
                     }
 
-                    auto temp = views::all(tempLayers)
-                        | views::filter([castOp](Layer* layer) {return castOp(layer); }) 
-                        | views::transform([castOp](Layer* layer) {return castOp(layer); }) 
-                        | views::reverse;
-
-                    trainableLayers = vector<TrainableLayer*>(temp.begin(), temp.end());
-
                     auto lossDerivative = _loss->CalculateDerivative(*expectedMatrix, *actualMatrix);
 
-                    _gradientCalculator->CalculateGradients(trainableLayers, * lossDerivative);
+                    _gradientCalculator->CalculateGradients(tempLayers, *lossDerivative);
 
                     if (batchNumber == batchSize) {
 

@@ -9,6 +9,7 @@
 #include "Layers/DenseLayer.h"
 #include "Layers/ConvolutionalLayer.h"
 #include "Layers/MaxPoolingLayer.h"
+#include "Layers/FlattenLayer.h"
 #include "Layers/DropoutLayer.h"
 #include "Activations/Logistic.h"
 #include <memory>
@@ -59,6 +60,7 @@ namespace PyNet::Infrastructure {
 
 		if (activationFunctionType == ActivationFunctionType::Logistic) {
 			auto logisticLayer = context->GetUnique<Logistic>();
+			logisticLayer->Initialise(count, 1);
 			pyNetwork->Layers.push_back(move(logisticLayer));
 		}
 	}
@@ -93,7 +95,16 @@ namespace PyNet::Infrastructure {
 		pyNetwork->Layers.push_back(move(maxPoolingLayer));
 	}
 
-	EXPORT double* PyNetwork_Run(void* input, double* inputLayer) {
+	EXPORT void PyNetwork_AddFlattenLayer(void* input) {
+		auto intermediary = static_cast<Intermediary*>(input);
+		auto context = intermediary->GetContext();
+
+		auto pyNetwork = context->GetShared<PyNetwork>();
+		auto flattenLayer = context->GetUnique<FlattenLayer>();
+		pyNetwork->Layers.push_back(move(flattenLayer));
+	}
+
+	EXPORT const double* PyNetwork_Run(void* input, double* inputLayer) {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
@@ -101,7 +112,7 @@ namespace PyNet::Infrastructure {
 		settings->RunMode = RunMode::Running;
 		auto networkRunner = context->GetShared<NetworkRunner>();
 		auto output = networkRunner->Run(inputLayer);
-		return output.release()->GetAddress(0, 0);
+		return output->GetAddress(1, 1);
 	}
 
 	EXPORT void PyNetwork_SetVariableLearning(void* input, double errorThreshold, double lrDecrease, double lrIncrease) {

@@ -22,7 +22,9 @@ namespace PyNet::Infrastructure {
 
 		EXPORT void PyNetwork_AddMaxPoolingLayer(void* input, int filterSize);
 
-		EXPORT double* PyNetwork_Run(void* input, double* inputLayer);
+		EXPORT void PyNetwork_AddFlattenLayer(void* input);
+
+		EXPORT const double* PyNetwork_Run(void* input, double* inputLayer);
 
 		EXPORT void PyNetwork_SetVariableLearning(void* input, double errorThreshold, double lrDecrease, double lrIncrease);
 

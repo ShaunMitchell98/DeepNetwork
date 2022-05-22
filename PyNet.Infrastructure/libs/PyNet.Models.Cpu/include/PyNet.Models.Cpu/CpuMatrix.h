@@ -26,10 +26,10 @@ namespace PyNet::Models::Cpu {
 			auto c = this->Copy();
 			c->Initialise(GetRows(), m.GetCols(), false);
 
-			for (auto i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < m.GetCols(); j++) {
+			for (auto i = 1; i <= GetRows(); i++) {
+				for (auto j = 1; j <= m.GetCols(); j++) {
 					double tempValue = 0;
-					for (auto k = 0; k < GetCols(); k++) {
+					for (auto k = 1; k <= GetCols(); k++) {
 						tempValue += (*this)(i, k) * m(k, j);
 					}
 
@@ -43,9 +43,9 @@ namespace PyNet::Models::Cpu {
 		unique_ptr<Matrix> operator+(const double d) const override {
 			auto c = this->Copy();
 
-			for (auto i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < GetCols(); j++) {
-					(*c)(i, j) = (*this)(i, j) + d;
+			for (auto row = 1; row <= GetRows(); row++) {
+				for (auto col = 1; col <= GetCols(); col++) {
+					(*c)(row, col) = (*this)(row, col) + d;
 				}
 			}
 
@@ -55,9 +55,9 @@ namespace PyNet::Models::Cpu {
 		unique_ptr<Matrix> operator*(const double d) const override {
 			auto c = this->Copy();
 
-			for (auto i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < GetCols(); j++) {
-					(*c)(i, j) = (*this)(i, j) * d;
+			for (auto row = 1; row <= GetRows(); row++) {
+				for (auto col = 1; col <= GetCols(); col++) {
+					(*c)(row, col) = (*this)(row, col) * d;
 				}
 			}
 
@@ -68,9 +68,9 @@ namespace PyNet::Models::Cpu {
 
 			auto c = this->Copy();
 
-			for (auto i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < GetCols(); j++) {
-					(*c)(i, j) = (*this)(i, j) + m(i, j);
+			for (auto row = 1; row <= GetRows(); row++) {
+				for (auto col = 1; col <= GetCols(); col++) {
+					(*c)(row, col) = (*this)(row, col) + m(row, col);
 				}
 			}
 
@@ -80,9 +80,9 @@ namespace PyNet::Models::Cpu {
 		unique_ptr<Matrix> operator-(const Matrix & m) const override {
 			auto c = this->Copy();
 
-			for (auto i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < GetCols(); j++) {
-					(*c)(i, j) = (*this)(i, j) - m(i, j);
+			for (auto row = 1; row <= GetRows(); row++) {
+				for (auto col = 1; col <= GetCols(); col++) {
+					(*c)(row, col) = (*this)(row, col) - m(row, col);
 				}
 			}
 
@@ -92,9 +92,9 @@ namespace PyNet::Models::Cpu {
 		unique_ptr<Matrix> operator-() const override {
 			auto c = this->Copy();
 
-			for (auto i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < GetCols(); j++) {
-					(*c)(i, j) = -(*this)(i, j);
+			for (auto row = 1; row <= GetRows(); row++) {
+				for (auto col = 1; col <= GetCols(); col++) {
+					(*c)(row, col) = -(*this)(row, col);
 				}
 			}
 
@@ -103,9 +103,9 @@ namespace PyNet::Models::Cpu {
 
 		void operator+=(const Matrix & m) override {
 
-			for (auto i = 0; i < m.GetRows(); i++) {
-				for (auto j = 0; j < m.GetCols(); j++) {
-					(*this)(i, j) = (*this)(i, j) + m(i, j);
+			for (auto row = 1; row <= m.GetRows(); row++) {
+				for (auto col = 1; col <= m.GetCols(); col++) {
+					(*this)(row, col) = (*this)(row, col) + m(row, col);
 				}
 			}
 		}
@@ -119,10 +119,10 @@ namespace PyNet::Models::Cpu {
 
 			auto output = Copy();
 				
-			for (int i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < GetCols(); j++) {
+			for (int row = 1; row <= GetRows(); row++) {
+				for (auto col = 1; col <= GetCols(); col++) {
 
-					(*output)(i, j) = exp((*this)(i, j));
+					(*output)(row, col) = exp((*this)(row, col));
 				}
 			}
 
@@ -133,10 +133,10 @@ namespace PyNet::Models::Cpu {
 
 			auto output = Copy();
 
-			for (int i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < GetCols(); j++) {
+			for (int row = 1; row <= GetRows(); row++) {
+				for (auto col = 1; col <= GetCols(); col++) {
 
-					(*output)(i, j) = 1 / (*this)(i, j);
+					(*output)(row, col) = 1 / (*this)(row, col);
 				}
 			}
 
@@ -147,10 +147,10 @@ namespace PyNet::Models::Cpu {
 
 			auto output = Copy();
 
-			for (int i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < GetCols(); j++) {
+			for (int row = 1; row <= GetRows(); row++) {
+				for (auto col = 1; col <= GetCols(); col++) {
 
-					(*output)(i, j) = max(0.0, (*this)(i, j));
+					(*output)(row, col) = max(0.0, (*this)(row, col));
 				}
 			}
 
@@ -161,10 +161,10 @@ namespace PyNet::Models::Cpu {
 
 			auto output = Copy();
 
-			for (int i = 0; i < GetRows(); i++) {
-				for (auto j = 0; j < GetCols(); j++) {
+			for (auto row = 1; row <= GetRows(); row++) {
+				for (auto col = 1; col <= GetCols(); col++) {
 
-					(*output)(i, j) = (*this)(i, j) <= 0 ? 0 : 1;
+					(*output)(row, col) = (*this)(row, col) <= 0 ? 0 : 1;
 				}
 			}
 
@@ -175,8 +175,8 @@ namespace PyNet::Models::Cpu {
 		unique_ptr<Matrix> operator^(const Matrix& m) const override {
 			auto c = m.Copy();
 
-			for (auto row = 0; row < m.GetRows(); row++) {
-				for (auto col = 0; col < m.GetCols(); col++) {
+			for (auto row = 1; row <= m.GetRows(); row++) {
+				for (auto col = 1; col <= m.GetCols(); col++) {
 					(*c)(row, col) = (*this)(row, col) * m(row, col);
 				}
 			}

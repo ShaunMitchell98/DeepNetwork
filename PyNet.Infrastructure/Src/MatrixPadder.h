@@ -12,16 +12,20 @@ namespace PyNet::Infrastructure
 	class MatrixPadder {
 	public:
 
-		const unique_ptr<Matrix> PadMatrix(const Matrix& input, int filterSize) const 
+		static auto factory() {
+			return new MatrixPadder();
+		}
+
+		const shared_ptr<Matrix> PadMatrix(const Matrix& input, size_t filterSize) const 
 		{
-			auto padding = (filterSize - 1) / 2;
+			size_t padding = (filterSize - 1) / 2;
 
 			auto paddedMatrix = input.Copy();
-			paddedMatrix->Initialise(input.GetRows() + static_cast<size_t>(padding), input.GetCols() + static_cast<size_t>(padding), false);
+			paddedMatrix->Initialise(input.GetRows() + (2 * padding), input.GetCols() + (2 * padding), false);
 
-			for (size_t row = padding; row < (paddedMatrix->GetRows() - padding); row++)
+			for (size_t row = padding+1; row <= (paddedMatrix->GetRows() - padding); row++)
 			{
-				for (size_t col = padding; col < (paddedMatrix->GetCols() - padding); col++) 
+				for (size_t col = padding+1; col <= (paddedMatrix->GetCols() - padding); col++) 
 				{
 					(*paddedMatrix)(row, col) = input(row - 1, col - 1);
 				}

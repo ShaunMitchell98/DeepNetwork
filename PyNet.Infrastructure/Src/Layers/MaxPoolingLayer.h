@@ -10,7 +10,6 @@ namespace PyNet::Infrastructure::Layers {
 	private:
 
 		int _filterSize = 0;
-		unique_ptr<Matrix> _input;
 		shared_ptr<ReceptiveFieldProvider> _receptiveFieldProvider;
 		shared_ptr<MatrixPadder> _matrixPadder;
 
@@ -27,35 +26,61 @@ namespace PyNet::Infrastructure::Layers {
 			_filterSize = filterSize;
 		}
 
-		unique_ptr<Matrix> Apply(unique_ptr<Matrix> input) override {
+		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override {
 
-			_input.swap(input);
-			auto paddedMatrix = _matrixPadder->PadMatrix(*_input, _filterSize);
+			auto paddedMatrix = _matrixPadder->PadMatrix(*input, _filterSize);
+			Input = paddedMatrix;
 
-			auto featureMap = _input->Copy();
+			Output = input->Copy();
+
+			auto maxRows = Input->GetRows() - _filterSize;
+			auto maxCols = Input->GetCols() - _filterSize;
 			
-			for(auto& element : *featureMap)
-			{
-				auto receptiveField = _receptiveFieldProvider->GetReceptiveField(*paddedMatrix, _filterSize);
+			for (size_t row = 1; row <= maxRows; row++) {
+				for (size_t col = 1; col <= maxCols; col++) {
 
-				auto values = receptiveField->GetCValues();
+					auto receptiveField = _receptiveFieldProvider->GetReceptiveField(*paddedMatrix, _filterSize, row, col);
 
-				element = *ranges::max_element(values);
+					auto& values = receptiveField->GetCValues();
+
+					(*Output)(row, col) = *ranges::max_element(values);
+				}
 			}
 
-			return featureMap;
+			return Output;
 		}
 
 		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const {
-			throw "To do";
-		}
 
-		size_t GetRows() const override {
-			return 0;
-		}
+			auto dLoss_dInput = dLoss_dOutput.Copy();
 
-		size_t GetCols() const override {
-			return 0;
+			auto padding = static_cast<double>((_filterSize - 1) / 2);
+
+			for (size_t inputRow = 1; inputRow <= dLoss_dInput->GetRows(); inputRow++) {
+				for (size_t inputCol = 1; inputCol <= dLoss_dInput->GetCols(); inputCol++) {
+				
+					auto sum = 0.0;
+
+					auto outputStartRow = max<size_t>(1, inputRow - padding);
+					auto outputEndRow = min<size_t>(inputRow, Output->GetRows());
+
+					auto outputStartCol = max<size_t>(1, inputCol - padding);
+					auto outputEndCol = min<size_t>(inputCol, Output->GetCols());
+
+					for (size_t outputRow = outputStartRow; outputRow <= outputEndRow; outputRow++) {
+						for (size_t outputCol = outputStartCol; outputCol <= outputEndCol; outputCol++) {
+
+							if ((*Output)(outputRow, outputCol) = (*Input)(inputRow, inputCol)) {
+								sum += dLoss_dOutput(outputRow, outputCol);
+							}
+						}
+					}
+
+					(*dLoss_dInput)(inputRow, inputCol) = sum;
+				}
+			}
+
+			return dLoss_dInput;
 		}
 	};
 }

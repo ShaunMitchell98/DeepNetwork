@@ -6,6 +6,7 @@
 #include "ConvolutionalLayer.h"
 #include "MaxPoolingLayer.h"
 #include "DropoutLayer.h"
+#include "FlattenLayer.h"
 
 using namespace PyNet::DI;
 
@@ -30,6 +31,9 @@ namespace PyNet::Infrastructure::Layers {
 				->AsSelf();
 
 			builder.RegisterType<DropoutLayer>()
+				->AsSelf();
+
+			builder.RegisterType<FlattenLayer>()
 				->AsSelf();
 		}
 	};

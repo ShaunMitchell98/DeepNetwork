@@ -21,6 +21,6 @@ namespace PyNet::Infrastructure {
 			return new NetworkRunner{ pyNetwork, layerNormaliser};
 		}
 
-		unique_ptr<Matrix> Run(double* inputLayer);
+		shared_ptr<Matrix> Run(double* inputLayer);
 	};
 }

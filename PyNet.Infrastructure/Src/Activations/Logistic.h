@@ -1,36 +1,35 @@
 #pragma once
 
 #include "Activation.h"
+#include "PyNet.DI/Context.h"
 #include <memory>
 
 namespace PyNet::Infrastructure::Activations {
 
 	class Logistic : public Activation {
-	private:
-		unique_ptr<Matrix> _input;
+
+		Logistic(shared_ptr<Context> context) {
+			Input = context->GetUnique<Matrix>();
+		}
 	public:
 
-		static auto factory() {
-			return new Logistic();
+		static auto factory(shared_ptr<Context> context) {
+			return new Logistic(context);
 		}
 
-		unique_ptr<Matrix> Apply(unique_ptr<Matrix> input) override {
+		void Initialise(size_t rows, size_t cols) {
+			Input->Initialise(rows, cols, false);
+		}
 
-			_input.swap(input);
-			return (*((-*_input)->Exp()) + 1)->Reciprocal();
+		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override {
+
+			Input = input;
+			return (*((-*Input)->Exp()) + 1)->Reciprocal();
 		}
 
 		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override {
-			auto derivative = *_input->Exp() * *((*(*_input->Exp() + 1) * *(*_input->Exp() + 1))->Reciprocal());
+			auto derivative = *Input->Exp() * *((*(*Input->Exp() + 1) * *(*Input->Exp() + 1))->Reciprocal());
 			return dLoss_dOutput ^ *derivative;
-		}
-
-		size_t GetRows() const override {
-			return _input->GetRows();
-		}
-
-		size_t GetCols() const override {
-			return _input->GetCols();
 		}
 	};
 }

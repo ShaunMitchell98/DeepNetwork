@@ -89,11 +89,16 @@ int main()
 {
 	auto intermediary = PyNetwork_Initialise(false, true);
 	PyNetwork_AddInputLayer(intermediary, 784, 1);
-	PyNetwork_AddDropoutLayer(intermediary, 0.8, 784, 1);
+	//PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
+	//PyNetwork_AddMaxPoolingLayer(intermediary, 3);
+	//PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
+	//PyNetwork_AddMaxPoolingLayer(intermediary, 3);
+	//PyNetwork_AddFlattenLayer(intermediary);
+	//PyNetwork_AddDropoutLayer(intermediary, 0.8, 784, 1);
 	PyNetwork_AddDenseLayer(intermediary, 500, ActivationFunctionType::Logistic);
-	PyNetwork_AddDropoutLayer(intermediary, 0.8, 500, 1);
+	//PyNetwork_AddDropoutLayer(intermediary, 0.8, 500, 1);
 	PyNetwork_AddDenseLayer(intermediary, 129, ActivationFunctionType::Logistic);
-	PyNetwork_AddDropoutLayer(intermediary, 0.8, 129, 1);
+	//PyNetwork_AddDropoutLayer(intermediary, 0.8, 129, 1);
 	PyNetwork_AddDenseLayer(intermediary, 10, ActivationFunctionType::Logistic);
 	PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
 

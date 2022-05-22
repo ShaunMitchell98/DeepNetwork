@@ -3,12 +3,12 @@
 
 namespace PyNet::Infrastructure {
     
-	unique_ptr<Matrix> NetworkRunner::Run(double* input) {
+	shared_ptr<Matrix> NetworkRunner::Run(double* input) {
 
 		auto inputLayer = dynamic_cast<InputLayer*>(_pyNetwork->Layers[0].get());
 		inputLayer->SetInput(input);
 
-		unique_ptr<Matrix> output;
+		shared_ptr<Matrix> output;
 
 		for (const auto& layer : _pyNetwork->Layers) {
 			output = layer->Apply(move(output));

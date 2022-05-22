@@ -32,18 +32,25 @@ for learning_rate in learning_rates:
                         network = PyNetwork(False, True)
                         network.SetVariableLearning(0.04, 0.7, 1.05)
                         network.add_input_layer(784, 1)
-                        network.add_dropout_layer(0.8, 784, 1)
+                        # network.add_convolution_layer(3, ActivationFunctionType.RELU)
+                        # network.add_max_pooling_layer(3)
+                        # network.add_convolution_layer(3, ActivationFunctionType.RELU)
+                        # network.add_max_pooling_layer(3)
+                        # network.add_convolution_layer(3, ActivationFunctionType.RELU)
+                        # network.add_max_pooling_layer(3)
+                        # network.add_flatten_layer()
+                        # network.add_dropout_layer(0.8, 784, 1)
                         network.add_dense_layer(500, ActivationFunctionType.LOGISTIC)
-                        network.add_dropout_layer(dropoutRate, 500, 1)
+                        # network.add_dropout_layer(0.8, 500, 1)
                         network.add_dense_layer(129, ActivationFunctionType.LOGISTIC)
-                        network.add_dropout_layer(dropoutRate, 129, 1)
+                        #  network.add_dropout_layer(0.8, 129, 1)
                         network.add_dense_layer(10, ActivationFunctionType.LOGISTIC)
 
                         start = timeit.default_timer()
                         network.train(train_images[1:number], train_labels[1:number], 10, batch_size,
-                                               learning_rate,
-                                               epoch,
-                                               momentum)
+                                      learning_rate,
+                                      epoch,
+                                      momentum)
                         stop = timeit.default_timer()
 
                         print('Time: ', stop - start)
@@ -58,9 +65,7 @@ for learning_rate in learning_rates:
                         with open('successes.txt', 'a') as success_file:
                             success_file.write(
                                 f'There were {success_count} successes out of 2000 tests with a learning rate of'
-                                f' {learning_rate}, batch size of {batch_size}, momentum of {momentum}, epoch of {epoch},'
-                                f' number of {number} and dropout rate '
-                                f'of {dropoutRate}.\n')
+                                f' {learning_rate}, batch size of {batch_size}, momentum of {momentum}, epoch of '
+                                f'{epoch}, number of {number} and dropout rate of {dropoutRate}.\n')
 
                         network.destruct()
-

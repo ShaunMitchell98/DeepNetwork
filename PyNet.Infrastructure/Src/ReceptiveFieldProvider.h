@@ -10,14 +10,19 @@ namespace PyNet::Infrastructure {
 
 	class ReceptiveFieldProvider {
 	public:
-		const unique_ptr<Matrix> GetReceptiveField(const Matrix& input, int filterSize) const {
+
+		static auto factory() {
+			return new ReceptiveFieldProvider();
+		}
+
+		const unique_ptr<Matrix> GetReceptiveField(const Matrix& input, int filterSize, int rStart, int cStart) const {
 
 			auto receptiveField = input.Copy();
 			receptiveField->Initialise(filterSize, filterSize, false);
 
-			for (auto row = 0; row < filterSize; row++) {
-				for (auto col = 0; col < filterSize; col++) {
-					(*receptiveField)(row, col) = input(row, col);
+			for (size_t row = 1; row <= filterSize; row++) {
+				for (size_t col = 1; col <= filterSize; col++) {
+					(*receptiveField)(row, col) = input(row + rStart, col+cStart);
 				}
 			}
 

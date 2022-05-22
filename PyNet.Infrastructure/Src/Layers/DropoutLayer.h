@@ -26,21 +26,13 @@ namespace PyNet::Infrastructure::Layers {
 			return new DropoutLayer(settings, bernoulliGenerator);
 		}
 
-		size_t GetRows() const override {
-			return _rows;
-		}
-
-		size_t GetCols() const override {
-			return _cols;
-		}
-
 		void Initialise(double rate, size_t rows, size_t cols) {
 			_rate = rate;
 			_rows = rows;
 			_cols = cols;
 		}
 
-		unique_ptr<Matrix> Apply(unique_ptr<Matrix> input) override {
+		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override {
 
 			auto output = input->Copy();
 
@@ -61,7 +53,10 @@ namespace PyNet::Infrastructure::Layers {
 		}
 
 		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override {
-			return dLoss_dOutput.Copy();
+
+			auto dLoss_dInput = dLoss_dOutput.Copy();
+			dLoss_dInput->Set(dLoss_dInput->GetRows(), dLoss_dInput->GetCols(), dLoss_dOutput.GetAddress(1, 1));
+			return dLoss_dInput;
 		}
 	};
 }

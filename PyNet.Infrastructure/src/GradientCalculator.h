@@ -3,7 +3,7 @@
 #include <vector>
 #include "PyNet.DI/Context.h"
 #include "AdjustmentCalculator.h"
-#include "Layers/TrainableLayer.h"
+#include "Layers/Layer.h"
 
 using namespace std;
 using namespace PyNet::Models;
@@ -26,6 +26,6 @@ namespace PyNet::Infrastructure {
 			return new GradientCalculator{ context, adjustmentCalculator };
 		}
 
-		void CalculateGradients(vector<TrainableLayer*> layers, Matrix& lossDerivative);
+		void CalculateGradients(vector<Layer*> layers, Matrix& lossDerivative);
 	};
 }

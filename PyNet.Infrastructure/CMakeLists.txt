@@ -71,6 +71,8 @@ add_library(PyNet.Infrastructure SHARED
 	./src/Layers/DropoutLayer.h
 	./src/Layers/LayerModule.h
 	./src/Layers/MaxPoolingLayer.h
+	./src/Layers/InputLayer.h
+	./src/Layers/FlattenLayer.h
 	./src/Layers/TrainableLayer.h
 	./src/ReceptiveFieldProvider.h
 	./src/MatrixPadder.h
