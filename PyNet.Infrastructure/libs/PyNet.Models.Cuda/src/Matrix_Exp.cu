@@ -15,7 +15,7 @@ __global__ void matrixExpKernel(double* A, double* B, int rows, int cols) {
     int j = blockIdx.y * blockDim.y + threadIdx.y;
 
     if (i < rows && j < cols) {
-        B[i * cols + j] = exp(-A[i * cols + j]);
+        B[i * cols + j] = exp(A[i * cols + j]);
     }
 }
 

@@ -94,6 +94,7 @@ add_subdirectory( ./libs/PyNet.Models.Cpu )
 add_subdirectory( ./libs/PyNet.DI)
 add_subdirectory( ./libs/PyNet.Console )
 add_subdirectory( ./libs/PyNet.Models.Cpu/tests )
+add_subdirectory( ./libs/PyNet.Models.Cuda/tests )
 
 
 IF (CUDAToolkit_FOUND)

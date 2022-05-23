@@ -10,16 +10,16 @@
 
 using namespace std;
 
-__global__ void matrixMaxKernel(double* A, double* B, int rows, int cols) {
+__global__ void matrixMaxKernel(double* A, double* B, double* C, int rows, int cols) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     int j = blockIdx.y * blockDim.y + threadIdx.y;
 
     if (i < rows && j < cols) {
-        B[i * cols + j] = max(0.0, A[i * cols + j]);
+        C[i * cols + j] = max(B[0], A[i * cols + j]);
     }
 }
 
-void internalMatrixMax(double* A, double* B, int rows, int cols) {
+void internalMatrixMax(double* A, double* B, double* C, int rows, int cols) {
 
     // declare the number of blocks per grid and the number of threads per block
     // use 1 to 512 threads per block
@@ -35,17 +35,19 @@ void internalMatrixMax(double* A, double* B, int rows, int cols) {
         blocksPerGrid.y = static_cast<int>(ceil(double(cols) / double(threadsPerBlock.y)));
     }
 
-    matrixMaxKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, rows, cols);
+    matrixMaxKernel<<<blocksPerGrid, threadsPerBlock>>>(A, B, C, rows, cols);
     cudaDeviceSynchronize();
 }
 
-void matrix_max(const vector<double>& A, vector<double>& B, int Arows, int Acols) {
+void matrix_max(const vector<double>& A, double input, vector<double>& C, int Arows, int Acols) {
 
     CudaArray<double> d_A(A.size());
-    CudaArray<double> d_B(B.size());
+    CudaArray<double> d_B(sizeof(double));
+    CudaArray<double> d_C(C.size());
 
     d_A.set(A);
+    d_B.set(vector<double>(input));
 
-    internalMatrixMax(d_A.getData(), d_B.getData(), Arows, Acols);
-    d_B.get(B.data(), B.size());
+    internalMatrixMax(d_A.getData(), d_B.getData(), d_C.getData(), Arows, Acols);
+    d_C.get(C.data(), C.size());
 }

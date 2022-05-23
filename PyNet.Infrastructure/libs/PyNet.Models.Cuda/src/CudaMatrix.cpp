@@ -43,12 +43,6 @@ namespace PyNet::Models::Cuda {
 		return c;
 	}
 
-	//unique_ptr<Matrix> CudaMatrix::operator~() const {
-	//	auto m = unique_ptr<Matrix>(new CudaMatrix());
-	//	m->Set(GetCols(), GetRows(), ((Matrix*)this)->GetValues().data());
-	//	return m;
-	//}
-
 	void CudaMatrix::operator+=(const Matrix& m) {
 		matrix_addition_assignment(GetValues(), m.GetCValues(), GetRows(), GetCols());
 	}
@@ -67,7 +61,7 @@ namespace PyNet::Models::Cuda {
 
 	unique_ptr<Matrix> CudaMatrix::Max(double input) const {
 		auto output = Copy();
-		matrix_max(GetCValues(), output->GetValues(), GetRows(), GetCols());
+		matrix_max(GetCValues(), input, output->GetValues(), GetRows(), GetCols());
 		return output;
 	}
 
@@ -76,7 +70,6 @@ namespace PyNet::Models::Cuda {
 		matrix_step(GetCValues(), output->GetValues(), GetRows(), GetCols());
 		return output;
 	}
-
 
 	unique_ptr<Matrix> CudaMatrix::operator^(const Matrix& m) const {
 		auto output = m.Copy();
