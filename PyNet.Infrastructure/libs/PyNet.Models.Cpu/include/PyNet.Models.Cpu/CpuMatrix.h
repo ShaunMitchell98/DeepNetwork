@@ -150,7 +150,7 @@ namespace PyNet::Models::Cpu {
 			for (int row = 1; row <= GetRows(); row++) {
 				for (auto col = 1; col <= GetCols(); col++) {
 
-					(*output)(row, col) = max(0.0, (*this)(row, col));
+					(*output)(row, col) = max(input, (*this)(row, col));
 				}
 			}
 
