@@ -29,7 +29,6 @@ namespace PyNet::DI {
             RegisterInstance(_context, InstanceMode::Shared);
         }
 
-        // Add an already instantiated object to the context
         template <class InstanceType>
         void RegisterInstance(shared_ptr<InstanceType> instance, InstanceMode instanceMode) const
         {

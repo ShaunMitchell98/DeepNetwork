@@ -11,7 +11,10 @@ FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
-add_executable(PyNet.Infrastructure.Tests InputLayerTests.cpp)
+add_executable(PyNet.Infrastructure.Tests 
+Layers/DenseLayerTests.cpp
+Layers/InputLayerTests.cpp
+UnitTest.h)
 
 add_dependencies(PyNet.Infrastructure.Tests gtest)
 include_directories(${source_dir}/include)

@@ -7,20 +7,20 @@ namespace PyNet::Infrastructure {
 
         for (auto layer : layers)
         {
-            auto average_dLoss_dBias = layer->GetdLoss_dBiasSum() / _settings->BatchSize;
+            auto average_dLoss_dBias = layer->DLoss_dBiasSum / _settings->BatchSize;
             auto biasAdjustment = average_dLoss_dBias * learningRate;
 
-            auto average_dLoss_dWeight = layer->GetdLoss_dWeightSum() / _settings->BatchSize;
+            auto average_dLoss_dWeight = *layer->DLoss_dWeightSum / _settings->BatchSize;
             auto weightAdjustment = *average_dLoss_dWeight * learningRate;
 
             if (reverse) {
                 
-                layer->GetWeights() = *(layer->GetWeights() + *weightAdjustment);
-                layer->GetBias() = layer->GetBias() + biasAdjustment;
+                *layer->Weights = *(*layer->Weights + *weightAdjustment);
+                layer->Bias = layer->Bias + biasAdjustment;
             }
             else {
-                layer->GetWeights() = *(layer->GetWeights() - *weightAdjustment);
-                layer->GetBias() = layer->GetBias() - biasAdjustment;
+                *layer->Weights = *(*layer->Weights - *weightAdjustment);
+                layer->Bias = layer->Bias - biasAdjustment;
             }
         }
     }

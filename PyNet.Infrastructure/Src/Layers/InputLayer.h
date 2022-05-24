@@ -2,24 +2,20 @@
 
 #include "Layer.h"
 #include <memory>
-#include "PyNet.DI/Context.h"
 
 using namespace std;
-using namespace PyNet::DI;
 
 namespace PyNet::Infrastructure::Layers {
 
 	class InputLayer : public Layer {
 	private:
 
-		InputLayer(shared_ptr<Context> context) {
-			Input = context->GetUnique<Matrix>();
-		}
+		InputLayer(unique_ptr<Matrix> input) : Layer(move(input)) {}
 
 	public:
 
-		static auto factory(shared_ptr<Context> context) {
-			return new InputLayer(context);
+		static auto factory(unique_ptr<Matrix> input) {
+			return new InputLayer(move(input));
 		}
 
 		void SetInput(double* input) {

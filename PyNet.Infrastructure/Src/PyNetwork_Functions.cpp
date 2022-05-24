@@ -12,6 +12,8 @@
 #include "Layers/FlattenLayer.h"
 #include "Layers/DropoutLayer.h"
 #include "Activations/Logistic.h"
+#include "NetworkRunner.h"
+#include "NetworkTrainer.h"
 #include <memory>
 
 using namespace PyNet::DI;

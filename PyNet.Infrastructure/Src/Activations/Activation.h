@@ -12,5 +12,7 @@ namespace PyNet::Infrastructure::Activations {
 	};
 
 	class Activation : public Layer {
+	public:
+		Activation(unique_ptr<Matrix> input) : Layer(move(input)) {}
 	};
 }

@@ -6,9 +6,11 @@ namespace PyNet::Infrastructure::Layers {
 	class FlattenLayer : public Layer {
 	public:
 
-		static auto factory() {
-			return new FlattenLayer();
+		static auto factory(unique_ptr<Matrix> input) {
+			return new FlattenLayer(move(input));
 		}
+
+		FlattenLayer(unique_ptr<Matrix> input) : Layer(move(input)) {}
 
 		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) {
 			

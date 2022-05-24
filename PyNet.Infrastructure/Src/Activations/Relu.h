@@ -7,9 +7,11 @@ namespace PyNet::Infrastructure::Activations {
 	class Relu : public Activation {
 	public:
 
-		static auto factory() {
-			return new Relu();
+		static auto factory(unique_ptr<Matrix> input) {
+			return new Relu(move(input));
 		}
+
+		Relu(unique_ptr<Matrix> input) : Activation(move(input)) {}
 
 		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) {
 

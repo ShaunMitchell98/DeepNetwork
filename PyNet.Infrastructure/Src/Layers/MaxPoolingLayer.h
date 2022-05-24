@@ -13,13 +13,14 @@ namespace PyNet::Infrastructure::Layers {
 		shared_ptr<ReceptiveFieldProvider> _receptiveFieldProvider;
 		shared_ptr<MatrixPadder> _matrixPadder;
 
-		MaxPoolingLayer(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder) : _receptiveFieldProvider{ receptiveFieldProvider },
-			_matrixPadder{ matrixPadder } {}
+		MaxPoolingLayer(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder,
+			unique_ptr<Matrix> input) : _receptiveFieldProvider{ receptiveFieldProvider },
+			_matrixPadder{ matrixPadder }, Layer(move(input)) {}
 
 	public:
 
-		static auto factory(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder) {
-			return new MaxPoolingLayer(receptiveFieldProvider, matrixPadder);
+		static auto factory(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder, unique_ptr<Matrix> input) {
+			return new MaxPoolingLayer(receptiveFieldProvider, matrixPadder, move(input));
 		}
 
 		void Initialise(int filterSize) {

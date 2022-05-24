@@ -1,20 +1,17 @@
 #pragma once
 
 #include "Activation.h"
-#include "PyNet.DI/Context.h"
 #include <memory>
 
 namespace PyNet::Infrastructure::Activations {
 
 	class Logistic : public Activation {
 
-		Logistic(shared_ptr<Context> context) {
-			Input = context->GetUnique<Matrix>();
-		}
+		Logistic(unique_ptr<Matrix> input) : Activation(move(input)) { }
 	public:
 
-		static auto factory(shared_ptr<Context> context) {
-			return new Logistic(context);
+		static auto factory(unique_ptr<Matrix> input) {
+			return new Logistic(move(input));
 		}
 
 		void Initialise(size_t rows, size_t cols) {

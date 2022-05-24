@@ -18,12 +18,13 @@ namespace PyNet::Infrastructure::Layers {
 		shared_ptr<Settings> _settings;
 		shared_ptr<BernoulliGenerator> _bernoulliGenerator;
 
-		DropoutLayer(shared_ptr<Settings> settings, shared_ptr<BernoulliGenerator> bernoulliGenerator) : _settings{ settings }, _bernoulliGenerator{ bernoulliGenerator } {}
+		DropoutLayer(shared_ptr<Settings> settings, shared_ptr<BernoulliGenerator> bernoulliGenerator, unique_ptr<Matrix> input) : _settings{ settings }, 
+			_bernoulliGenerator{ bernoulliGenerator }, Layer(move(input)) {}
 
 	public:
 
-		static auto factory(shared_ptr<Settings> settings, shared_ptr<BernoulliGenerator> bernoulliGenerator) {
-			return new DropoutLayer(settings, bernoulliGenerator);
+		static auto factory(shared_ptr<Settings> settings, shared_ptr<BernoulliGenerator> bernoulliGenerator, unique_ptr<Matrix> input) {
+			return new DropoutLayer(settings, bernoulliGenerator, move(input));
 		}
 
 		void Initialise(double rate, size_t rows, size_t cols) {

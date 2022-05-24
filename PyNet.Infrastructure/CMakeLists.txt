@@ -50,6 +50,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/QuadraticLoss.h
 	./src/QuadraticLoss.cpp
 	./src/Setup.h
+	./src/Setup.cpp
 	./src/XmlWriter.h
 	./src/XmlWriter.cpp
 	./src/XmlReader.h
@@ -95,7 +96,7 @@ add_subdirectory( ./libs/PyNet.DI)
 add_subdirectory( ./libs/PyNet.Console )
 add_subdirectory( ./libs/PyNet.Models.Cpu/tests )
 add_subdirectory( ./libs/PyNet.Models.Cuda/tests )
-
+add_subdirectory( ./tests)
 
 IF (CUDAToolkit_FOUND)
 	target_link_libraries( PyNet.Infrastructure PyNet.Models.Cuda )

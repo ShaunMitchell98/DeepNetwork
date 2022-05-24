@@ -30,7 +30,7 @@ namespace PyNet::Models::Cpu::Tests {
 		auto result = *matrix1 * *matrix2;
 
 		for (auto& element : *result) {
- 			ASSERT_EQ((int)(500.0 * firstMatrixElement * secondMatrixElement), (int)element);
+ 			ASSERT_FLOAT_EQ((500.0 * firstMatrixElement * secondMatrixElement), element);
 		}
 	}
 

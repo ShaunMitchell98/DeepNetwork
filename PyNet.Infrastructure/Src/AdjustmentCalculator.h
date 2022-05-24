@@ -4,13 +4,14 @@
 #include "PyNet.Models/Matrix.h"
 #include "PyNet.DI/Context.h"
 #include "Settings.h"
+#include "Headers.h"
 
 using namespace std;
 using namespace PyNet::Models;
 
 namespace PyNet::Infrastructure {
 
-	class AdjustmentCalculator
+	class EXPORT AdjustmentCalculator
 	{
 	private:
 		shared_ptr<Settings> _settings;

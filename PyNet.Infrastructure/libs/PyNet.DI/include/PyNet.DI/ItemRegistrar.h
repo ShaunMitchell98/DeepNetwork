@@ -19,13 +19,13 @@ namespace PyNet::DI {
 		template <class... Args>
 		using FactoryFunction = InputType * (*)(Args...);
 
-		template <class OutputType, class... Args, typename std::enable_if< std::is_base_of<OutputType, InputType>::value>::type* = nullptr>
+		template <class OutputType, class... Args, typename enable_if<is_base_of<OutputType, InputType>::value>::type* = nullptr>
 		void RegisterFactory(Item<OutputType>& item, FactoryFunction<Args...> factoryFunction) noexcept
 		{
 			item.SetFactory([factoryFunction](any& input)
 			{
 				auto context = any_cast<Context>(input);
-				return static_cast<OutputType*>(factoryFunction(context.GetShared<typename Args::element_type>()...));
+				return static_cast<OutputType*>(factoryFunction(context.Get<Args>()...));
 			});
 		}
 

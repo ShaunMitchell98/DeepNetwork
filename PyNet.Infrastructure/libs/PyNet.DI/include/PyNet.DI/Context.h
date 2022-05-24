@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <any>
 #include "ItemContainer.h"
-
+#include <concepts>
 /*
  * The MIT License (MIT)
  *
@@ -29,6 +29,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+template<typename T>
+concept Shared = requires(T a) {
+    {a} -> std::convertible_to<shared_ptr<typename T::element_type>>;
+};
 
 using namespace std;
 
@@ -83,6 +88,16 @@ namespace PyNet::DI {
             }
          
             return item.GetShared();
+        }
+
+        template <Shared T>
+        T Get() {
+            return GetShared<typename T::element_type>();
+        }
+
+        template <class T>
+        T Get(...) {
+            return GetUnique<typename T::element_type>();
         }
     };
 }

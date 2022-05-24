@@ -3,10 +3,7 @@
 #include "TrainableLayer.h"
 #include "../ReceptiveFieldProvider.h"
 #include "../MatrixPadder.h"
-#include "PyNet.DI/Context.h"
 #include "AdjustmentCalculator.h"
-
-using namespace PyNet::DI;
 
 namespace PyNet::Infrastructure::Layers {
 
@@ -14,30 +11,25 @@ namespace PyNet::Infrastructure::Layers {
 	private:
 
 		int _filterSize = 0;
-		unique_ptr<Matrix> _weights;
-		unique_ptr<Matrix> _dLoss_dWeightSum;
-		double _bias = 0;
-		double _dLoss_dBiasSum;
 		shared_ptr<ReceptiveFieldProvider> _receptiveFieldProvider;
 		shared_ptr<MatrixPadder> _matrixPadder;
 		shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
 
-		ConvolutionalLayer(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder, shared_ptr<Context> context,
-			shared_ptr<AdjustmentCalculator> adjustmentCalculator) :
-			_receptiveFieldProvider{ receptiveFieldProvider }, _matrixPadder{ matrixPadder }, _adjustmentCalculator{ adjustmentCalculator } 
+		ConvolutionalLayer(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder,
+			shared_ptr<AdjustmentCalculator> adjustmentCalculator, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights, unique_ptr<Matrix> input) :
+			_receptiveFieldProvider{ receptiveFieldProvider }, _matrixPadder{ matrixPadder }, _adjustmentCalculator{ adjustmentCalculator }, 
+			TrainableLayer(move(dLoss_dWeightSum), move(weights), move(input))
 		{
-			_weights = context->GetUnique<Matrix>();
-			_dLoss_dWeightSum = context->GetUnique<Matrix>();
-			_dLoss_dBiasSum = 0;
+			DLoss_dBiasSum = 0.01;
 		}
 
 		unique_ptr<Matrix> dLoss_dWeight(const Matrix& dLoss_dOutput) const 
 		{
-			auto dLoss_dWeight = _weights->Copy();
+			auto dLoss_dWeight = Weights->Copy();
 			double sum;
 
-			for (size_t weightRow = 1; weightRow <= _weights->GetRows(); weightRow++) {
-				for (size_t weightCol = 1; weightCol <= _weights->GetCols(); weightCol++) {
+			for (size_t weightRow = 1; weightRow <= Weights->GetRows(); weightRow++) {
+				for (size_t weightCol = 1; weightCol <= Weights->GetCols(); weightCol++) {
 
 					sum = 0.0;
 					auto maxRow = Input->GetRows() - _filterSize + weightRow;
@@ -73,14 +65,14 @@ namespace PyNet::Infrastructure::Layers {
 	public:
 
 		void Initialise(int filterSize) {
-			_weights->Initialise(filterSize, filterSize, true);
+			Weights->Initialise(filterSize, filterSize, true);
 			_filterSize = filterSize;
-			_dLoss_dWeightSum->Initialise(filterSize, filterSize, false);
+			DLoss_dWeightSum->Initialise(filterSize, filterSize, false);
 		}
 
-		static auto factory(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder, shared_ptr<Context> context,
-			shared_ptr<AdjustmentCalculator> adjustmentCalculator) {
-			return new ConvolutionalLayer(receptiveFieldProvider, matrixPadder, context, adjustmentCalculator);
+		static auto factory(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder,
+			shared_ptr<AdjustmentCalculator> adjustmentCalculator, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights, unique_ptr<Matrix> input) {
+			return new ConvolutionalLayer(receptiveFieldProvider, matrixPadder, adjustmentCalculator, move(dLoss_dWeightSum), move(weights), move(input));
 		}
 
 		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override
@@ -97,7 +89,7 @@ namespace PyNet::Infrastructure::Layers {
 				for (size_t col = 1; col <= maxCols; col++) {
 
 					auto receptiveField = _receptiveFieldProvider->GetReceptiveField(*Input, _filterSize, row, col);
-					(*Output)(row, col) = (*receptiveField | *_weights) + _bias;
+					(*Output)(row, col) = (*receptiveField | *Weights) + Bias;
 				}
 			}
 
@@ -106,8 +98,8 @@ namespace PyNet::Infrastructure::Layers {
 
 		void UpdateAdjustments(const Matrix& dLoss_dOutput) override 
 		{
-			_dLoss_dBiasSum = _adjustmentCalculator->CalculateBiasAdjustment(dLoss_dBias(dLoss_dOutput), _dLoss_dBiasSum);
-			_adjustmentCalculator->CalculateWeightAdjustment(*dLoss_dWeight(dLoss_dOutput), *_dLoss_dWeightSum);
+			DLoss_dBiasSum = _adjustmentCalculator->CalculateBiasAdjustment(dLoss_dBias(dLoss_dOutput), DLoss_dBiasSum);
+			_adjustmentCalculator->CalculateWeightAdjustment(*dLoss_dWeight(dLoss_dOutput), *DLoss_dWeightSum);
 		}
 
 		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override 
@@ -133,7 +125,7 @@ namespace PyNet::Infrastructure::Layers {
 					{
 						for (size_t outputCol = outputStartCol; outputCol <= outputEndCol; outputCol++)
 						{
-							sum += dLoss_dOutput(outputRow, outputCol) * (*_weights)(inputRow + 1 - outputRow, inputCol + 1 - outputCol);
+							sum += dLoss_dOutput(outputRow, outputCol) * (*Weights)(inputRow + 1 - outputRow, inputCol + 1 - outputCol);
 						}
 					}
 
@@ -142,26 +134,6 @@ namespace PyNet::Infrastructure::Layers {
 			}
 
 			return dLoss_dInput;
-		}
-
-		Matrix& GetdLoss_dWeightSum() const override 
-		{
-			return *_dLoss_dWeightSum;
-		}
-
-		double GetdLoss_dBiasSum() const override
-		{
-			return _dLoss_dBiasSum;
-		}
-
-		Matrix& GetWeights() override
-		{
-			return *_weights;
-		}
-
-		double& GetBias() override
-		{
-			return _bias;
 		}
 	};
 }

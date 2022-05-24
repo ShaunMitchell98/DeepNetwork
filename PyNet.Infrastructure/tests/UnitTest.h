@@ -1,17 +1,23 @@
 #pragma once
 
 #include <Setup.h>
+#include "Settings.h"
+#include <gtest/gtest.h>
+#include <memory>
 
 namespace PyNet::Infrastructure::Tests {
 
-	class UnitTest
+	class UnitTest : public ::testing::Test
 	{
 	private:
-		std::shared_ptr<PyNet::DI::Context> _context;
-	public:
+		shared_ptr<Context> _context;
 
-		UnitTest() {
-			_context = std::move(GetContext(true, false));
+	protected:
+
+		void SetUp() override {
+			auto settings = make_shared<Settings>();
+			settings->LoggingEnabled = false;
+			_context = GetContext(settings, false);
 		}
 
 		template<class T>
@@ -25,7 +31,3 @@ namespace PyNet::Infrastructure::Tests {
 		}
 	};
 }
-
-
-
-
