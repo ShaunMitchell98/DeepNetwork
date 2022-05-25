@@ -25,6 +25,8 @@ class PyNetwork:
 
         self.lib.PyNetwork_AddFlattenLayer.argtypes = [ctypes.c_void_p]
 
+        self.lib.PyNetwork_AddSoftmaxLayer.argtypes = [ctypes.c_void_p]
+
         self.lib.PyNetwork_Run.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double)]
         self.lib.PyNetwork_Run.restype = ctypes.POINTER(ctypes.c_double)
 
@@ -65,6 +67,9 @@ class PyNetwork:
 
     def add_dropout_layer(self, rate: float, rows: int, cols: int):
         self.lib.PyNetwork_AddDropoutLayer(self.obj, rate, rows, cols)
+
+    def add_softmax_layer(self):
+        self.lib.PyNetwork_AddSoftmaxLayer(self.obj)
 
     def add_flatten_layer(self):
         self.lib.PyNetwork_AddFlattenLayer(self.obj)

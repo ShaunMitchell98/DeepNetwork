@@ -45,6 +45,7 @@ for learning_rate in learning_rates:
                         network.add_dense_layer(129, ActivationFunctionType.LOGISTIC)
                         #  network.add_dropout_layer(0.8, 129, 1)
                         network.add_dense_layer(10, ActivationFunctionType.LOGISTIC)
+                        network.add_softmax_layer()
 
                         start = timeit.default_timer()
                         network.train(train_images[1:number], train_labels[1:number], 10, batch_size,
