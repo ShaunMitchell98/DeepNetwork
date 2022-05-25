@@ -14,8 +14,6 @@ namespace PyNet::Infrastructure {
 			output = layer->Apply(move(output));
 		}
 
-		_layerNormaliser->NormaliseLayer(*output);
-
 		return output;
 	}
 }

@@ -14,6 +14,10 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 add_executable(PyNet.Infrastructure.Tests 
 Layers/DenseLayerTests.cpp
 Layers/InputLayerTests.cpp
+Layers/FakeLayer.h
+ContainerFixture.h
+NetworkRunnerTests.cpp
+IntegrationTestsModule.h
 UnitTest.h)
 
 add_dependencies(PyNet.Infrastructure.Tests gtest)

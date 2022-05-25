@@ -1,9 +1,11 @@
 #pragma once
 
-#include <Setup.h>
 #include "Settings.h"
+#include "ContainerFixture.h"
 #include <gtest/gtest.h>
 #include <memory>
+
+using namespace std;
 
 namespace PyNet::Infrastructure::Tests {
 
@@ -14,19 +16,20 @@ namespace PyNet::Infrastructure::Tests {
 
 	protected:
 
-		void SetUp() override {
-			auto settings = make_shared<Settings>();
-			settings->LoggingEnabled = false;
-			_context = GetContext(settings, false);
+		void SetUp() override 
+		{
+			_context = ContainerFixture::Initialise();
 		}
 
 		template<class T>
-		std::unique_ptr<T> GetUniqueService() {
+		unique_ptr<T> GetUniqueService() 
+		{
 			return _context->GetUnique<T>();
 		}
 
 		template<class T>
-		std::shared_ptr<T> GetSharedService() {
+		shared_ptr<T> GetSharedService()
+		{
 			return _context->GetShared<T>();
 		}
 	};

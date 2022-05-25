@@ -7,6 +7,7 @@
 #include "MaxPoolingLayer.h"
 #include "DropoutLayer.h"
 #include "FlattenLayer.h"
+#include "SoftmaxLayer.h"
 
 using namespace PyNet::DI;
 
@@ -34,6 +35,9 @@ namespace PyNet::Infrastructure::Layers {
 				->AsSelf();
 
 			builder.RegisterType<FlattenLayer>()
+				->AsSelf();
+
+			builder.RegisterType<SoftmaxLayer>()
 				->AsSelf();
 		}
 	};

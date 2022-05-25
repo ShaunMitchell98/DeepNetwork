@@ -4,7 +4,6 @@
 #include "Settings.h"
 #include "PyNet.DI/Module.h"
 #include "QuadraticLoss.h"
-#include "LayerNormaliser.h"
 #include "Logger.h"
 #include "AdjustmentCalculator.h"
 #include "SteepestDescent.h"
@@ -35,8 +34,6 @@ namespace PyNet::Infrastructure {
 		void Load(const ContextBuilder& builder) const override {
 				
 			builder.RegisterType<QuadraticLoss>()->As<Loss>();
-			
-			builder.RegisterType<LayerNormaliser>()->AsSelf();
 
 			builder.RegisterInstance<Settings>(_settings, InstanceMode::Shared);
 

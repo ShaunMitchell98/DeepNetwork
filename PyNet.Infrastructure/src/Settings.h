@@ -15,6 +15,7 @@ struct Settings {
 	/// Determines whether logging messages should be outputted.
 	/// </summary>
 	bool LoggingEnabled = false;
+	bool CudaEnabled = false;
 	RunMode RunMode = RunMode::Training;
 	bool NewBatch = true;
 	int BatchSize = 0;

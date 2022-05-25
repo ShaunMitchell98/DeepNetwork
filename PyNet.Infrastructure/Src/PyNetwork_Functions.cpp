@@ -1,7 +1,7 @@
 #include "PyNetwork_Functions.h"
 #include "Settings.h"
 #include "Intermediary.h"
-#include "Setup.h"
+#include "Startup.h"
 #include "PyNetwork.h"
 #include "AdjustmentCalculator.h"
 #include "RunMode.h"
@@ -12,6 +12,7 @@
 #include "Layers/FlattenLayer.h"
 #include "Layers/DropoutLayer.h"
 #include "Activations/Logistic.h"
+#include "Layers/SoftmaxLayer.h"
 #include "NetworkRunner.h"
 #include "NetworkTrainer.h"
 #include <memory>
@@ -24,8 +25,14 @@ namespace PyNet::Infrastructure {
 	EXPORT void* PyNetwork_Initialise(bool log, bool cudaEnabled) {
 		auto settings = make_shared<Settings>();
 		settings->LoggingEnabled = log;
+		settings->CudaEnabled = cudaEnabled;
 
-		auto context = GetContext(settings, cudaEnabled);
+		auto startup = make_unique<Startup>();
+		auto contextBuilder = make_unique<ContextBuilder>();
+
+		startup->RegisterServices(*contextBuilder, settings);
+
+		auto context = contextBuilder->Build();
 		auto intermediary = new Intermediary(context, settings);
 		return intermediary;
 	}
@@ -104,6 +111,15 @@ namespace PyNet::Infrastructure {
 		auto pyNetwork = context->GetShared<PyNetwork>();
 		auto flattenLayer = context->GetUnique<FlattenLayer>();
 		pyNetwork->Layers.push_back(move(flattenLayer));
+	}
+
+	EXPORT void PyNetwork_AddSoftmaxLayer(void* input) {
+		auto intermediary = static_cast<Intermediary*>(input);
+		auto context = intermediary->GetContext();
+
+		auto pyNetwork = context->GetShared<PyNetwork>();
+		auto softmaxLayer = context->GetUnique<SoftmaxLayer>();
+		pyNetwork->Layers.push_back(move(softmaxLayer));
 	}
 
 	EXPORT const double* PyNetwork_Run(void* input, double* inputLayer) {

@@ -49,8 +49,8 @@ add_library(PyNet.Infrastructure SHARED
 	./src/PyNetwork_Functions.cpp
 	./src/QuadraticLoss.h
 	./src/QuadraticLoss.cpp
-	./src/Setup.h
-	./src/Setup.cpp
+	./src/Startup.h
+	./src/Startup.cpp
 	./src/XmlWriter.h
 	./src/XmlWriter.cpp
 	./src/XmlReader.h
@@ -81,7 +81,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/Activations/Logistic.h
 	./src/Activations/Relu.h
 	./src/Activations/ActivationModule.h
-	./src/LayerNormaliser.h
+	./src/Layers/SoftmaxLayer.h
 )
 
 # 3rd party libs
