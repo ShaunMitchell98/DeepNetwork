@@ -17,6 +17,7 @@ Layers/InputLayerTests.cpp
 Layers/FakeLayer.h
 ContainerFixture.h
 NetworkRunnerTests.cpp
+BackPropagatorTests.cpp
 IntegrationTestsModule.h
 UnitTest.h)
 

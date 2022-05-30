@@ -56,8 +56,8 @@ add_library(PyNet.Infrastructure SHARED
 	./src/XmlReader.h
 	./src/XmlReader.cpp
 	./src/TrainingAlgorithm.h
-	./src/GradientCalculator.h
-	./src/GradientCalculator.cpp
+	./src/BackPropagator.h
+	./src/BackPropagator.cpp
 	./src/NetworkRunner.h
 	./src/NetworkRunner.cpp
 	./src/NetworkTrainer.h

@@ -3,7 +3,7 @@
 #include <string>
 #include "PyNet.DI/Context.h"
 #include "NetworkRunner.h"
-#include "GradientCalculator.h"
+#include "BackPropagator.h"
 #include "TrainingAlgorithm.h"
 #include "PyNet.Models/ILogger.h"
 #include "PyNetwork.h"
@@ -24,7 +24,7 @@ namespace PyNet::Infrastructure {
 
 		shared_ptr<Context> _context;
 		unique_ptr<NetworkRunner> _networkRunner;
-		unique_ptr<GradientCalculator> _gradientCalculator;
+		unique_ptr<BackPropagator> _backPropagator;
 		shared_ptr<TrainingAlgorithm> _trainingAlgorithm;
 		shared_ptr<ILogger> _logger;
 		shared_ptr<PyNetwork> _pyNetwork;
@@ -33,18 +33,18 @@ namespace PyNet::Infrastructure {
 		shared_ptr<Settings> _settings;
 
 		NetworkTrainer(shared_ptr<Context> context,
-			unique_ptr<NetworkRunner> networkRunner, unique_ptr<GradientCalculator> gradientCalculator,
+			unique_ptr<NetworkRunner> networkRunner, unique_ptr<BackPropagator> backPropagator,
 			shared_ptr<TrainingAlgorithm> trainingAlgirithm, shared_ptr<ILogger> logger, shared_ptr<PyNetwork> pyNetwork,
 			shared_ptr<Loss> loss, shared_ptr<Settings> settings) :
-		_context(context), _networkRunner(move(networkRunner)), _gradientCalculator(move(gradientCalculator)), _trainingAlgorithm(trainingAlgirithm),
+		_context(context), _networkRunner(move(networkRunner)), _backPropagator(move(backPropagator)), _trainingAlgorithm(trainingAlgirithm),
 			_logger(logger), _pyNetwork(pyNetwork), _loss(loss), _settings(settings) {}
 
 	public:
 
 		static auto factory(shared_ptr<Context> context,
-			unique_ptr<NetworkRunner> networkRunner, unique_ptr<GradientCalculator> gradientCalculator, shared_ptr<TrainingAlgorithm> trainingAlgorithm,
+			unique_ptr<NetworkRunner> networkRunner, unique_ptr<BackPropagator> backPropagator, shared_ptr<TrainingAlgorithm> trainingAlgorithm,
 			shared_ptr<ILogger> logger, shared_ptr<PyNetwork> pyNetwork, shared_ptr<Loss> loss, shared_ptr<Settings> settings) {
-			return new NetworkTrainer(context, move(networkRunner), move(gradientCalculator), trainingAlgorithm, logger, pyNetwork, loss, settings);
+			return new NetworkTrainer(context, move(networkRunner), move(backPropagator), trainingAlgorithm, logger, pyNetwork, loss, settings);
 		}
 
 		void TrainNetwork(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,

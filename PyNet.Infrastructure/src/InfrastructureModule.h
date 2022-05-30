@@ -7,7 +7,7 @@
 #include "Logger.h"
 #include "AdjustmentCalculator.h"
 #include "SteepestDescent.h"
-#include "GradientCalculator.h"
+#include "BackPropagator.h"
 #include "PyNetwork.h"
 #include "NetworkRunner.h"
 #include "NetworkTrainer.h"
@@ -43,7 +43,7 @@ namespace PyNet::Infrastructure {
 
 			builder.RegisterType<SteepestDescent>()->As<TrainingAlgorithm>();
 
-			builder.RegisterType<GradientCalculator>()->AsSelf();
+			builder.RegisterType<BackPropagator>()->AsSelf();
 
 			builder.RegisterType<PyNetwork>()->AsSelf();
 

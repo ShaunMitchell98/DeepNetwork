@@ -33,17 +33,18 @@ namespace PyNet::Infrastructure {
                     totalLossForCurrentEpoch += loss;
                     _logger->LogLine("The loss is: " + to_string(loss));
 
-                    vector<Layer*> tempLayers;
-
-                    for (auto& layer : _pyNetwork->Layers) {
-                        tempLayers.push_back(layer.get());
-                    }
-
                     auto lossDerivative = _loss->CalculateDerivative(*expectedMatrix, *actualMatrix);
 
-                    _gradientCalculator->CalculateGradients(tempLayers, *lossDerivative);
+                    _backPropagator->Propagate(*_pyNetwork, *lossDerivative);
 
                     if (batchNumber == batchSize) {
+
+                        vector<Layer*> tempLayers;
+
+                        for (auto& layer : _pyNetwork->Layers)
+                        {
+                            tempLayers.push_back(layer.get());
+                        }
 
                         auto tempTrainableLayers = all(tempLayers)
                             | filter([](Layer* layer) { return dynamic_cast<TrainableLayer*>(layer); })

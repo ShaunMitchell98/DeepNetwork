@@ -1,18 +1,18 @@
-#include "GradientCalculator.h"
+#include "BackPropagator.h"
 #include "Layers/TrainableLayer.h"
 
 namespace PyNet::Infrastructure {
 
-	void GradientCalculator::CalculateGradients(vector<Layer*> layers, Matrix& lossDerivative)
+	void BackPropagator::Propagate(const PyNetwork& pyNetwork, Matrix& lossDerivative) const
 	{
 		unique_ptr<Matrix> dLoss_dOutput_Ptr;
 		auto& dLoss_dOutput = lossDerivative;
 
-		for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
+		for (auto it = pyNetwork.Layers.rbegin(); it != pyNetwork.Layers.rend(); ++it) {
 
-			auto layer = *it;
+			auto& layer = *it;
 
-			auto trainableLayer = dynamic_cast<TrainableLayer*>(layer);
+			auto trainableLayer = dynamic_cast<TrainableLayer*>(layer.get());
 
 			if (trainableLayer != nullptr)
 			{
