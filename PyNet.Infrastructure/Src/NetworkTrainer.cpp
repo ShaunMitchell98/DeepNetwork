@@ -1,7 +1,9 @@
 #include "NetworkTrainer.h"
 #include <ranges>
 
-using namespace std::views;
+#ifdef _WIN32
+using namespace std::ranges::views;
+#endif
 
 namespace PyNet::Infrastructure {
     
@@ -46,11 +48,27 @@ namespace PyNet::Infrastructure {
                             tempLayers.push_back(layer.get());
                         }
 
+                        #ifdef _WIN32
                         auto tempTrainableLayers = all(tempLayers)
                             | filter([](Layer* layer) { return dynamic_cast<TrainableLayer*>(layer); })
                             | transform([](Layer* layer) { return dynamic_cast<TrainableLayer*>(layer); });
 
                         trainableLayers = vector<TrainableLayer*>(tempTrainableLayers.begin(), tempTrainableLayers.end());
+
+                        #else
+
+                        trainableLayers = vector<TrainableLayer*>();
+
+                        for (auto& layer : tempLayers)
+                        {
+                            auto trainableLayer = dynamic_cast<TrainableLayer*>(layer);
+
+                            if (trainableLayer != nullptr) 
+                            {
+                                trainableLayers.push_back(trainableLayer);
+                            }
+                        }
+                        #endif
 
                         _logger->LogLine("The learning rate is: " + to_string(learningRate));
                         _trainingAlgorithm->UpdateWeights(trainableLayers, learningRate, false);

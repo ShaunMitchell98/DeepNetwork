@@ -19,5 +19,6 @@ namespace PyNet::Infrastructure::Layers {
 		size_t GetCols() const { return Input->GetCols(); }
 		virtual shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) = 0;
 		virtual unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const = 0;
+		virtual ~Layer() = default;
 	};
 }

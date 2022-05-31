@@ -12,7 +12,7 @@ namespace PyNet::Infrastructure::Layers {
 
 		FlattenLayer(unique_ptr<Matrix> input) : Layer(move(input)) {}
 
-		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) {
+		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override {
 			
 			Input = input;
 			Output = input->Copy();

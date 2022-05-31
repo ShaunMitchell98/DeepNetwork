@@ -4,6 +4,9 @@
 #include "ReceptiveFieldProvider.h"
 #include "MatrixPadder.h"
 #include <algorithm>
+#include <ranges>
+
+using namespace std;
 
 namespace PyNet::Infrastructure::Layers {
 	class MaxPoolingLayer : public Layer {
@@ -44,14 +47,29 @@ namespace PyNet::Infrastructure::Layers {
 
 					auto& values = receptiveField->GetCValues();
 
+					#ifdef _WIN32
 					(*Output)(row, col) = *ranges::max_element(values);
+					#else
+
+					auto largest = values.front();
+
+					for (auto& element : values) 
+					{
+						if (element > largest) 
+						{
+							largest = element;
+						}
+					}
+
+					(*Output)(row, col) = largest;
+					#endif
 				}
 			}
 
 			return Output;
 		}
 
-		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const {
+		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override {
 
 			auto dLoss_dInput = dLoss_dOutput.Copy();
 
@@ -71,7 +89,7 @@ namespace PyNet::Infrastructure::Layers {
 					for (size_t outputRow = outputStartRow; outputRow <= outputEndRow; outputRow++) {
 						for (size_t outputCol = outputStartCol; outputCol <= outputEndCol; outputCol++) {
 
-							if ((*Output)(outputRow, outputCol) = (*Input)(inputRow, inputCol)) {
+							if ((*Output)(outputRow, outputCol) == (*Input)(inputRow, inputCol)) {
 								sum += dLoss_dOutput(outputRow, outputCol);
 							}
 						}

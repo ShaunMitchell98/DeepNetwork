@@ -1,4 +1,3 @@
-#pragma once
 #include <memory>
 #include "Startup.h"
 #include "InfrastructureModule.h"
@@ -20,17 +19,20 @@ namespace PyNet::Infrastructure {
 
 	void Startup::RegisterServices(const ContextBuilder& builder, shared_ptr<Settings> settings) const {
 
-		if (settings->CudaEnabled) {
 #ifdef CUDA
+		if (settings->CudaEnabled) {
 			auto cudaModule = make_unique<CudaModule>();
 			cudaModule->Load(builder);
-#endif
 		}
 		else
 		{
 			auto cpuModule = make_unique<CpuModule>();
 			cpuModule->Load(builder);
 		}
+#else
+		auto cpuModule = make_unique<CpuModule>();
+		cpuModule->Load(builder);
+#endif
 
 		auto infrastructureModule = make_unique<InfrastructureModule>(settings);
 		infrastructureModule->Load(builder);

@@ -32,7 +32,7 @@ namespace PyNet::Infrastructure::Layers {
 			return output;
 		}
 
-		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const {
+		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override {
 			return dLoss_dOutput.Copy();
 		}
 	};
