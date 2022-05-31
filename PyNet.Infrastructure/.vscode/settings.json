@@ -2,6 +2,7 @@
     "files.associations": {
         "memory": "cpp",
         "stack": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "ranges": "cpp"
     }
 }

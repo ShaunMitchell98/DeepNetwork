@@ -13,7 +13,7 @@ namespace PyNet::Infrastructure::Activations {
 
 		Relu(unique_ptr<Matrix> input) : Activation(move(input)) {}
 
-		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) {
+		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override {
 
 			Input = input;
 			return Input->Max(0);

@@ -5,7 +5,7 @@ find_package(CUDAToolkit)
 IF (CUDAToolkit_FOUND)
   project(PyNet.Infrastructure LANGUAGES CXX CUDA)
 ELSE()
-  project(PyNet.Infrastructure)
+  project(PyNet.Infrastructure LANGUAGES C CXX)
 ENDIF()
 
 # specify the C++ standard
@@ -16,6 +16,7 @@ set(C_STANDARD C17)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set (CMAKE_POLICY_DEFAULT_CMP0025 NEW)
 
 # include files
 include_directories( ./include 
@@ -95,10 +96,11 @@ add_subdirectory( ./libs/PyNet.Models.Cpu )
 add_subdirectory( ./libs/PyNet.DI)
 add_subdirectory( ./libs/PyNet.Console )
 add_subdirectory( ./libs/PyNet.Models.Cpu/tests )
-add_subdirectory( ./libs/PyNet.Models.Cuda/tests )
+
 add_subdirectory( ./tests)
 
 IF (CUDAToolkit_FOUND)
+	add_subdirectory( ./libs/PyNet.Models.Cuda/tests )
 	target_link_libraries( PyNet.Infrastructure PyNet.Models.Cuda )
 ENDIF()
 

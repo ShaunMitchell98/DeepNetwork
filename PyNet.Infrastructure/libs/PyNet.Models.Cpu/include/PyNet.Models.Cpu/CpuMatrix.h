@@ -2,6 +2,7 @@
 #include <memory>
 #include "PyNet.Models/Matrix.h"
 #include <algorithm>
+#include <cmath>
 
 using namespace PyNet::Models;
 using namespace std;

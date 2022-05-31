@@ -40,7 +40,7 @@ namespace PyNet::Infrastructure::Layers
             return Output;
         }
 
-        unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const 
+        unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override
         {
             if (dLoss_dOutput.GetCols() != 1) 
             {

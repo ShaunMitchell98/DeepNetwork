@@ -52,7 +52,7 @@ namespace PyNet::Models {
 
 		int GetSize() const { return GetCols() * GetRows(); }
 
-		const double* GetAddress(size_t row, size_t col) inline const 
+		const double* GetAddress(size_t row, size_t col) const 
 		{
 			return &Values[(row-1) * Cols + (col-1)];
 		}

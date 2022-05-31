@@ -44,7 +44,7 @@ namespace PyNet::Infrastructure::Tests::Layers
 			Adjusted = true;
 		}
 
-		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const 
+		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override
 		{
 			auto output = dLoss_dOutput.Copy();
 
