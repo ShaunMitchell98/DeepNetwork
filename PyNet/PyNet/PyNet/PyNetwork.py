@@ -98,7 +98,7 @@ class PyNetwork:
         expected_arr_ptr = convert_numpy_array_to_2d_double_array(expected_arrays)
 
         self.lib.PyNetwork_Train(self.obj, input_arr_ptr, expected_arr_ptr, input_layers.shape[0], batch_size,
-                                          learning_rate, momentum, epochs)
+                                 learning_rate, momentum, epochs)
 
     def SetVariableLearning(self, errorThreshold: float, lrDecrease: float, lrIncrease: float):
         self.lib.PyNetwork_SetVariableLearning(self.obj, errorThreshold, lrDecrease, lrIncrease)

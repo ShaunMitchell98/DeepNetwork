@@ -45,7 +45,7 @@ namespace PyNet::Models {
 
 		const double& operator()(size_t row, size_t col) const;
 
-		void Initialise(size_t rows, size_t cols, bool generateWeights);
+		void Initialise(size_t rows, size_t cols, bool generateWeights = false);
 
 		virtual size_t GetCols() const { return Cols; }
 		virtual size_t GetRows() const { return Rows; }
@@ -63,6 +63,19 @@ namespace PyNet::Models {
 			Rows = m.Rows;
 			Cols = m.Cols;
 			Values = m.Values;
+		}
+
+		void operator=(double* input) 
+		{
+			Values.clear();
+
+			for (size_t i = 0; i < Rows; i++)
+			{
+				for (size_t j = 0; j < Cols; j++)
+				{
+					Values.push_back(*(input + (i * Cols) + j));
+				}
+			}
 		}
 
 		unique_ptr<Matrix> operator/(const double d) const {

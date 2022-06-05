@@ -15,6 +15,7 @@
 #include "Layers/SoftmaxLayer.h"
 #include "NetworkRunner.h"
 #include "NetworkTrainer.h"
+#include "PyNet.Models/ILogger.h"
 #include <memory>
 
 using namespace PyNet::DI;
@@ -119,6 +120,10 @@ namespace PyNet::Infrastructure {
 
 		auto pyNetwork = context->GetShared<PyNetwork>();
 		auto softmaxLayer = context->GetUnique<SoftmaxLayer>();
+
+		auto rows = pyNetwork->Layers.back()->GetRows();
+
+		softmaxLayer->Initialise(rows, 1);
 		pyNetwork->Layers.push_back(move(softmaxLayer));
 	}
 
@@ -129,7 +134,14 @@ namespace PyNet::Infrastructure {
 		auto settings = context->GetShared<Settings>();
 		settings->RunMode = RunMode::Running;
 		auto networkRunner = context->GetShared<NetworkRunner>();
-		auto output = networkRunner->Run(inputLayer);
+
+		auto pyNetwork = context->GetShared<PyNetwork>();
+		auto inputMatrix = context->GetShared<Matrix>();
+		inputMatrix->Initialise(pyNetwork->Layers.front()->GetRows(), pyNetwork->Layers.front()->GetCols());
+		*inputMatrix = inputLayer;
+
+
+		auto output = networkRunner->Run(inputMatrix);
 		return output->GetAddress(1, 1);
 	}
 
@@ -137,8 +149,10 @@ namespace PyNet::Infrastructure {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
-		auto networkTrainer = context->GetShared<NetworkTrainer>();
-		networkTrainer->SetVLSettings(errorThreshold, lrDecrease, lrIncrease);
+		auto vlSettings = context->GetShared<VariableLearningSettings>();
+		vlSettings->ErrorThreshold = errorThreshold;
+		vlSettings->LRDecrease = lrDecrease;
+		vlSettings->LRIncrease = lrIncrease;
 	}
 
 	EXPORT void PyNetwork_Train(void* input, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate,
@@ -146,13 +160,50 @@ namespace PyNet::Infrastructure {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
-		auto settings = context->GetShared<Settings>();
-		settings->RunMode = RunMode::Training;
-		settings->Momentum = momentum;
-		settings->NewBatch = true;
-		settings->BatchSize = batchSize;
-		settings->Epochs = epochs;
-		auto networkTrainer = context->GetShared<NetworkTrainer>();
-		networkTrainer->TrainNetwork(inputLayers, expectedOutputs, numberOfExamples, learningRate);
+		auto logger = context->GetShared<ILogger>();
+
+		try 
+		{
+			auto settings = context->GetShared<Settings>();
+			settings->RunMode = RunMode::Training;
+			settings->Momentum = momentum;
+			settings->NewBatch = true;
+			settings->BatchSize = batchSize;
+			settings->BaseLearningRate = learningRate;
+			settings->Epochs = epochs;
+			auto networkTrainer = context->GetShared<NetworkTrainer>();
+
+			auto pyNetwork = context->GetShared<PyNetwork>();
+			auto inputBaseMatrix = context->GetUnique<Matrix>();
+			inputBaseMatrix->Initialise(pyNetwork->Layers.front()->GetRows(), pyNetwork->Layers.front()->GetCols());
+
+			auto expectedOutputBaseMatrix = context->GetShared<Matrix>();
+			expectedOutputBaseMatrix->Initialise(pyNetwork->Layers.back()->GetRows(), pyNetwork->Layers.back()->GetCols());
+
+			auto trainingPairs = vector<pair<shared_ptr<Matrix>, shared_ptr<Matrix>>>();
+
+			for (auto i = 0; i < numberOfExamples; i++)
+			{
+				auto inputMatrix = shared_ptr<Matrix>(inputBaseMatrix->Copy().release());
+				*inputMatrix = inputLayers[i];
+
+				auto expectedOutputMatrix = shared_ptr<Matrix>(expectedOutputBaseMatrix->Copy().release());
+				*expectedOutputMatrix = expectedOutputs[i];
+
+				pair<shared_ptr<Matrix>, shared_ptr<Matrix>> pair;
+				pair.first = inputMatrix;
+				pair.second = expectedOutputMatrix;
+
+				trainingPairs.push_back(pair);
+			}
+
+			networkTrainer->TrainNetwork(trainingPairs);
+		}
+		catch (const char* message) 
+		{
+			logger->LogLine(message);
+			cout << message << endl;
+		}
+		
 	}
 }

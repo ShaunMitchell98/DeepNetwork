@@ -17,7 +17,7 @@ namespace PyNet::Infrastructure::Tests::Layers {
 
 		auto inputLayer = GetSharedService<InputLayer>();
 		inputLayer->Initialise(matrix->GetRows(), matrix->GetCols());
-		inputLayer->SetInput(matrix->GetValues().data());
+		inputLayer->SetInput(matrix);
 		auto output = inputLayer->Apply(matrix);
 
 		ASSERT_EQ(matrix->GetRows(), output->GetRows());
@@ -37,7 +37,7 @@ namespace PyNet::Infrastructure::Tests::Layers {
 
 		auto inputLayer = GetSharedService<InputLayer>();
 		inputLayer->Initialise(dLoss_dOutput->GetRows(), dLoss_dOutput->GetCols());
-		inputLayer->SetInput(dLoss_dOutput->GetValues().data());
+		inputLayer->SetInput(dLoss_dOutput);
 
 		ASSERT_NO_THROW(inputLayer->dLoss_dInput(*dLoss_dOutput));
 	}

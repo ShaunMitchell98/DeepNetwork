@@ -16,7 +16,11 @@ namespace PyNet::Infrastructure::Tests
 	{
 		auto pyNetwork = GetSharedService<PyNetwork>();
 
-		double input[5] = { 1.2, 2.4, 3.9, 4.3, 5.2 };
+		double inputValues[5] = { 1.2, 2.4, 3.9, 4.3, 5.2 };
+
+		auto input = GetSharedService<Matrix>();
+		input->Initialise(5, 1);
+		*input = inputValues;
 
 		auto inputLayer = GetUniqueService<InputLayer>();
 		inputLayer->Initialise(5, 1);

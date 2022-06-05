@@ -15,6 +15,8 @@
 #include "MatrixPadder.h"
 #include "DropoutRunner.h"
 #include "ReceptiveFieldProvider.h"
+#include "VLService.h"
+#include "VariableLearningSettings.h"
 
 using namespace PyNet::Models;
 using namespace PyNet::DI;
@@ -23,17 +25,19 @@ using namespace std;
 namespace PyNet::Infrastructure {
 
 	class InfrastructureModule : public Module {
-
-	private:
+		private:
 		shared_ptr<Settings> _settings;
-
 	public:
 
-		InfrastructureModule(shared_ptr<Settings> settings) : _settings{ settings } {}
+		InfrastructureModule(shared_ptr<Settings> settings) : _settings(settings) {}
 
 		void Load(const ContextBuilder& builder) const override {
 				
 			builder.RegisterType<QuadraticLoss>()->As<Loss>();
+
+			builder.RegisterType<VariableLearningSettings>()->AsSelf();
+
+			builder.RegisterType<VLService>()->AsSelf();
 
 			builder.RegisterInstance<Settings>(_settings, InstanceMode::Shared);
 

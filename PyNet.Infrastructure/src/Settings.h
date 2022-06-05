@@ -18,6 +18,7 @@ struct Settings {
 	bool CudaEnabled = false;
 	RunMode RunMode = RunMode::Training;
 	bool NewBatch = true;
+	double BaseLearningRate = 0.0;
 	int BatchSize = 0;
 	int Epochs = 0;
 	double Momentum = 0;

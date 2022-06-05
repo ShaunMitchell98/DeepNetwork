@@ -18,12 +18,12 @@ namespace PyNet::Infrastructure::Layers {
 			return new InputLayer(move(input));
 		}
 
-		void SetInput(double* input) {
-			Input->Set(Input->GetRows(), Input->GetCols(), input);
+		void SetInput(shared_ptr<Matrix> input) {
+			Input = input;
 		}
 
 		void Initialise(size_t rows, size_t cols) {
-			Input->Initialise(rows, cols, false);
+			Input->Initialise(rows, cols);
 		}
 
 		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override {

@@ -4,7 +4,6 @@
 #include "Layers/LayerModule.h"
 #include "Activations/ActivationModule.h"
 #include "PyNet.Models.Cpu/CpuModule.h"
-#include "Headers.h"
 
 #ifdef CUDA
 #include "PyNet.Models.Cuda/CudaModule.h"

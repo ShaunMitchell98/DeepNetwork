@@ -2,6 +2,7 @@
 #include "WeightMatrixGenerator.h"
 #include <stdexcept>
 #include <string>
+#include <format>
 
 namespace PyNet::Models {
 
@@ -24,10 +25,10 @@ namespace PyNet::Models {
 
 	double& Matrix::operator()(size_t row, size_t col) {
 		if (row > GetRows()) {
-			throw "Row out of bounds";
+			throw format("Row out of bounds. Requested row {} out of {}\n", row, GetRows());
 		}
 		else if (col > GetCols()) {
-			throw "Col out of bounds";
+			throw format("Col out of bounds. Requested col {} out of {}\n", col, GetCols());
 		}
 
 		return GetValues()[(row-1) * GetCols() + (col-1)];
@@ -35,10 +36,10 @@ namespace PyNet::Models {
 
 	const double& Matrix::operator()(size_t row, size_t col) const {
 		if (row > GetRows()) {
-			throw "Row out of bounds";
+			throw format("Row out of bounds. Requested row {} out of {}\n", row, GetRows());
 		}
 		else if (col > GetCols()) {
-			throw "Col out of bounds";
+			throw format("Col out of bounds. Requested col {} out of {}\n", col, GetCols());
 		}
 
 		return GetCValues()[(row -1) * GetCols() + (col - 1)];

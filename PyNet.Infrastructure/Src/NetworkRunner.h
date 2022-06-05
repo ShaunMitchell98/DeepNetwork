@@ -19,6 +19,6 @@ namespace PyNet::Infrastructure {
 			return new NetworkRunner{ pyNetwork };
 		}
 
-		shared_ptr<Matrix> Run(double* inputLayer);
+		shared_ptr<Matrix> Run(shared_ptr<Matrix> input);
 	};
 }

@@ -30,7 +30,7 @@ for learning_rate in learning_rates:
                     for number in numbers:
 
                         network = PyNetwork(False, False)
-                        #network.SetVariableLearning(0.04, 0.7, 1.05)
+                        # network.SetVariableLearning(0.04, 0.7, 1.05)
                         network.add_input_layer(784, 1)
                         # network.add_convolution_layer(3, ActivationFunctionType.RELU)
                         # network.add_max_pooling_layer(3)

@@ -83,6 +83,8 @@ add_library(PyNet.Infrastructure SHARED
 	./src/Activations/Relu.h
 	./src/Activations/ActivationModule.h
 	./src/Layers/SoftmaxLayer.h
+	./src/VLService.h
+	./src/VLService.cpp
 )
 
 # 3rd party libs

@@ -1,7 +1,6 @@
 #pragma once
-#include <memory>
-#include "Settings.h"
 #include "PyNet.DI/ContextBuilder.h"
+#include "Settings.h"
 #include "Headers.h"
 
 using namespace PyNet::DI;
