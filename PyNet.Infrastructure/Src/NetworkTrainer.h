@@ -30,15 +30,18 @@ namespace PyNet::Infrastructure {
 		shared_ptr<Loss> _loss;
 		unique_ptr<VLService> _vlService;
 		shared_ptr<Settings> _settings;
+		int _batchNumber;
+		double _learningRate;
+		double _totalLossForCurrentEpoch;
 
 		NetworkTrainer(shared_ptr<Context> context,
 			unique_ptr<NetworkRunner> networkRunner, unique_ptr<BackPropagator> backPropagator,
 			shared_ptr<TrainingAlgorithm> trainingAlgirithm, shared_ptr<PyNetwork> pyNetwork,
 			shared_ptr<Loss> loss, shared_ptr<Settings> settings, unique_ptr<VLService> vlService) :
 		_context(context), _networkRunner(move(networkRunner)), _backPropagator(move(backPropagator)), _trainingAlgorithm(trainingAlgirithm),
-			_pyNetwork(pyNetwork), _loss(loss), _settings(settings), _vlService(move(vlService)) {}
+			_pyNetwork(pyNetwork), _loss(loss), _settings(settings), _vlService(move(vlService)), _batchNumber{ 1 }, _learningRate{ 0 }, _totalLossForCurrentEpoch{ 0.0 } {}
 
-		void TrainOnExample(shared_ptr<Matrix> input, const Matrix& expectedOutput, int& batchNumber, double& learningRate, double& totalLossForCurrentEpoch, vector<TrainableLayer*> trainableLayers);
+		void TrainOnExample(shared_ptr<Matrix> input, const Matrix& expectedOutput, vector<TrainableLayer*> trainableLayers);
 
 	public:
 
