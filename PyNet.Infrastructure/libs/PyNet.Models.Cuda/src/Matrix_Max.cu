@@ -41,12 +41,14 @@ void internalMatrixMax(double* A, double* B, double* C, int rows, int cols) {
 
 void matrix_max(const vector<double>& A, double input, vector<double>& C, int Arows, int Acols) {
 
+    const std::vector<double> bVector{ input };
+
     CudaArray<double> d_A(A.size());
-    CudaArray<double> d_B(sizeof(double));
+    CudaArray<double> d_B(bVector.size());
     CudaArray<double> d_C(C.size());
 
     d_A.set(A);
-    d_B.set(vector<double>(input));
+    d_B.set(bVector);
 
     internalMatrixMax(d_A.getData(), d_B.getData(), d_C.getData(), Arows, Acols);
     d_C.get(C.data(), C.size());
