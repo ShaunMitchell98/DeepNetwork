@@ -150,7 +150,9 @@ namespace PyNet::Infrastructure {
 		settings->RunMode = RunMode::Training;
 		settings->Momentum = momentum;
 		settings->NewBatch = true;
+		settings->BatchSize = batchSize;
+		settings->Epochs = epochs;
 		auto networkTrainer = context->GetShared<NetworkTrainer>();
-		networkTrainer->TrainNetwork(inputLayers, expectedOutputs, numberOfExamples, batchSize, learningRate, momentum, epochs);
+		networkTrainer->TrainNetwork(inputLayers, expectedOutputs, numberOfExamples, learningRate);
 	}
 }

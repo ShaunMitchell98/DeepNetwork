@@ -6,8 +6,8 @@ namespace PyNet::Models {
 
 	class Loss {
 	public:
-		virtual	double CalculateLoss(Matrix& expected, Matrix& actual) = 0;
-		virtual std::unique_ptr<Matrix> CalculateDerivative(Matrix& expected, Matrix& actual) = 0;
+		virtual	double CalculateLoss(const Matrix& expected, const Matrix& actual) const = 0;
+		virtual unique_ptr<Matrix> CalculateDerivative(const Matrix& expected, const Matrix& actual) const = 0;
 		virtual ~Loss() = default;
 	};
 }

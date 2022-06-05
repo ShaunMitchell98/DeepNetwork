@@ -39,6 +39,11 @@ namespace PyNet::Infrastructure {
 		_context(context), _networkRunner(move(networkRunner)), _backPropagator(move(backPropagator)), _trainingAlgorithm(trainingAlgirithm),
 			_logger(logger), _pyNetwork(pyNetwork), _loss(loss), _settings(settings) {}
 
+		void TrainExamples(double* inputLayer, const Matrix& expectedOutput, int& batchNumber, double& learningRate, double& totalLossForCurrentEpoch, vector<TrainableLayer*> trainableLayers);
+		void VariableLearning(double** inputLayers, double** expectedOutputs, Matrix& actualMatrix, int numberOfExamples, Matrix& expectedMatrix,
+			double totalLossForCurrentEpoch, double& learningRate, vector<TrainableLayer*>& trainableLayers);
+		void UpdateNetwork(double learningRate, int& batchNumber, vector<TrainableLayer*> trainableLayer);
+
 	public:
 
 		static auto factory(shared_ptr<Context> context,
@@ -47,8 +52,7 @@ namespace PyNet::Infrastructure {
 			return new NetworkTrainer(context, move(networkRunner), move(backPropagator), trainingAlgorithm, logger, pyNetwork, loss, settings);
 		}
 
-		void TrainNetwork(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,
-			double momentum, int epochs);
+		void TrainNetwork(double** inputLayers, double** expectedOutputs, int numberOfExamples, double baseLearningRate);
 
 		void SetVLSettings(double errorThreshold, double lrDecrease, double lrIncrease);
 	};

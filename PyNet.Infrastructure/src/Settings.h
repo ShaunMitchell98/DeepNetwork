@@ -19,5 +19,6 @@ struct Settings {
 	RunMode RunMode = RunMode::Training;
 	bool NewBatch = true;
 	int BatchSize = 0;
+	int Epochs = 0;
 	double Momentum = 0;
 };

@@ -13,8 +13,8 @@ namespace PyNet::Infrastructure {
 			return new QuadraticLoss();
 		}
 
-		double CalculateLoss(Matrix& expected, Matrix& actual) override;
-		unique_ptr<Matrix> CalculateDerivative(Matrix& expected, Matrix& actual) override;
+		double CalculateLoss(const Matrix& expected, const Matrix& actual) const override;
+		unique_ptr<Matrix> CalculateDerivative(const Matrix& expected, const Matrix& actual) const override;
 		~QuadraticLoss() override = default;
 	};
 }
