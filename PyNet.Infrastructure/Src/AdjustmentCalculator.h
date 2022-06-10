@@ -4,6 +4,7 @@
 #include "PyNet.Models/Matrix.h"
 #include "PyNet.DI/Context.h"
 #include "Settings.h"
+#include "TrainingState.h"
 #include "Headers.h"
 
 using namespace std;
@@ -15,13 +16,15 @@ namespace PyNet::Infrastructure {
 	{
 	private:
 		shared_ptr<Settings> _settings;
+		shared_ptr<TrainingState> _trainingState;
 		shared_ptr<PyNet::DI::Context> _context;
-		AdjustmentCalculator(shared_ptr<Settings> settings, shared_ptr<PyNet::DI::Context> context) : _settings(settings), _context(context) {}
+		AdjustmentCalculator(shared_ptr<Settings> settings, shared_ptr<TrainingState> trainingState, 
+			shared_ptr<PyNet::DI::Context> context) : _settings(settings), _trainingState(trainingState), _context(context) {}
 
 	public:
 
-		static auto factory(shared_ptr<Settings> settings, shared_ptr<PyNet::DI::Context> context) {
-			return new AdjustmentCalculator(settings, context);
+		static auto factory(shared_ptr<Settings> settings, shared_ptr<TrainingState> trainingState, shared_ptr<PyNet::DI::Context> context) {
+			return new AdjustmentCalculator(settings, trainingState, context);
 		}
 
 		void CalculateWeightAdjustment(Matrix& newAdjustment, Matrix& total);

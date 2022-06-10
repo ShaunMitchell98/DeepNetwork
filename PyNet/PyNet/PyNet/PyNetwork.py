@@ -1,5 +1,6 @@
 import numpy as np
 import ctypes
+from PyNet.PyNet.Settings import Settings
 from PyNet.PyNet.NumpyArrayConversion import convert_numpy_array_to_2d_double_array
 
 
@@ -31,11 +32,8 @@ class PyNetwork:
         self.lib.PyNetwork_Run.restype = ctypes.POINTER(ctypes.c_double)
 
         self.lib.PyNetwork_Train.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.POINTER(ctypes.c_double)),
-                                             ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.c_int,
-                                             ctypes.c_int,
-                                             ctypes.c_double,
-                                             ctypes.c_double,
-                                             ctypes.c_int]
+                                             ctypes.POINTER(ctypes.POINTER(ctypes.c_double)),
+                                             ctypes.POINTER(Settings)]
 
         self.lib.PyNetwork_SetVariableLearning.argtypes = [ctypes.c_void_p, ctypes.c_double, ctypes.c_double,
                                                            ctypes.c_double]
@@ -79,9 +77,7 @@ class PyNetwork:
         return np.ctypeslib.as_array(results, shape=(self.outputNumber,))
 
     def train(self, input_layers: np.ndarray,
-              expected_outputs: np.ndarray, numberOfOutputOptions: int, batch_size: int, learning_rate: float,
-              epochs: int,
-              momentum: float = 0):
+              expected_outputs: np.ndarray, numberOfOutputOptions: int, settings: Settings):
 
         flattened_array = np.zeros(shape=(input_layers.shape[0], input_layers.shape[1] * input_layers.shape[2]))
         for j in range(0, input_layers.shape[0]):
@@ -97,8 +93,7 @@ class PyNetwork:
 
         expected_arr_ptr = convert_numpy_array_to_2d_double_array(expected_arrays)
 
-        self.lib.PyNetwork_Train(self.obj, input_arr_ptr, expected_arr_ptr, input_layers.shape[0], batch_size,
-                                 learning_rate, momentum, epochs)
+        self.lib.PyNetwork_Train(self.obj, input_arr_ptr, expected_arr_ptr, ctypes.pointer(settings))
 
     def SetVariableLearning(self, errorThreshold: float, lrDecrease: float, lrIncrease: float):
         self.lib.PyNetwork_SetVariableLearning(self.obj, errorThreshold, lrDecrease, lrIncrease)

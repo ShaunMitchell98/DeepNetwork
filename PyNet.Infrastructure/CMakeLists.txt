@@ -85,6 +85,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/Layers/SoftmaxLayer.h
 	./src/VLService.h
 	./src/VLService.cpp
+	./src/TrainingState.h
 )
 
 # 3rd party libs

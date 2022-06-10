@@ -2,6 +2,7 @@
 
 #include <string_view>
 #include "PyNet.Models/Matrix.h"
+#include <format>
 
 namespace PyNet::Models {
 
@@ -12,12 +13,12 @@ namespace PyNet::Models {
 	public:
 
 		/// <summary>
-		/// Generates a log message prepended with the current date and time.
+		/// Generates a log message prepended with the current epoch and example number.
 		/// </summary>
 		/// <param name="message">The message to be logged.</param>
-		virtual void LogMessage(std::string_view message) const = 0;
-		virtual void LogMessageWithoutDate(std::string_view message) const = 0;
-		virtual void LogLine(std::string_view message) const = 0;
+		virtual void LogMessage(const string_view message, format_args args = make_format_args()) const = 0;
+		virtual void LogMessageWithoutPreamble(std::string_view message) const = 0;
+		virtual void LogLine(const string_view message, format_args args = make_format_args(0)) const = 0;
 		virtual ~ILogger() = default;
 		virtual void LogMatrix(const PyNet::Models::Matrix& m) const = 0;
 	};

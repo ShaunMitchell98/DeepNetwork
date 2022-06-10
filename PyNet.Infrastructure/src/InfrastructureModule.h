@@ -17,6 +17,7 @@
 #include "ReceptiveFieldProvider.h"
 #include "VLService.h"
 #include "VariableLearningSettings.h"
+#include "TrainingState.h"
 
 using namespace PyNet::Models;
 using namespace PyNet::DI;
@@ -40,6 +41,8 @@ namespace PyNet::Infrastructure {
 			builder.RegisterType<VLService>()->AsSelf();
 
 			builder.RegisterInstance<Settings>(_settings, InstanceMode::Shared);
+
+			builder.RegisterType<TrainingState>()->AsSelf();
 
 			builder.RegisterType<Logger>()->As<ILogger>();
 				

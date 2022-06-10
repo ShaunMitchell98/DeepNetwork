@@ -4,31 +4,35 @@ namespace PyNet::Infrastructure {
 
 	void AdjustmentCalculator::CalculateWeightAdjustment(Matrix& newAdjustment, Matrix& total) {
 
-		auto adjustmentWithMomentum = newAdjustment * (1 - _settings->Momentum);
+		//auto adjustmentWithMomentum = newAdjustment * (1 - _settings->Momentum);
 
-		if (_settings->NewBatch) {
+		if (_trainingState->NewBatch) {
 
-			if (_settings->Momentum > 0) {
-				adjustmentWithMomentum = *adjustmentWithMomentum - *(newAdjustment * _settings->Momentum);
-			}
+	/*		if (_settings->Momentum > 0) {
+				adjustmentWithMomentum = *adjustmentWithMomentum - *(total * _settings->Momentum);
+			}*/
 
-			total = *adjustmentWithMomentum;
+			//total = *adjustmentWithMomentum;
+			total = newAdjustment;
 		}
 		else {
-			total += *adjustmentWithMomentum;
+			//total += *adjustmentWithMomentum;
+			total += newAdjustment;
 		}
 	}
 
 	double AdjustmentCalculator::CalculateBiasAdjustment(double newAdjustment, double total) {
 
-		auto adjustmentWithMomentum = newAdjustment * (1 - _settings->Momentum);
+		//auto adjustmentWithMomentum = newAdjustment * (1 - _settings->Momentum);
 
-		if (_settings->NewBatch) {
-			auto totalAdjustment = adjustmentWithMomentum - (newAdjustment * _settings->Momentum);
-			total = totalAdjustment;
+		if (_trainingState->NewBatch) {
+			//auto totalAdjustment = adjustmentWithMomentum - (total * _settings->Momentum);
+			//total = totalAdjustment;
+			total = newAdjustment;
 		}
 		else {
-			total += adjustmentWithMomentum;
+			//total += adjustmentWithMomentum;
+			total += newAdjustment;
 		}
 
 		return total;

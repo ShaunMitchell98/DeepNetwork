@@ -155,8 +155,7 @@ namespace PyNet::Infrastructure {
 		vlSettings->LRIncrease = lrIncrease;
 	}
 
-	EXPORT void PyNetwork_Train(void* input, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate,
-		double momentum, int epochs) {
+	EXPORT void PyNetwork_Train(void* input, double** inputLayers, double** expectedOutputs, Settings* chosenSettings) {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
@@ -165,12 +164,17 @@ namespace PyNet::Infrastructure {
 		try 
 		{
 			auto settings = context->GetShared<Settings>();
+			auto trainingState = context->GetShared<TrainingState>();
+
+			settings->BaseLearningRate = chosenSettings->BaseLearningRate;
+			settings->BatchSize = chosenSettings->BatchSize;
+			settings->Epochs = chosenSettings->Epochs;
+			settings->Momentum = chosenSettings->Momentum;
+			settings->NumberOfExamples = chosenSettings->NumberOfExamples;
+			settings->StartExampleNumber = chosenSettings->StartExampleNumber;
+
 			settings->RunMode = RunMode::Training;
-			settings->Momentum = momentum;
-			settings->NewBatch = true;
-			settings->BatchSize = batchSize;
-			settings->BaseLearningRate = learningRate;
-			settings->Epochs = epochs;
+			trainingState->NewBatch = true;
 			auto networkTrainer = context->GetShared<NetworkTrainer>();
 
 			auto pyNetwork = context->GetShared<PyNetwork>();
@@ -182,7 +186,7 @@ namespace PyNet::Infrastructure {
 
 			auto trainingPairs = vector<pair<shared_ptr<Matrix>, shared_ptr<Matrix>>>();
 
-			for (auto i = 0; i < numberOfExamples; i++)
+			for (auto i = 0; i < settings->NumberOfExamples; i++)
 			{
 				auto inputMatrix = shared_ptr<Matrix>(inputBaseMatrix->Copy().release());
 				*inputMatrix = inputLayers[i];

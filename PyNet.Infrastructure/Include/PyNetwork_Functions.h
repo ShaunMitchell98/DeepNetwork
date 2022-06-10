@@ -1,6 +1,7 @@
 #pragma once
 #include "Activations/Activation.h"
 #include "Headers.h"
+#include "Settings.h"
 
 using namespace PyNet::Models;
 using namespace PyNet::Infrastructure::Activations;
@@ -30,7 +31,6 @@ namespace PyNet::Infrastructure {
 
 		EXPORT void PyNetwork_SetVariableLearning(void* input, double errorThreshold, double lrDecrease, double lrIncrease);
 
-		EXPORT void PyNetwork_Train(void* input, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate,
-			double momentum, int epochs);
+		EXPORT void PyNetwork_Train(void* input, double** inputLayers, double** expectedOutputs, Settings* settings);
 	}
 }

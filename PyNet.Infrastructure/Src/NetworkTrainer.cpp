@@ -9,20 +9,20 @@ namespace PyNet::Infrastructure
 
         auto trainableLayers = _pyNetwork->GetTrainableLayers();
 
-        auto exampleNumber = 1;
+        _trainingState->ExampleNumber = 1;
 
-        for (auto epoch = 1; epoch <= _settings->Epochs; epoch++)
+        for (_trainingState->Epoch = 1; _trainingState->Epoch <= _settings->Epochs; _trainingState->Epoch++)
         {
             for (auto& trainingPair : trainingPairs)
             {
                 TrainOnExample(trainingPair.first, *trainingPair.second, trainableLayers);
-                cout << "Epoch: " << epoch << ", Example Number: " << exampleNumber << endl;
-                exampleNumber++;
+                cout << "Epoch: " << _trainingState->Epoch << ", Example Number: " << _settings->StartExampleNumber + _trainingState->ExampleNumber << endl;
+                _trainingState->ExampleNumber++;
             }
 
-            exampleNumber = 1;
+            _trainingState->ExampleNumber = 1;
 
-            _vlService->RunVariableLearning(trainingPairs, _learningRate, _totalLossForCurrentEpoch);
+            //_vlService->RunVariableLearning(trainingPairs, _learningRate, _totalLossForCurrentEpoch);
 
             _totalLossForCurrentEpoch = 0.0;
         }
@@ -44,12 +44,12 @@ namespace PyNet::Infrastructure
         {
             _trainingAlgorithm->UpdateWeights(trainableLayers, _learningRate, false);
             _batchNumber = 1;
-            _settings->NewBatch = true;
+            _trainingState->NewBatch = true;
         }
         else
         {
             _batchNumber++;
-            _settings->NewBatch = false;
+            _trainingState->NewBatch = false;
         }
     }
 }

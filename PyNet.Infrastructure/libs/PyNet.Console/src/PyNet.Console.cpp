@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "Activations/Activation.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace PyNet::Infrastructure;
@@ -87,7 +88,7 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 
 int main()
 {
-	auto intermediary = PyNetwork_Initialise(false, true);
+	auto intermediary = PyNetwork_Initialise(true, true);
 	PyNetwork_AddInputLayer(intermediary, 784, 1);
 	//PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
 	//PyNetwork_AddMaxPoolingLayer(intermediary, 3);
@@ -122,7 +123,16 @@ int main()
 
 	GetData(folderPath, trainingExamplesFileName, inputs);
 	GetLabels(folderPath, trainingLabelsFileName, labels);
-	PyNetwork_Train(intermediary, inputs.data(), labels.data(), 10, 5, 0.01, 0, 10);
+
+	auto settings = make_unique<Settings>();
+	settings->BaseLearningRate = 0.01;
+	settings->BatchSize = 1;
+	settings->Epochs = 10;
+	settings->Momentum = 0.7;
+	settings->NumberOfExamples = 10;
+	settings->StartExampleNumber = 0;
+
+	PyNetwork_Train(intermediary, inputs.data(), labels.data(), settings.get());
 	PyNetwork_Run(intermediary, inputs[0]);
 	PyNetwork_Destruct(intermediary);
 

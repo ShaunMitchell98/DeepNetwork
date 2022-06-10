@@ -44,9 +44,11 @@ namespace PyNet::Infrastructure::Tests
 		auto expectedOutputMatrix = shared_ptr<Matrix>(input);
 
 		auto settings = GetSharedService<Settings>();
+
+		auto trainingState = GetSharedService<TrainingState>();
 		settings->RunMode = RunMode::Training;
 		settings->Momentum = 0.2;
-		settings->NewBatch = true;
+		trainingState->NewBatch = true;
 		settings->BatchSize = 3;
 		settings->BaseLearningRate = 0.1;
 		settings->Epochs = 2;
