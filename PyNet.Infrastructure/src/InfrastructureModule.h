@@ -15,6 +15,7 @@
 #include "NetworkTrainer.h"
 #include "BernoulliGenerator.h"
 #include "DropoutRunner.h"
+#include "TrainingState.h"
 
 using namespace PyNet::Models;
 using namespace PyNet::DI;
@@ -58,6 +59,8 @@ namespace PyNet::Infrastructure {
 			builder.RegisterType<BernoulliGenerator>()->AsSelf();
 
 			builder.RegisterType<DropoutRunner>()->AsSelf();
+
+			builder.RegisterType<TrainingState>()->AsSelf();
 		}
 	};
 }

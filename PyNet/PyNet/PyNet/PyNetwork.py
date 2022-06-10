@@ -49,7 +49,8 @@ class PyNetwork:
     def train(self, input_layers: np.ndarray,
               expected_outputs: np.ndarray, numberOfOutputOptions: int, batch_size: int, learning_rate: float,
               epochs: int,
-              momentum: float = 0):
+              momentum: float,
+              startExampleNumber: int):
 
         flattened_array = np.zeros(shape=(input_layers.shape[0], input_layers.shape[1] * input_layers.shape[2]))
         for j in range(0, input_layers.shape[0]):
@@ -66,7 +67,7 @@ class PyNetwork:
         expected_arr_ptr = convert_numpy_array_to_2d_double_array(expected_arrays)
 
         errors = self.lib.PyNetwork_Train(self.obj, input_arr_ptr, expected_arr_ptr, input_layers.shape[0], batch_size,
-                                          learning_rate, momentum, epochs)
+                                          learning_rate, momentum, epochs, startExampleNumber)
         return np.ctypeslib.as_array(errors, shape=(input_layers.shape[0],))
 
     def SetVariableLearning(self, errorThreshold: float, lrDecrease: float, lrIncrease: float):

@@ -6,8 +6,8 @@
 using namespace PyNet::Models;
 
 void normalise_layer(Vector& A, ILogger& logger) {
-    logger.LogLine("Normalising final layer");
-    logger.LogMessage(A.ToString());
+    //logger.LogLine("Normalising final layer");
+    //logger.LogMessage(A.ToString());
 
     auto sum = 0.0;
 
@@ -19,6 +19,6 @@ void normalise_layer(Vector& A, ILogger& logger) {
         A[i] = A[i] / sum;
     }
 
-    logger.LogLine("Final layer after normalisation: ");
-    logger.LogMessage(A.ToString());
+    //logger.LogLine("Final layer after normalisation: ");
+    //logger.LogMessage(A.ToString());
 }

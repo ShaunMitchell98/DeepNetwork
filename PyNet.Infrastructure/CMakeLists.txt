@@ -69,6 +69,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/BernoulliGenerator.cpp
 	./src/DropoutRunner.h
 	./src/DropoutRunner.cpp
+	./src/TrainingState.h
 )
 
 # 3rd party libs

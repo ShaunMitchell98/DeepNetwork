@@ -1,4 +1,5 @@
 #include "NetworkTrainer.h"
+#include <format>
 
 namespace PyNet::Infrastructure {
     
@@ -13,9 +14,11 @@ namespace PyNet::Infrastructure {
         _adjustmentCalculator->SetBatchSize(batchSize);
         _adjustmentCalculator->SetMomentum(momentum);
 
+        _trainingState->ExampleNumber = 1;
+
         try {
 
-            for (auto epoch = 0; epoch < epochs; epoch++) {
+            for (_trainingState->Epoch = 1; _trainingState->Epoch <= epochs; _trainingState->Epoch++) {
                 for (auto i = 0; i < numberOfExamples; i++) {
 
                     _networkRunner->Run(inputLayers[i]);
@@ -25,7 +28,7 @@ namespace PyNet::Infrastructure {
                     auto loss = _loss->CalculateLoss(*expectedVector, _pyNetwork->GetOutputLayer());
 
                     totalLossForCurrentEpoch += loss;
-                    _logger->LogLine("The loss is: " + to_string(loss));
+                    _logger->LogLine("Loss is {}", make_format_args(loss));
                     _pyNetwork->Losses.push_back(loss);
 
                     auto lossDerivative = _loss->CalculateDerivative(*expectedVector, _pyNetwork->GetOutputLayer());
@@ -34,10 +37,10 @@ namespace PyNet::Infrastructure {
 
                     if (batchNumber == batchSize) {
 
-                        _logger->LogLine("The learning rate is: " + to_string(learningRate));
+                        //_logger->LogLine("The learning rate is: " + to_string(learningRate));
                         _trainingAlgorithm->UpdateWeights(_pyNetwork->Weights, _pyNetwork->Biases, learningRate, false);
 
-                        printf("Iteration %d, Error is %f\n", i, loss);
+                        printf("Epoch %d, Iteration %d, Error is %f\n", _trainingState->Epoch, i + _settings->StartExampleNumber, loss);
                         batchNumber = 1;
                     }
                     else {
@@ -45,6 +48,7 @@ namespace PyNet::Infrastructure {
                         }
 
                     currentIteration++;
+                    _trainingState->ExampleNumber++;
                 }
 
                 if (_vlSettings != nullptr) {
@@ -71,6 +75,7 @@ namespace PyNet::Infrastructure {
                 }
 
                 totalLossForCurrentEpoch = 0.0;
+                _trainingState->ExampleNumber = 0;
             }
         }
         catch (const char* message) {

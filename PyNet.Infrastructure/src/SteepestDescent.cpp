@@ -1,5 +1,8 @@
 #include "SteepestDescent.h"
 #include <algorithm>
+#include <format>
+
+using namespace std;
 
 namespace PyNet::Infrastructure {
 
@@ -20,6 +23,11 @@ namespace PyNet::Infrastructure {
                 weightMatrices[index] = *weightMatrices[index] - *(*_adjustmentCalculator->GetWeightAdjustment(index) * learningRate);
                 biases[index] = *biases[index] - *biasAdjustmentVector;
             }
+
+            auto& value = *biases[index];
+            _logger->LogLine("Bias for trainable layer {} is {}", make_format_args(index, value[0]));
+            auto weight = (*weightMatrices[index])(1, 1);
+            _logger->LogLine("Weights for trainable layer {} are {}", make_format_args(index, weight));
         }
 
         _adjustmentCalculator->SetNewBatch(true);

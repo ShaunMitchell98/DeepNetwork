@@ -1,38 +1,56 @@
 #include <time.h>
 #include "Logger.h"
 #include <memory>
-#include <chrono>
 
-namespace PyNet::Infrastructure {
+namespace PyNet::Infrastructure
+{
 
-	void Logger::LogMessageWithoutDate(std::string_view message) const {
+	void Logger::LogMessageWithoutPreamble(std::string_view message) const
+	{
 
-		if (_enabled) {
+		if (_settings->LoggingEnabled)
+		{
 			auto stream = std::ofstream(_fileName, std::ios_base::app);
 			stream << message;
 			stream.close();
 		}
 	}
 
-	void Logger::LogMessage(std::string_view message) const {
-		if (_enabled) {
+	void Logger::LogMessage(const string_view message, format_args args) const
+	{
+		if (_settings->LoggingEnabled)
+		{
 
-			auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-			auto stream = std::ofstream(_fileName, std::ios_base::app);
-			stream << std::ctime(&time);
-			stream << message;
-			stream.close();
+			if (_trainingState->ExampleNumber % 10 == 0)
+			{
+				auto stream = std::ofstream(_fileName, std::ios_base::app);
+
+				stream << std::fixed;
+				auto temp = vformat(message, args);
+
+				auto output = format("Epoch: {}, Example Number: {}, {}", _trainingState->Epoch, _settings->StartExampleNumber + _trainingState->ExampleNumber, temp);
+				stream << output;
+				stream.close();
+			}
+
 		}
 	}
 
-	void Logger::LogLine(std::string_view message) const {
-		LogMessage(message);
-		LogMessageWithoutDate("\n");
+	void Logger::LogLine(const string_view message, format_args args) const
+	{
+
+		if (_trainingState->ExampleNumber % 10 == 0)
+		{
+			LogMessage(message, args);
+			LogMessageWithoutPreamble("\n");
+		}
 	}
 
-	void Logger::LogVector(const Vector& v) const {
-		if (_enabled) {
-			LogMessage(v.ToString());
+	void Logger::LogMatrix(const Matrix& m) const
+	{
+		if (_settings->LoggingEnabled && _trainingState->ExampleNumber % 10 == 0)
+		{
+			LogMessageWithoutPreamble(m.ToString());
 		}
 	}
 }

@@ -18,8 +18,8 @@ public:
 
 	void NormaliseLayer(Vector& v) {
 
-        _logger->LogLine("Normalising final layer");
-        _logger->LogMessage(v.ToString());
+        //_logger->LogLine("Normalising final layer");
+        //_logger->LogMessage(v.ToString());
 
         auto sum = 0.0;
 
@@ -31,7 +31,7 @@ public:
             v[i] = v[i] / sum;
         }
 
-        _logger->LogLine("Final layer after normalisation: ");
-        _logger->LogMessage(v.ToString());
+        //_logger->LogLine("Final layer after normalisation: ");
+        //_logger->LogMessage(v.ToString());
 	}
 };

@@ -15,5 +15,6 @@ struct Settings {
 	/// Determines whether logging messages should be outputted.
 	/// </summary>
 	bool LoggingEnabled;
+	int StartExampleNumber;
 	RunMode RunMode;
 };

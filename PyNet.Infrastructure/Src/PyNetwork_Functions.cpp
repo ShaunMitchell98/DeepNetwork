@@ -79,12 +79,15 @@ namespace PyNet::Infrastructure {
 	}
 
 	EXPORT double* PyNetwork_Train(void* input, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate,
-		double momentum, int epochs) {
+		double momentum, int epochs, int startExampleNumber) {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
 		auto settings = context->GetShared<Settings>();
+		auto trainingState = context->GetShared<TrainingState>();
 		settings->RunMode = RunMode::Training;
+		settings->StartExampleNumber = startExampleNumber;
+		trainingState->NewBatch = true;
 		auto networkTrainer = context->GetShared<NetworkTrainer>();
 		return networkTrainer->TrainNetwork(inputLayers, expectedOutputs, numberOfExamples, batchSize, learningRate, momentum, epochs);
 	}

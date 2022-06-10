@@ -18,6 +18,6 @@ namespace PyNet::Infrastructure {
 		EXPORT void PyNetwork_SetVariableLearning(void* input, double errorThreshold, double lrDecrease, double lrIncrease);
 
 		EXPORT double* PyNetwork_Train(void* input, double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double learningRate,
-			double momentum, int epochs);
+			double momentum, int epochs, int startExampleNumber);
 	}
 }

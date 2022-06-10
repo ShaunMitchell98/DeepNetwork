@@ -31,7 +31,7 @@ namespace PyNet::Infrastructure {
 			_adjustmentCalculator->AddBiasAdjustment(i, CalculateBiasGradient(*weightMatrices[i + 1.0], *layers[i], *layers[i + 1.0], *dLoss_dLayerAbove));
 		}
 
-		_logger->LogLine("Calculated gradient.");
+		//_logger->LogLine("Calculated gradient.");
 
 		_adjustmentCalculator->SetNewBatch(false);
 	}

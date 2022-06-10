@@ -6,6 +6,7 @@
 #include "PyNet.DI/Context.h"
 #include "AdjustmentCalculator.h"
 #include "TrainingAlgorithm.h"
+#include "PyNet.Models/ILogger.h"
 #include "Headers.h"
 
 using namespace PyNet::DI;
@@ -17,11 +18,12 @@ namespace PyNet::Infrastructure {
 	private:
 		shared_ptr<Context> _context;
 		shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
-		SteepestDescent(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator) :_context(context), _adjustmentCalculator(adjustmentCalculator) {}
+		shared_ptr<ILogger> _logger;
+		SteepestDescent(shared_ptr<Context> context, shared_ptr<ILogger> logger, shared_ptr<AdjustmentCalculator> adjustmentCalculator) :_context(context), _logger(logger), _adjustmentCalculator(adjustmentCalculator) {}
 	public:
 
-		static auto factory(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator) {
-			return new SteepestDescent{ context, adjustmentCalculator };
+		static auto factory(shared_ptr<Context> context, shared_ptr<ILogger> logger, shared_ptr<AdjustmentCalculator> adjustmentCalculator) {
+			return new SteepestDescent{ context, logger, adjustmentCalculator };
 		}
 
 		typedef TrainingAlgorithm base;
