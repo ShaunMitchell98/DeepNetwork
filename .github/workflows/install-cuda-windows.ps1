@@ -14,16 +14,16 @@ $CUDA_PACKAGES_IN = @(
 $CUDA_PACKAGES = ""
 
 $CUDA_MAJOR = 11
-$CUDA_MINOR = 6
+$CUDA_MINOR = 7
 
 Foreach ($package in $CUDA_PACKAGES_IN) {
-    $CUDA_PACKAGES += " $($package)_11.6"
+    $CUDA_PACKAGES += " $($package)_11.7"
 
 }
 
-$url = "https://developer.download.nvidia.com/compute/cuda/11.6.1/network_installers/cuda_11.6.1_windows_network.exe"
+$url = "https://developer.download.nvidia.com/compute/cuda/11.7.0/network_installers/cuda_11.7.0_windows_network.exe"
 
-$CUDA_REPO_PKG_LOCAL = "cuda_11.6.1.exe"
+$CUDA_REPO_PKG_LOCAL = "cuda_11.7.0.exe"
 Invoke-WebRequest $url -OutFile $CUDA_REPO_PKG_LOCAL
 
 if(Test-Path -Path $CUDA_REPO_PKG_LOCAL){
