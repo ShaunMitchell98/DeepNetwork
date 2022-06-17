@@ -17,20 +17,21 @@ namespace PyNet::Infrastructure::Layers {
 		shared_ptr<MatrixPadder> _matrixPadder;
 
 		MaxPoolingLayer(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder,
-			unique_ptr<Matrix> input) : _receptiveFieldProvider{ receptiveFieldProvider },
-			_matrixPadder{ matrixPadder }, Layer(move(input)) {}
+			unique_ptr<Matrix> input, unique_ptr<Matrix> output) : _receptiveFieldProvider{ receptiveFieldProvider },
+			_matrixPadder{ matrixPadder }, Layer(move(input), move(output)) {}
 
 	public:
 
-		static auto factory(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder, unique_ptr<Matrix> input) {
-			return new MaxPoolingLayer(receptiveFieldProvider, matrixPadder, move(input));
+		static auto factory(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder, unique_ptr<Matrix> input, 
+			unique_ptr<Matrix> output) {
+			return new MaxPoolingLayer(receptiveFieldProvider, matrixPadder, move(input), move(output));
 		}
 
 		void Initialise(int filterSize) {
 			_filterSize = filterSize;
 		}
 
-		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override {
+		shared_ptr<Matrix> ApplyInternal(shared_ptr<Matrix> input) override {
 
 			auto paddedMatrix = _matrixPadder->PadMatrix(*input, _filterSize);
 			Input = paddedMatrix;

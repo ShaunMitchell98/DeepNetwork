@@ -15,6 +15,8 @@ namespace PyNet::Infrastructure
 			output = layer->Apply(move(output));
 		}
 
+		output = _softMax->Apply(output);
+
 		return output;
 	}
 }

@@ -66,13 +66,14 @@ namespace PyNet::Infrastructure {
 
 		auto denseLayer = context->GetUnique<DenseLayer>();
 		denseLayer->Initialise(count, cols);
-		pyNetwork->Layers.push_back(move(denseLayer));
 
 		if (activationFunctionType == ActivationFunctionType::Logistic) {
-			auto logisticLayer = context->GetUnique<Logistic>();
-			logisticLayer->Initialise(count, 1);
-			pyNetwork->Layers.push_back(move(logisticLayer));
+			auto logistic = context->GetUnique<Logistic>();
+			logistic->Initialise(count, 1);
+			denseLayer->SetActivation(move(logistic));
 		}
+
+		pyNetwork->Layers.push_back(move(denseLayer));
 	}
 
 	EXPORT void PyNetwork_AddDropoutLayer(void* input, double rate, int rows, int cols) {
@@ -114,18 +115,18 @@ namespace PyNet::Infrastructure {
 		pyNetwork->Layers.push_back(move(flattenLayer));
 	}
 
-	EXPORT void PyNetwork_AddSoftmaxLayer(void* input) {
-		auto intermediary = static_cast<Intermediary*>(input);
-		auto context = intermediary->GetContext();
+	//EXPORT void PyNetwork_AddSoftmaxLayer(void* input) {
+	//	auto intermediary = static_cast<Intermediary*>(input);
+	//	auto context = intermediary->GetContext();
 
-		auto pyNetwork = context->GetShared<PyNetwork>();
-		auto softmaxLayer = context->GetUnique<SoftmaxLayer>();
+	//	auto pyNetwork = context->GetShared<PyNetwork>();
+	//	auto softmaxLayer = context->GetUnique<SoftmaxLayer>();
 
-		auto rows = pyNetwork->Layers.back()->GetRows();
+	//	auto rows = pyNetwork->Layers.back()->GetRows();
 
-		softmaxLayer->Initialise(rows, 1);
-		pyNetwork->Layers.push_back(move(softmaxLayer));
-	}
+	//	softmaxLayer->Initialise(rows, 1);
+	//	pyNetwork->Layers.push_back(move(softmaxLayer));
+	//}
 
 	EXPORT const double* PyNetwork_Run(void* input, double* inputLayer) {
 
@@ -198,7 +199,13 @@ namespace PyNet::Infrastructure {
 				pair.first = inputMatrix;
 				pair.second = expectedOutputMatrix;
 
-				trainingPairs.push_back(pair);
+				try {
+				
+					trainingPairs.push_back(pair);
+				}
+				catch (char* message) {
+					auto a = 5;
+				}
 			}
 
 			networkTrainer->TrainNetwork(trainingPairs);

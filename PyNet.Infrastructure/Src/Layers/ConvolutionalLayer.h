@@ -16,9 +16,10 @@ namespace PyNet::Infrastructure::Layers {
 		shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
 
 		ConvolutionalLayer(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder,
-			shared_ptr<AdjustmentCalculator> adjustmentCalculator, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights, unique_ptr<Matrix> input) :
+			shared_ptr<AdjustmentCalculator> adjustmentCalculator, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights, unique_ptr<Matrix> input,
+			unique_ptr<Matrix> output) :
 			_receptiveFieldProvider{ receptiveFieldProvider }, _matrixPadder{ matrixPadder }, _adjustmentCalculator{ adjustmentCalculator }, 
-			TrainableLayer(move(dLoss_dWeightSum), move(weights), move(input))
+			TrainableLayer(move(dLoss_dWeightSum), move(weights), move(input), move(output))
 		{
 			DLoss_dBiasSum = 0.01;
 		}
@@ -71,11 +72,12 @@ namespace PyNet::Infrastructure::Layers {
 		}
 
 		static auto factory(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder,
-			shared_ptr<AdjustmentCalculator> adjustmentCalculator, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights, unique_ptr<Matrix> input) {
-			return new ConvolutionalLayer(receptiveFieldProvider, matrixPadder, adjustmentCalculator, move(dLoss_dWeightSum), move(weights), move(input));
+			shared_ptr<AdjustmentCalculator> adjustmentCalculator, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights, unique_ptr<Matrix> input,
+			unique_ptr<Matrix> output) {
+			return new ConvolutionalLayer(receptiveFieldProvider, matrixPadder, adjustmentCalculator, move(dLoss_dWeightSum), move(weights), move(input), move(output));
 		}
 
-		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override
+		shared_ptr<Matrix> ApplyInternal(shared_ptr<Matrix> input) override
 		{
 			auto paddedMatrix = _matrixPadder->PadMatrix(*input, _filterSize);
 			Input = paddedMatrix;

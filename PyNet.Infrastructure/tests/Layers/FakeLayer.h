@@ -27,7 +27,7 @@ namespace PyNet::Infrastructure::Tests::Layers
 			_value = value;
 		}
 
-		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override 
+		shared_ptr<Matrix> ApplyInternal(shared_ptr<Matrix> input) override 
 		{
 			auto output = shared_ptr<Matrix>(input->Copy().release());
 

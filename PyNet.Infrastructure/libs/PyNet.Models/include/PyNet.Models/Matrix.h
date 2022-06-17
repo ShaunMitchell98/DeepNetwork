@@ -16,7 +16,8 @@ namespace PyNet::Models {
 		void GenerateRandomWeights(double* address, int count) {
 
 			for (int i = 0; i < count; i++) {
-				address[i] = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX) * 1000);
+				//address[i] = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX) * 1000);
+				address[i] = 0.01;
 			}
 		}
 
@@ -73,7 +74,14 @@ namespace PyNet::Models {
 			{
 				for (size_t j = 0; j < Cols; j++)
 				{
-					Values.push_back(*(input + (i * Cols) + j));
+					try {
+						Values.push_back(*(input + (i * Cols) + j));
+
+					}
+					catch (char* message)
+					{
+						auto a = 5;
+					}
 				}
 			}
 		}

@@ -2,6 +2,8 @@
 #include "Logger.h"
 #include <memory>
 
+#define EXTRA_LOGGING false
+
 namespace PyNet::Infrastructure {
 
 	void Logger::LogMessageWithoutPreamble(std::string_view message) const {
@@ -13,10 +15,12 @@ namespace PyNet::Infrastructure {
 		}
 	}
 
-	void Logger::LogMessage(const string_view message, format_args args) const {
-		if (_settings->LoggingEnabled) {
+	void Logger::LogMessage(const string_view message, format_args args) const
+	{
+		if (_settings->LoggingEnabled)
+		{
 
-			if (_trainingState->ExampleNumber % 10 == 0) 
+			if (_trainingState->ExampleNumber % 10 == 0 || EXTRA_LOGGING)
 			{
 				auto stream = std::ofstream(_fileName, std::ios_base::app);
 
@@ -27,21 +31,24 @@ namespace PyNet::Infrastructure {
 				stream << output;
 				stream.close();
 			}
-	
+
 		}
 	}
 
-	void Logger::LogLine(const string_view message, format_args args) const {
+	void Logger::LogLine(const string_view message, format_args args) const
+	{
 
-		if (_trainingState->ExampleNumber % 10 == 0)
+		if (_trainingState->ExampleNumber % 10 == 0 || EXTRA_LOGGING)
 		{
 			LogMessage(message, args);
 			LogMessageWithoutPreamble("\n");
 		}
 	}
 
-	void Logger::LogMatrix(const Matrix& m) const {
-		if (_settings->LoggingEnabled && _trainingState->ExampleNumber % 10 == 0) {
+	void Logger::LogMatrix(const Matrix& m) const
+	{
+		if (_settings->LoggingEnabled && _trainingState->ExampleNumber % 10 == 0 || EXTRA_LOGGING)
+		{
 			LogMessageWithoutPreamble(m.ToString());
 		}
 	}

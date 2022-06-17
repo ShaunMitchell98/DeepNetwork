@@ -19,11 +19,11 @@ train_images = train_images / 255.0
 
 test_images = test_images / 255.0
 
-batch_sizes: list[int] = [3]
-learning_rates: list[float] = [0.1]
+batch_sizes: list[int] = [1]
+learning_rates: list[float] = [0.05]
 momenta: list[float] = [0.7]
-epochs: list[int] = [5]
-numbers: list[int] = [40000]
+epochs: list[int] = [1]
+numbers: list[int] = [50000]
 dropoutRates: list[float] = [0.9]
 
 for learning_rate in learning_rates:
@@ -46,7 +46,7 @@ for learning_rate in learning_rates:
                         #network.add_dropout_layer(0.8, 784, 1)
                         #network.add_dense_layer(600, ActivationFunctionType.LOGISTIC)
                         #network.add_dropout_layer(0.5, 600, 1)
-                        network.add_dense_layer(600, ActivationFunctionType.LOGISTIC)
+                        #network.add_dense_layer(600, ActivationFunctionType.LOGISTIC)
                         network.add_dense_layer(500, ActivationFunctionType.LOGISTIC)
                         #network.add_dropout_layer(0.5, 500, 1)
                         #network.add_dropout_layer(0.8, 500, 1)
@@ -54,7 +54,7 @@ for learning_rate in learning_rates:
                         #network.add_dropout_layer(0.5, 129, 1)
                         #  network.add_dropout_layer(0.8, 129, 1)
                         network.add_dense_layer(10, ActivationFunctionType.LOGISTIC)
-                        network.add_softmax_layer()
+                        #network.add_softmax_layer()
 
                         startNumber = 0
                         endNumber = 200

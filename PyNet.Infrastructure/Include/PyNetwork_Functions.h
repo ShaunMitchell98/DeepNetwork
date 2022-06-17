@@ -25,7 +25,7 @@ namespace PyNet::Infrastructure {
 
 		EXPORT void PyNetwork_AddFlattenLayer(void* input);
 
-		EXPORT void PyNetwork_AddSoftmaxLayer(void* input);
+		//EXPORT void PyNetwork_AddSoftmaxLayer(void* input);
 
 		EXPORT const double* PyNetwork_Run(void* input, double* inputLayer);
 

@@ -29,7 +29,7 @@ namespace PyNet::Models::Cpu {
 
 			for (auto i = 1; i <= GetRows(); i++) {
 				for (auto j = 1; j <= m.GetCols(); j++) {
-					double tempValue = 0;
+					double tempValue = 0.0;
 					for (auto k = 1; k <= GetCols(); k++) {
 						tempValue += (*this)(i, k) * m(k, j);
 					}

@@ -8,16 +8,17 @@ using namespace PyNet::Models;
 
 namespace PyNet::Infrastructure::Layers
 {
-    class SoftmaxLayer : public Layer
+    class SoftmaxLayer : public Activation
     {
         private:
-        SoftmaxLayer(unique_ptr<Matrix> input) : Layer(move(input)) {}
+
+        SoftmaxLayer(unique_ptr<Matrix> input, unique_ptr<Matrix> output) : Activation(move(input)) {}
 
         public:
 
-        static auto factory(unique_ptr<Matrix> input)
+        static auto factory(unique_ptr<Matrix> input, unique_ptr<Matrix> output)
         {
-            return new SoftmaxLayer{ move(input) };
+            return new SoftmaxLayer{ move(input), move(output) };
         }
 
         void Initialise(size_t rows, size_t cols)
@@ -28,26 +29,25 @@ namespace PyNet::Infrastructure::Layers
         shared_ptr<Matrix> Apply(const shared_ptr<Matrix> input) override
         {
             Input = input;
-            Output = input->Copy();
 
             auto sum = 0.0;
 
             for (auto& i : *input)
             {
-                sum += exp(i);
+                sum += i;
             }
 
-            for (auto row = 1; row < input->GetRows(); row++) 
+            for (auto row = 1; row <= input->GetRows(); row++) 
             {
-                (*Output)(row, 1) = exp((*input)(row, 1)) / sum;
+                (*Input)(row, 1) = (*input)(row, 1) / sum;
             }
 
-            return Output;
+            return Input;
         }
 
-        unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override
+        unique_ptr<Matrix> Derivative(const Matrix& dLoss_dOutput) const override
         {
-            if (dLoss_dOutput.GetCols() != 1) 
+            /*if (dLoss_dOutput.GetCols() != 1) 
             {
                 throw "Expected a vector input";
             }
@@ -59,8 +59,12 @@ namespace PyNet::Infrastructure::Layers
             for (auto row = 1; row < dLoss_dOutput.GetRows(); row++) 
             {
                 (*dLoss_dInput)(row, 1) = (*Output)(row, 1) * ((dLoss_dOutput)(row, 1) - product);
-            }
+            }*/
 
+            //return dLoss_dInput;
+
+            auto dLoss_dInput = dLoss_dOutput.Copy();
+            dLoss_dInput->Set(dLoss_dOutput.GetRows(), dLoss_dOutput.GetCols(), dLoss_dOutput.GetAddress(1, 1));
             return dLoss_dInput;
         }
     };

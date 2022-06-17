@@ -19,9 +19,8 @@ namespace PyNet::Infrastructure::Activations {
 			return Input->Max(0);
 		}
 
-		unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const override {
-			auto derivative = Input->Step();
-			return dLoss_dOutput ^ *derivative;
+		unique_ptr<Matrix> Derivative(const Matrix& dLoss_dOutput) const override {
+			return Input->Step();
 		}
 	};
 }

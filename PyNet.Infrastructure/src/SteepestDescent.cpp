@@ -12,6 +12,10 @@ namespace PyNet::Infrastructure {
             auto biasAdjustment = average_dLoss_dBias * learningRate;
 
             auto average_dLoss_dWeight = *layers[i]->DLoss_dWeightSum / _settings->BatchSize;
+
+            //_logger->LogLine("Average dLoss_dWeight: ");
+            //_logger->LogMatrix(*average_dLoss_dWeight);
+
             auto weightAdjustment = *average_dLoss_dWeight * learningRate;
 
             if (reverse)
@@ -22,6 +26,10 @@ namespace PyNet::Infrastructure {
             else
             {
                 *layers[i]->Weights = *(*layers[i]->Weights - *weightAdjustment);
+
+                //_logger->LogLine("New weights: ");
+                //_logger->LogMatrix(*layers[i]->Weights);
+
                 layers[i]->Bias = layers[i]->Bias - biasAdjustment;
             }
 
