@@ -9,7 +9,7 @@ using namespace PyNet::Infrastructure::Activations;
 namespace PyNet::Infrastructure {
 	extern "C" {
 
-		EXPORT void* PyNetwork_Initialise(bool log, bool cudaEnabled);
+		EXPORT void* PyNetwork_Initialise(LogLevel logLevel, bool cudaEnabled);
 
 		EXPORT void PyNetwork_Destruct(void* input);
 

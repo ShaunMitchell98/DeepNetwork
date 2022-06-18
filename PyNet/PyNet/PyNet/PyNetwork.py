@@ -6,10 +6,10 @@ from PyNet.PyNet.NumpyArrayConversion import convert_numpy_array_to_2d_double_ar
 
 class PyNetwork:
 
-    def __init__(self, log: bool, cudaEnabled: bool):
+    def __init__(self, logLevel: int, cudaEnabled: bool):
 
         self.lib = ctypes.cdll.LoadLibrary(r"..\PyNet.Infrastructure\build\Release\PyNet.Infrastructure.dll")
-        self.lib.PyNetwork_Initialise.argtypes = [ctypes.c_bool, ctypes.c_bool]
+        self.lib.PyNetwork_Initialise.argtypes = [ctypes.c_int, ctypes.c_bool]
         self.lib.PyNetwork_Initialise.restype = ctypes.c_void_p
 
         self.lib.PyNetwork_AddInputLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
@@ -44,7 +44,7 @@ class PyNetwork:
 
         self.lib.PyNetwork_Destruct.argtypes = [ctypes.c_void_p]
 
-        self.obj = self.lib.PyNetwork_Initialise(log, cudaEnabled)
+        self.obj = self.lib.PyNetwork_Initialise(logLevel, cudaEnabled)
         self.outputNumber = 0
 
     def add_input_layer(self, rows: int, cols: int):

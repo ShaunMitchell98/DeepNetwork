@@ -7,7 +7,7 @@ namespace PyNet::Infrastructure
 	{
 		auto difference = expected - actual;
 		auto loss =  0.5 * (*difference | *difference);
-		_logger->LogLine("Loss is {}", make_format_args(loss));
+		_logger->LogInfo("Loss is {}", make_format_args(loss));
 		return loss;
 	}
 

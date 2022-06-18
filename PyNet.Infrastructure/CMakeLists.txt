@@ -86,6 +86,7 @@ add_library(PyNet.Infrastructure SHARED
 	./src/VLService.h
 	./src/VLService.cpp
 	./src/TrainingState.h
+	./include/LogLevel.h
 )
 
 # 3rd party libs

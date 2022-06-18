@@ -2,54 +2,58 @@
 #include "Logger.h"
 #include <memory>
 
-#define EXTRA_LOGGING false
-
-namespace PyNet::Infrastructure {
-
-	void Logger::LogMessageWithoutPreamble(std::string_view message) const {
-
-		if (_settings->LoggingEnabled) {
-			auto stream = std::ofstream(_fileName, std::ios_base::app);
-			stream << message;
-			stream.close();
-		}
-	}
-
-	void Logger::LogMessage(const string_view message, format_args args) const
+namespace PyNet::Infrastructure 
+{
+	void Logger::LogDebugMatrix(const Matrix& matrix, format_args args) const
 	{
-		if (_settings->LoggingEnabled)
+		if (_settings->LogLevel <= LogLevel::DEBUG) 
 		{
-
-			if (_trainingState->ExampleNumber % 10 == 0 || EXTRA_LOGGING)
-			{
-				auto stream = std::ofstream(_fileName, std::ios_base::app);
-
-				stream << std::fixed;
-				auto temp = vformat(message, args);
-
-				auto output = format("Epoch: {}, Example Number: {}, {}", _trainingState->Epoch, _settings->StartExampleNumber + _trainingState->ExampleNumber, temp);
-				stream << output;
-				stream.close();
-			}
-
+			LogMessage(matrix.ToString(), args);
+			LogMessageWithoutPreamble("\n");
 		}
 	}
 
-	void Logger::LogLine(const string_view message, format_args args) const
+	void Logger::LogDebug(const string_view message, format_args args) const
 	{
+		LogInternal(message, args, LogLevel::DEBUG);
+	}
 
-		if (_trainingState->ExampleNumber % 10 == 0 || EXTRA_LOGGING)
+
+	void Logger::LogInfo(const string_view message, format_args args) const
+	{
+		LogInternal(message, args, LogLevel::INFO);
+	}
+
+	void Logger::LogError(const string_view message, format_args args) const
+	{
+		LogInternal(message, args, LogLevel::ERROR);
+	}
+
+	void Logger::LogInternal(const string_view message, format_args args, LogLevel logLevel) const 
+	{
+		if (_settings->LogLevel <= logLevel)
 		{
 			LogMessage(message, args);
 			LogMessageWithoutPreamble("\n");
 		}
 	}
 
-	void Logger::LogMatrix(const Matrix& m) const
+	void Logger::LogMessageWithoutPreamble(string_view message) const
 	{
-		if (_settings->LoggingEnabled && _trainingState->ExampleNumber % 10 == 0 || EXTRA_LOGGING)
-		{
-			LogMessageWithoutPreamble(m.ToString());
-		}
+		auto stream = ofstream(_fileName, ios_base::app);
+		stream << message;
+		stream.close();
+	}
+
+	void Logger::LogMessage(const string_view message, format_args args) const
+	{
+		auto stream = ofstream(_fileName, ios_base::app);
+
+		stream << fixed;
+		auto temp = vformat(message, args);
+
+		auto output = format("Epoch: {}, Example Number: {}, {}", _trainingState->Epoch, _settings->StartExampleNumber + _trainingState->ExampleNumber, temp);
+		stream << output;
+		stream.close();
 	}
 }

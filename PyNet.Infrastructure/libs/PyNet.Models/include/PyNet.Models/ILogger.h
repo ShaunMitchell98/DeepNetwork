@@ -10,16 +10,12 @@ namespace PyNet::Models {
 	/// Base class for Loggers.
 	/// </summary>
 	class ILogger {
-	public:
 
-		/// <summary>
-		/// Generates a log message prepended with the current epoch and example number.
-		/// </summary>
-		/// <param name="message">The message to be logged.</param>
-		virtual void LogMessage(const string_view message, format_args args = make_format_args()) const = 0;
-		virtual void LogMessageWithoutPreamble(std::string_view message) const = 0;
-		virtual void LogLine(const string_view message, format_args args = make_format_args(0)) const = 0;
+	public:
+		virtual void LogDebugMatrix(const Matrix& matrix, format_args args = make_format_args(0)) const = 0;
+		virtual void LogDebug(const string_view message, format_args args = make_format_args(0)) const = 0;
+		virtual void LogInfo(const string_view message, format_args args = make_format_args(0)) const = 0;
+		virtual void LogError(const string_view message, format_args args = make_format_args(0)) const = 0;
 		virtual ~ILogger() = default;
-		virtual void LogMatrix(const PyNet::Models::Matrix& m) const = 0;
 	};
 }

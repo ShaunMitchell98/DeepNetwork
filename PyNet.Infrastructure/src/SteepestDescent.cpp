@@ -13,8 +13,8 @@ namespace PyNet::Infrastructure {
 
             auto average_dLoss_dWeight = *layers[i]->DLoss_dWeightSum / _settings->BatchSize;
 
-            //_logger->LogLine("Average dLoss_dWeight: ");
-            //_logger->LogMatrix(*average_dLoss_dWeight);
+            _logger->LogDebug("Average dLoss_dWeight: ");
+            _logger->LogDebugMatrix(*average_dLoss_dWeight);
 
             auto weightAdjustment = *average_dLoss_dWeight * learningRate;
 
@@ -27,15 +27,15 @@ namespace PyNet::Infrastructure {
             {
                 *layers[i]->Weights = *(*layers[i]->Weights - *weightAdjustment);
 
-                //_logger->LogLine("New weights: ");
-                //_logger->LogMatrix(*layers[i]->Weights);
+                _logger->LogDebug("New weights: ");
+                _logger->LogDebugMatrix(*layers[i]->Weights);
 
                 layers[i]->Bias = layers[i]->Bias - biasAdjustment;
             }
 
-            _logger->LogLine("Bias for trainable layer {} is {}", make_format_args(i, layers[i]->Bias));
+            _logger->LogDebug("Bias for trainable layer {} is {}", make_format_args(i, layers[i]->Bias));
             auto weight = (*layers[i]->Weights)(1, 1);
-            _logger->LogLine("Weights for trainable layer {} are {}", make_format_args(i, weight));
+            _logger->LogDebug("Weights for trainable layer {} are {}", make_format_args(i, weight));
         }
     }
 }

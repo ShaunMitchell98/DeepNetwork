@@ -2,7 +2,7 @@ import ctypes as ct
 
 
 class Settings(ct.Structure):
-    _fields_ = [("LoggingEnabled", ct.c_bool),
+    _fields_ = [("LogLevel", ct.c_int),
                 ("CudaEnabled", ct.c_bool),
                 ("RunMode", ct.c_int),
                 ("BaseLearningRate", ct.c_double),

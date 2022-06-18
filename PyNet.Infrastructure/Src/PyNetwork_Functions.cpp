@@ -23,9 +23,9 @@ using namespace std;
 
 namespace PyNet::Infrastructure {
 
-	EXPORT void* PyNetwork_Initialise(bool log, bool cudaEnabled) {
+	EXPORT void* PyNetwork_Initialise(LogLevel logLevel, bool cudaEnabled) {
 		auto settings = make_shared<Settings>();
-		settings->LoggingEnabled = log;
+		settings->LogLevel = logLevel;
 		settings->CudaEnabled = cudaEnabled;
 
 		auto startup = make_unique<Startup>();
@@ -212,7 +212,7 @@ namespace PyNet::Infrastructure {
 		}
 		catch (const char* message) 
 		{
-			logger->LogLine(message);
+			logger->LogError(message);
 			cout << message << endl;
 		}
 		

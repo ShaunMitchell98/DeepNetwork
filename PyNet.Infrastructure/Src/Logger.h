@@ -22,6 +22,14 @@ namespace PyNet::Infrastructure {
 		{
 			remove(_fileName);
 		};
+
+		/// <summary>
+		/// Generates a log message prepended with the current epoch and example number.
+		/// </summary>
+		/// <param name="message">The message to be logged.</param>
+		void LogMessage(const string_view message, format_args args = make_format_args()) const;
+		void LogMessageWithoutPreamble(std::string_view message) const;
+		void LogInternal(const string_view message, format_args args, LogLevel logLevel) const;
 	public:
 
 		typedef ILogger base;
@@ -30,10 +38,10 @@ namespace PyNet::Infrastructure {
 			return new Logger(settings, trainingState);
 		}
 
-		void LogMessage(const string_view message, format_args args = make_format_args(0)) const override;
-		void LogMessageWithoutPreamble(string_view message) const override;
-		void LogLine(const string_view message, format_args args = make_format_args(0)) const override;
-		void LogMatrix(const Matrix& m) const override;
+		void LogDebugMatrix(const Matrix& matrix, format_args args = make_format_args(0)) const override;
+		void LogDebug(const string_view message, format_args args = make_format_args(0)) const override;
+		void LogInfo(const string_view message, format_args args = make_format_args(0)) const override;
+		void LogError(const string_view message, format_args args = make_format_args(0)) const override;
 		~Logger() override = default;
 	};
 }

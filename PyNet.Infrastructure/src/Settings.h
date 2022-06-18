@@ -1,26 +1,33 @@
 #pragma once
 
 #include "RunMode.h"
+#include "../Include/LogLevel.h"
 
-/// <summary>
-/// A container for settings.
-/// </summary>
-struct Settings {
-
-	static auto factory() {
-		return new Settings();
-	}
-
+namespace PyNet::Infrastructure 
+{
 	/// <summary>
-	/// Determines whether logging messages should be outputted.
+	/// A container for settings.
 	/// </summary>
-	bool LoggingEnabled = false;
-	bool CudaEnabled = false;
-	RunMode RunMode = RunMode::Training;
-	double BaseLearningRate = 0.0;
-	int BatchSize = 0;
-	int Epochs = 0;
-	int NumberOfExamples = 0;
-	int StartExampleNumber = 0;
-	double Momentum = 0;
-};
+	struct Settings
+	{
+
+		static auto factory()
+		{
+			return new Settings();
+		}
+
+		/// <summary>
+		/// Determines whether logging messages should be outputted.
+		/// </summary>
+		LogLevel LogLevel = LogLevel::OFF;
+		bool CudaEnabled = false;
+		RunMode RunMode = RunMode::Training;
+		double BaseLearningRate = 0.0;
+		int BatchSize = 0;
+		int Epochs = 0;
+		int NumberOfExamples = 0;
+		int StartExampleNumber = 0;
+		double Momentum = 0;
+	};
+}
+

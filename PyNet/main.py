@@ -1,6 +1,7 @@
 from PyNet.PyNet.PyNetwork import PyNetwork
 from PyNet.PyNet.Settings import Settings
 from PyNet.PyNet import ActivationFunctionType
+from PyNet.PyNet import LogLevel
 import tensorflow as tf
 import TrainSession
 import numpy as np
@@ -33,7 +34,9 @@ for learning_rate in learning_rates:
                 for epoch in epochs:
                     for number in numbers:
 
-                        network = PyNetwork(True, True)
+                        logLevel: int = LogLevel.INFO
+
+                        network = PyNetwork(logLevel, True)
                         #network.SetVariableLearning(0.04, 0.7, 1.05)
                         network.add_input_layer(784, 1)
                         # network.add_convolution_layer(3, ActivationFunctionType.RELU)
@@ -59,7 +62,7 @@ for learning_rate in learning_rates:
                         startNumber = 0
                         endNumber = 200
 
-                        settings = Settings(True, False, 0, learning_rate, batch_size, epoch, endNumber - startNumber, 0, momentum)
+                        settings = Settings(logLevel, False, 0, learning_rate, batch_size, epoch, endNumber - startNumber, 0, momentum)
                         while endNumber <= number:
                             TrainSession.TrainSession(train_images, train_labels, network, startNumber,
                                                       endNumber, settings)

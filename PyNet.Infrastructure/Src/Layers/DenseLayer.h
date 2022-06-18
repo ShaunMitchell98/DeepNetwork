@@ -50,14 +50,14 @@ namespace PyNet::Infrastructure::Layers
 
 		shared_ptr<Matrix> ApplyInternal(shared_ptr<Matrix> input) override 
 		{
-			//_logger->LogLine("Dense Layer Input is: ");
-			//_logger->LogMatrix(*input);
+			_logger->LogDebug("Dense Layer Input is: ");
+			_logger->LogDebugMatrix(*input);
 
 			Input = input;
 			Output = *Weights * *Input;
 
-			//_logger->LogLine("Weight * Input: ");
-			//_logger->LogMatrix(*Output);
+			_logger->LogDebug("Weight * Input: ");
+			_logger->LogDebugMatrix(*Output);
 
 			//*Output = *(* Output + Bias);
 
@@ -76,8 +76,8 @@ namespace PyNet::Infrastructure::Layers
 				dLoss_dInput = *dLoss_dInput ^ *_activation->Derivative(*Input);
 			}
 
-			//_logger->LogLine("dLoss_dInput is: ");
-			//_logger->LogMatrix(*dLoss_dInput);
+			_logger->LogDebug("dLoss_dInput is: ");
+			_logger->LogDebugMatrix(*dLoss_dInput);
 
 			return dLoss_dInput;
 		}
@@ -86,8 +86,8 @@ namespace PyNet::Infrastructure::Layers
 		{
 			auto dLoss_dWeightValue = dLoss_dWeight(dLoss_dOutput);
 
-			//_logger->LogLine("dLoss_dWeight: ");
-			//_logger->LogMatrix(*dLoss_dWeightValue);
+			_logger->LogDebug("dLoss_dWeight: ");
+			_logger->LogDebugMatrix(*dLoss_dWeightValue);
 
 			DLoss_dBiasSum = _adjustmentCalculator->CalculateBiasAdjustment(dLoss_dBias(dLoss_dOutput), DLoss_dBiasSum);
 			_adjustmentCalculator->CalculateWeightAdjustment(*dLoss_dWeightValue, *DLoss_dWeightSum);

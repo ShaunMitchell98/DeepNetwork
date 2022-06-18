@@ -35,7 +35,8 @@ namespace PyNet::Infrastructure::Tests::Layers {
 			weight = weightValue;
 		}
 
-		auto denseLayer = make_unique<DenseLayer>(GetSharedService<AdjustmentCalculator>(), move(weights), move(dLoss_dWeightSum), move(tempInput));
+		auto denseLayer = make_unique<DenseLayer>(GetSharedService<AdjustmentCalculator>(), move(weights), move(dLoss_dWeightSum), move(tempInput), GetUniqueService<Matrix>(),
+			GetSharedService<ILogger>());
 
 		auto output = denseLayer->Apply(input);
 
@@ -73,7 +74,8 @@ namespace PyNet::Infrastructure::Tests::Layers {
 			weight = weightValue;
 		}
 
-		auto denseLayer = make_unique<DenseLayer>(GetSharedService<AdjustmentCalculator>(), move(weights), move(dLoss_dWeightSum), move(tempInput));
+		auto denseLayer = make_unique<DenseLayer>(GetSharedService<AdjustmentCalculator>(), move(weights), move(dLoss_dWeightSum), move(tempInput), GetUniqueService<Matrix>(),
+			GetSharedService<ILogger>());
 
 		auto dLoss_dInput = denseLayer->dLoss_dInput(*dLoss_dOutput);
 

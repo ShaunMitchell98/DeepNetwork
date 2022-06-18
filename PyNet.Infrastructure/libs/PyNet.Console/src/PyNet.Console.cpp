@@ -88,7 +88,7 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 
 int main()
 {
-	auto intermediary = PyNetwork_Initialise(true, false);
+	auto intermediary = PyNetwork_Initialise(LogLevel::INFO, false);
 	PyNetwork_AddInputLayer(intermediary, 784, 1);
 	//PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
 	//PyNetwork_AddMaxPoolingLayer(intermediary, 3);

@@ -12,14 +12,14 @@ namespace PyNet::Infrastructure::Tests::Layers
 		double _value = 0;
 		
 	public:
-		FakeLayer(unique_ptr<Matrix> input, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights) : TrainableLayer(move(dLoss_dWeightSum),
-			move(weights), move(input)) {}
+		FakeLayer(unique_ptr<Matrix> input, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights, unique_ptr<Matrix> output) : TrainableLayer(move(dLoss_dWeightSum),
+			move(weights), move(input), move(output)) {}
 
 		bool Adjusted = false;
 
-		static auto factory(unique_ptr<Matrix> input, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights) 
+		static auto factory(unique_ptr<Matrix> input, unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights, unique_ptr<Matrix> output) 
 		{
-			return new FakeLayer(move(input), move(dLoss_dWeightSum), move(weights));
+			return new FakeLayer(move(input), move(dLoss_dWeightSum), move(weights), move(output));
 		}
 
 		void SetValue(double value) 
