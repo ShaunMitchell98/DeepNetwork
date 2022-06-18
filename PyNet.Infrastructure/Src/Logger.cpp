@@ -21,7 +21,7 @@ namespace PyNet::Infrastructure
 
 	void Logger::LogInfo(const string_view message, format_args args) const
 	{
-		LogInternal(message, args, LogLevel::INFO);
+		LogInternal(message, args, LogLevel::INFO, 10);
 	}
 
 	void Logger::LogError(const string_view message, format_args args) const
@@ -29,9 +29,9 @@ namespace PyNet::Infrastructure
 		LogInternal(message, args, LogLevel::ERROR);
 	}
 
-	void Logger::LogInternal(const string_view message, format_args args, LogLevel logLevel) const 
+	void Logger::LogInternal(const string_view message, format_args args, LogLevel logLevel, int logInterval) const 
 	{
-		if (_settings->LogLevel <= logLevel)
+		if (_settings->LogLevel <= logLevel && _trainingState->ExampleNumber % logInterval == 0)
 		{
 			LogMessage(message, args);
 			LogMessageWithoutPreamble("\n");

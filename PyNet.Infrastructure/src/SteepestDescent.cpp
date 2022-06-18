@@ -33,9 +33,9 @@ namespace PyNet::Infrastructure {
                 layers[i]->Bias = layers[i]->Bias - biasAdjustment;
             }
 
-            _logger->LogDebug("Bias for trainable layer {} is {}", make_format_args(i, layers[i]->Bias));
+            _logger->LogInfo("Bias for trainable layer {} is {}", make_format_args(i, layers[i]->Bias));
             auto weight = (*layers[i]->Weights)(1, 1);
-            _logger->LogDebug("Weights for trainable layer {} are {}", make_format_args(i, weight));
+            _logger->LogInfo("Weights for trainable layer {} are {}", make_format_args(i, weight));
         }
     }
 }

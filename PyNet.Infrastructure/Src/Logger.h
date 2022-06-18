@@ -29,7 +29,7 @@ namespace PyNet::Infrastructure {
 		/// <param name="message">The message to be logged.</param>
 		void LogMessage(const string_view message, format_args args = make_format_args()) const;
 		void LogMessageWithoutPreamble(std::string_view message) const;
-		void LogInternal(const string_view message, format_args args, LogLevel logLevel) const;
+		void LogInternal(const string_view message, format_args args, LogLevel logLevel, int logInterval = 1) const;
 	public:
 
 		typedef ILogger base;
