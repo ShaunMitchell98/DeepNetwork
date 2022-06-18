@@ -9,13 +9,13 @@ namespace PyNet::Infrastructure {
 
 		auto activationDerivative = pyNetwork.Layers.back()->ActivationDerivative();
 
-		//_logger->LogLine("Logistic Derivative is :");
-		//_logger->LogMatrix(*activationDerivative);
+		_logger->LogDebug("Logistic Derivative is :");
+		_logger->LogDebugMatrix(*activationDerivative);
 
 		auto dLoss_dOutput = lossDerivative ^ *activationDerivative;
 
-		//_logger->LogLine("Logistic dLoss_dInput is: ");
-		//_logger->LogMatrix(*dLoss_dOutput);
+		_logger->LogDebug("Logistic dLoss_dInput is: ");
+		_logger->LogDebugMatrix(*dLoss_dOutput);
 
 		for (auto it = pyNetwork.Layers.rbegin(); it != pyNetwork.Layers.rend(); ++it)
 		{

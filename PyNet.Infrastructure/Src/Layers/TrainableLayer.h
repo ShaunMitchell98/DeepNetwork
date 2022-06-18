@@ -18,8 +18,7 @@ namespace PyNet::Infrastructure::Layers {
 		TrainableLayer(unique_ptr<Matrix> dLoss_dWeightSum, unique_ptr<Matrix> weights, shared_ptr<Matrix> input, shared_ptr<Matrix> output)
 			: DLoss_dWeightSum{ move(dLoss_dWeightSum) }, Weights{ move(weights) }, DLoss_dBiasSum{ 0.01 }, Layer(input, output) 
 		{
-			//Bias = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX) * 1000);
-			Bias = 0.01;
+			Bias = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX) * 1000);
 		}
 
 		virtual shared_ptr<Matrix> ApplyInternal(shared_ptr<Matrix> input) = 0;

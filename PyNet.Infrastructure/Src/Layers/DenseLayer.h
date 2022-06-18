@@ -59,10 +59,10 @@ namespace PyNet::Infrastructure::Layers
 			_logger->LogDebug("Weight * Input: ");
 			_logger->LogDebugMatrix(*Output);
 
-			//*Output = *(* Output + Bias);
+			*Output = *(* Output + Bias);
 
-			//_logger->LogLine("Output + Bias: ");
-			//_logger->LogMatrix(*Output);
+			_logger->LogDebug("Output + Bias: ");
+			_logger->LogDebugMatrix(*Output);
 
 			return Output;
 		}
