@@ -30,7 +30,7 @@ namespace PyNet::Infrastructure {
 		/// Applies dropout to the given vector.
 		/// </summary>
 		/// <param name="input">A vector</param>
-		void ApplyDropout(Matrix& input) const;
+		void ApplyDropout(Matrix& input, double rate) const;
 	};
 
 }

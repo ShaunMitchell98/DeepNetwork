@@ -8,10 +8,11 @@ namespace PyNet::Infrastructure
 		auto inputLayer = static_cast<InputLayer*>(_pyNetwork->Layers.front().get());
 		inputLayer->SetInput(input);
 
-		shared_ptr<Matrix> output;
+		shared_ptr<Matrix> output = input;
 
 		for (const auto& layer : _pyNetwork->Layers) 
 		{
+			_dropoutRunner->ApplyDropout(*output, layer->DropoutRate);
 			output = layer->Apply(move(output));
 		}
 

@@ -10,7 +10,6 @@
 #include "Layers/ConvolutionalLayer.h"
 #include "Layers/MaxPoolingLayer.h"
 #include "Layers/FlattenLayer.h"
-#include "Layers/DropoutLayer.h"
 #include "Activations/Logistic.h"
 #include "Layers/SoftmaxLayer.h"
 #include "NetworkRunner.h"
@@ -45,7 +44,7 @@ namespace PyNet::Infrastructure {
 		delete intermediary;
 	}
 
-	EXPORT void PyNetwork_AddInputLayer(void* input, int rows, int cols) {
+	EXPORT void PyNetwork_AddInputLayer(void* input, int rows, int cols, double dropoutRate) {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
@@ -53,10 +52,11 @@ namespace PyNet::Infrastructure {
 
 		auto inputLayer = context->GetUnique<InputLayer>();
 		inputLayer->Initialise(rows, cols);
+		inputLayer->DropoutRate = dropoutRate;
 		pyNetwork->Layers.push_back(move(inputLayer));
 	}
 
-	EXPORT void PyNetwork_AddDenseLayer(void* input, int count, ActivationFunctionType activationFunctionType) {
+	EXPORT void PyNetwork_AddDenseLayer(void* input, int count, ActivationFunctionType activationFunctionType, double dropoutRate) {
 
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
@@ -66,6 +66,7 @@ namespace PyNet::Infrastructure {
 
 		auto denseLayer = context->GetUnique<DenseLayer>();
 		denseLayer->Initialise(count, cols);
+		denseLayer->DropoutRate = dropoutRate;
 
 		if (activationFunctionType == ActivationFunctionType::Logistic) {
 			auto logistic = context->GetUnique<Logistic>();
@@ -74,16 +75,6 @@ namespace PyNet::Infrastructure {
 		}
 
 		pyNetwork->Layers.push_back(move(denseLayer));
-	}
-
-	EXPORT void PyNetwork_AddDropoutLayer(void* input, double rate, int rows, int cols) {
-		auto intermediary = static_cast<Intermediary*>(input);
-		auto context = intermediary->GetContext();
-		auto pyNetwork = context->GetShared<PyNetwork>();
-
-		auto dropoutLayer = context->GetUnique<DropoutLayer>();
-		dropoutLayer->Initialise(rate, rows, cols);
-		pyNetwork->Layers.push_back(move(dropoutLayer));
 	}
 
 	EXPORT void PyNetwork_AddConvolutionLayer(void* input, int filterSize, ActivationFunctionType activationFunctionType) {

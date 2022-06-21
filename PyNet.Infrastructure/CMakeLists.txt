@@ -70,7 +70,6 @@ add_library(PyNet.Infrastructure SHARED
 	./src/Layers/Layer.h
 	./src/Layers/DenseLayer.h
 	./src/Layers/ConvolutionalLayer.h
-	./src/Layers/DropoutLayer.h
 	./src/Layers/LayerModule.h
 	./src/Layers/MaxPoolingLayer.h
 	./src/Layers/InputLayer.h
@@ -87,6 +86,8 @@ add_library(PyNet.Infrastructure SHARED
 	./src/VLService.cpp
 	./src/TrainingState.h
 	./include/LogLevel.h
+	./src/DropoutRunner.h
+	./src/DropoutRunner.cpp
 )
 
 # 3rd party libs

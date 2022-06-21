@@ -89,18 +89,15 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 int main()
 {
 	auto intermediary = PyNetwork_Initialise(LogLevel::INFO, false);
-	PyNetwork_AddInputLayer(intermediary, 784, 1);
+	PyNetwork_AddInputLayer(intermediary, 784, 1, 0.5);
 	//PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
 	//PyNetwork_AddMaxPoolingLayer(intermediary, 3);
 	//PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
 	//PyNetwork_AddMaxPoolingLayer(intermediary, 3);
 	//PyNetwork_AddFlattenLayer(intermediary);
-	//PyNetwork_AddDropoutLayer(intermediary, 0.8, 784, 1);
-	PyNetwork_AddDenseLayer(intermediary, 500, ActivationFunctionType::Logistic);
-	//PyNetwork_AddDropoutLayer(intermediary, 0.8, 500, 1);
-	PyNetwork_AddDenseLayer(intermediary, 129, ActivationFunctionType::Logistic);
-	//PyNetwork_AddDropoutLayer(intermediary, 0.8, 129, 1);
-	PyNetwork_AddDenseLayer(intermediary, 10, ActivationFunctionType::Logistic);
+	PyNetwork_AddDenseLayer(intermediary, 500, ActivationFunctionType::Logistic, 0.8);
+	PyNetwork_AddDenseLayer(intermediary, 129, ActivationFunctionType::Logistic, 0.8);
+	PyNetwork_AddDenseLayer(intermediary, 10, ActivationFunctionType::Logistic, 0.8);
 	//PyNetwork_AddSoftmaxLayer(intermediary);
 	//PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
 

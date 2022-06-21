@@ -13,11 +13,9 @@ namespace PyNet::Infrastructure {
 
 		EXPORT void PyNetwork_Destruct(void* input);
 
-		EXPORT void PyNetwork_AddInputLayer(void* input, int rows, int cols);
+		EXPORT void PyNetwork_AddInputLayer(void* input, int rows, int cols, double dropoutRate);
 
-		EXPORT void PyNetwork_AddDenseLayer(void* input, int count, ActivationFunctionType activationFunctionType);
-
-		EXPORT void PyNetwork_AddDropoutLayer(void* input, double rate, int rows, int cols);
+		EXPORT void PyNetwork_AddDenseLayer(void* input, int count, ActivationFunctionType activationFunctionType, double dropoutRate);
 
 		EXPORT void PyNetwork_AddConvolutionLayer(void* input, int filterSize, ActivationFunctionType activationFunctionType);
 

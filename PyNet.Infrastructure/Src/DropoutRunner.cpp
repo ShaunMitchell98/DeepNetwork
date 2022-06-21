@@ -2,17 +2,28 @@
 
 namespace PyNet::Infrastructure {
 
-	void DropoutRunner::ApplyDropout(Vector& input) const {
+	void DropoutRunner::ApplyDropout(Matrix& input, double rate) const {
 
-		unique_ptr<Vector> droppedVector;
-		if (_settings->RunMode == RunMode::Training) {
-			droppedVector = _bernoulliGenerator->GetBernoulliVector(input);
-		}
-		else {
-			droppedVector = input.CopyAsVector();
-			droppedVector->SetValue(input.GetDropoutRate());
+		if (rate == 1) 
+		{
+			return;
 		}
 
-		input = *(input ^ *droppedVector);
+		unique_ptr<Matrix> droppedMatrix;
+		if (_settings->RunMode == RunMode::Training)
+		{
+			droppedMatrix = _bernoulliGenerator->GetBernoulliVector(input, rate);
+		}
+		else
+		{
+			droppedMatrix = input.Copy();
+
+			for (auto& m : *droppedMatrix)
+			{
+				m = rate;
+			}
+		}
+
+		input = *(input ^ *droppedMatrix);
 	}
 }

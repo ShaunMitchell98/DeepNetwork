@@ -12,17 +12,15 @@ class PyNetwork:
         self.lib.PyNetwork_Initialise.argtypes = [ctypes.c_int, ctypes.c_bool]
         self.lib.PyNetwork_Initialise.restype = ctypes.c_void_p
 
-        self.lib.PyNetwork_AddInputLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
+        self.lib.PyNetwork_AddInputLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_double]
 
-        self.lib.PyNetwork_AddDenseLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
+        self.lib.PyNetwork_AddDenseLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_double]
         self.lib.PyNetwork_AddDenseLayer.restype = ctypes.c_void_p
 
         self.lib.PyNetwork_AddConvolutionLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
         self.lib.PyNetwork_AddConvolutionLayer.restype = ctypes.c_void_p
 
         self.lib.PyNetwork_AddMaxPoolingLayer.argtypes = [ctypes.c_void_p, ctypes.c_int]
-
-        self.lib.PyNetwork_AddDropoutLayer.argtypes = [ctypes.c_void_p, ctypes.c_double, ctypes.c_int, ctypes.c_int]
 
         self.lib.PyNetwork_AddFlattenLayer.argtypes = [ctypes.c_void_p]
 
@@ -47,12 +45,12 @@ class PyNetwork:
         self.obj = self.lib.PyNetwork_Initialise(logLevel, cudaEnabled)
         self.outputNumber = 0
 
-    def add_input_layer(self, rows: int, cols: int):
-        self.lib.PyNetwork_AddInputLayer(self.obj, rows, cols)
+    def add_input_layer(self, rows: int, cols: int, dropoutRate: float):
+        self.lib.PyNetwork_AddInputLayer(self.obj, rows, cols, dropoutRate)
         self.outputNumber = rows
 
-    def add_dense_layer(self, count: int, activationFunctionType: int):
-        self.lib.PyNetwork_AddDenseLayer(self.obj, count, activationFunctionType)
+    def add_dense_layer(self, count: int, activationFunctionType: int, dropoutRate: float):
+        self.lib.PyNetwork_AddDenseLayer(self.obj, count, activationFunctionType, dropoutRate)
         self.outputNumber = count
 
     def add_convolution_layer(self, filterSize: int, activationFunctionType: int):
@@ -62,9 +60,6 @@ class PyNetwork:
     def add_max_pooling_layer(self, filterSize: int):
         self.lib.PyNetwork_AddMaxPoolingLayer(self.obj, filterSize)
         self.outputNumber = filterSize
-
-    def add_dropout_layer(self, rate: float, rows: int, cols: int):
-        self.lib.PyNetwork_AddDropoutLayer(self.obj, rate, rows, cols)
 
     #def add_softmax_layer(self):
     #    self.lib.PyNetwork_AddSoftmaxLayer(self.obj)

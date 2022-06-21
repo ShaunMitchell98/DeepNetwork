@@ -5,7 +5,6 @@
 #include "DenseLayer.h"
 #include "ConvolutionalLayer.h"
 #include "MaxPoolingLayer.h"
-#include "DropoutLayer.h"
 #include "FlattenLayer.h"
 #include "SoftmaxLayer.h"
 
@@ -29,9 +28,6 @@ namespace PyNet::Infrastructure::Layers {
 				->AsSelf();
 
 			builder.RegisterType<MaxPoolingLayer>()
-				->AsSelf();
-
-			builder.RegisterType<DropoutLayer>()
 				->AsSelf();
 
 			builder.RegisterType<FlattenLayer>()
