@@ -82,8 +82,12 @@ namespace PyNet::Infrastructure {
 		auto context = intermediary->GetContext();
 
 		auto pyNetwork = context->GetShared<PyNetwork>();
+
+		auto rows = pyNetwork->Layers.back()->GetRows();
+		auto cols = pyNetwork->Layers.back()->GetCols();
+		
 		auto convolutionalLayer = context->GetUnique<ConvolutionalLayer>();
-		convolutionalLayer->Initialise(filterSize);
+		convolutionalLayer->Initialise(filterSize, rows, cols);
 		pyNetwork->Layers.push_back(move(convolutionalLayer));
 	}
 
@@ -92,17 +96,25 @@ namespace PyNet::Infrastructure {
 		auto context = intermediary->GetContext();
 
 		auto pyNetwork = context->GetShared<PyNetwork>();
+
+		auto rows = pyNetwork->Layers.back()->GetRows();
+		auto cols = pyNetwork->Layers.back()->GetCols();
+		
 		auto maxPoolingLayer = context->GetUnique<MaxPoolingLayer>();
-		maxPoolingLayer->Initialise(filterSize);
+		maxPoolingLayer->Initialise(filterSize, rows, cols);
 		pyNetwork->Layers.push_back(move(maxPoolingLayer));
 	}
 
 	EXPORT void PyNetwork_AddFlattenLayer(void* input) {
 		auto intermediary = static_cast<Intermediary*>(input);
 		auto context = intermediary->GetContext();
-
 		auto pyNetwork = context->GetShared<PyNetwork>();
+
+		auto rows = pyNetwork->Layers.back()->GetRows();
+		auto cols = pyNetwork->Layers.back()->GetCols();
+		
 		auto flattenLayer = context->GetUnique<FlattenLayer>();
+		flattenLayer->Initialise(rows, cols);
 		pyNetwork->Layers.push_back(move(flattenLayer));
 	}
 

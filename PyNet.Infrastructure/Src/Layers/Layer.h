@@ -16,7 +16,7 @@ namespace PyNet::Infrastructure::Layers {
 		unique_ptr<Activation> _activation;
 	public:
 
-		double DropoutRate = 0.0;
+		double DropoutRate = 1.0;
 
 		Layer(shared_ptr<Matrix> input, shared_ptr<Matrix> output) : Input{input }, Output(output) {}
 

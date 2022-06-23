@@ -27,8 +27,10 @@ namespace PyNet::Infrastructure::Layers {
 			return new MaxPoolingLayer(receptiveFieldProvider, matrixPadder, move(input), move(output));
 		}
 
-		void Initialise(int filterSize) {
+		void Initialise(int filterSize, int rows, int cols) {
 			_filterSize = filterSize;
+			Input->Initialise(rows, cols, false);
+			Output->Initialise(rows, cols, false);
 		}
 
 		shared_ptr<Matrix> ApplyInternal(shared_ptr<Matrix> input) override {

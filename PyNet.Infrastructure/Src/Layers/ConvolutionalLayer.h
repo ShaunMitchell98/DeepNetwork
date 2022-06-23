@@ -65,10 +65,12 @@ namespace PyNet::Infrastructure::Layers {
 
 	public:
 
-		void Initialise(int filterSize) {
+		void Initialise(int filterSize, int rows, int cols) {
 			Weights->Initialise(filterSize, filterSize, true);
 			_filterSize = filterSize;
 			DLoss_dWeightSum->Initialise(filterSize, filterSize, false);
+			Input->Initialise(rows, cols, false);
+			Output->Initialise(rows, cols, false);
 		}
 
 		static auto factory(shared_ptr<ReceptiveFieldProvider> receptiveFieldProvider, shared_ptr<MatrixPadder> matrixPadder,

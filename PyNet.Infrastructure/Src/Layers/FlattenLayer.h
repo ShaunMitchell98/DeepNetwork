@@ -12,11 +12,17 @@ namespace PyNet::Infrastructure::Layers {
 
 		FlattenLayer(unique_ptr<Matrix> input, unique_ptr<Matrix> output) : Layer(move(input), move(output)) {}
 
+		void Initialise(size_t rows, size_t cols)
+		{
+			Input->Initialise(rows, cols, false);
+			Output->Initialise(rows * cols, 1, false);
+		}
+
 		shared_ptr<Matrix> ApplyInternal(shared_ptr<Matrix> input) override {
 			
 			Input = input;
 			Output = input->Copy();
-			Output->Set(Output->GetRows() * Output->GetCols(), 1, Output->GetAddress(1, 1));
+			Output->Set(Output->GetRows() * Output->GetCols(), 1, input->GetAddress(1, 1));
 			return Output;
 		}
 
