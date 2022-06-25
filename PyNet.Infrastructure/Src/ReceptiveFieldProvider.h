@@ -22,7 +22,7 @@ namespace PyNet::Infrastructure {
 
 			for (size_t row = 1; row <= filterSize; row++) {
 				for (size_t col = 1; col <= filterSize; col++) {
-					(*receptiveField)(row, col) = input(row + rStart, col+cStart);
+					(*receptiveField)(row, col) = input(rStart + row - 1, cStart + col -1);
 				}
 			}
 

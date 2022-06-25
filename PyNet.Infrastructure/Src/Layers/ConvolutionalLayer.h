@@ -86,12 +86,10 @@ namespace PyNet::Infrastructure::Layers {
 
 			Output = input->Copy();
 
-			auto maxRows = Input->GetRows() - _filterSize;
-			auto maxCols = Input->GetCols() - _filterSize;
 
-			for (size_t row = 1; row <= maxRows; row++) {
-				for (size_t col = 1; col <= maxCols; col++) {
-
+			for (size_t row = 1; row <= input->GetRows(); row++) {
+				for (size_t col = 1; col <= input->GetCols(); col++) {
+					
 					auto receptiveField = _receptiveFieldProvider->GetReceptiveField(*Input, _filterSize, row, col);
 					(*Output)(row, col) = (*receptiveField | *Weights) + Bias;
 				}

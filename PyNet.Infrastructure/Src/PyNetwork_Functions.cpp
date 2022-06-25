@@ -11,6 +11,7 @@
 #include "Layers/MaxPoolingLayer.h"
 #include "Layers/FlattenLayer.h"
 #include "Activations/Logistic.h"
+#include "Activations/Relu.h"
 #include "Layers/SoftmaxLayer.h"
 #include "NetworkRunner.h"
 #include "NetworkTrainer.h"
@@ -73,6 +74,12 @@ namespace PyNet::Infrastructure {
 			logistic->Initialise(count, 1);
 			denseLayer->SetActivation(move(logistic));
 		}
+		if (activationFunctionType == ActivationFunctionType::Relu)
+		{
+			auto relu = context->GetUnique<Relu>();
+			relu->Initialise(count, 1);
+			denseLayer->SetActivation(move(relu));
+		}
 
 		pyNetwork->Layers.push_back(move(denseLayer));
 	}
@@ -88,6 +95,20 @@ namespace PyNet::Infrastructure {
 		
 		auto convolutionalLayer = context->GetUnique<ConvolutionalLayer>();
 		convolutionalLayer->Initialise(filterSize, rows, cols);
+
+		if (activationFunctionType == ActivationFunctionType::Logistic)
+		{
+			auto logistic = context->GetUnique<Logistic>();
+			logistic->Initialise(rows, cols);
+			convolutionalLayer->SetActivation(move(logistic));
+		}
+		if (activationFunctionType == ActivationFunctionType::Relu)
+		{
+			auto relu = context->GetUnique<Relu>();
+			relu->Initialise(rows, cols);
+			convolutionalLayer->SetActivation(move(relu));
+		}
+		
 		pyNetwork->Layers.push_back(move(convolutionalLayer));
 	}
 

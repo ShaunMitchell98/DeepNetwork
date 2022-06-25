@@ -23,7 +23,7 @@ test_images = test_images / 255.0
 batch_sizes: list[int] = [1]
 learning_rates: list[float] = [0.05]
 momenta: list[float] = [0.7]
-epochs: list[int] = [1]
+epochs: list[int] = [10]
 numbers: list[int] = [50000]
 dropoutRates: list[float] = [0.9]
 
@@ -39,12 +39,12 @@ for learning_rate in learning_rates:
                         network = PyNetwork(logLevel, True)
                         #network.SetVariableLearning(0.04, 0.7, 1.05)
                         network.add_input_layer(28, 28, 1.0)
-                        #network.add_convolution_layer(3, ActivationFunctionType.RELU)
-                        #network.add_max_pooling_layer(3)
-                        #network.add_convolution_layer(3, ActivationFunctionType.RELU)
-                        #network.add_max_pooling_layer(3)
-                        #network.add_convolution_layer(3, ActivationFunctionType.RELU)
-                        #network.add_max_pooling_layer(3)
+                        network.add_convolution_layer(3, ActivationFunctionType.RELU)
+                        network.add_max_pooling_layer(3)
+                        network.add_convolution_layer(3, ActivationFunctionType.RELU)
+                        network.add_max_pooling_layer(3)
+                        network.add_convolution_layer(3, ActivationFunctionType.RELU)
+                        network.add_max_pooling_layer(3)
                         network.add_flatten_layer()
                         #network.add_dense_layer(600, ActivationFunctionType.LOGISTIC)
                         #network.add_dense_layer(600, ActivationFunctionType.LOGISTIC)

@@ -90,8 +90,8 @@ int main()
 {
 	auto intermediary = PyNetwork_Initialise(LogLevel::INFO, false);
 	PyNetwork_AddInputLayer(intermediary, 28, 28, 1.0);
-	//PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
-	//PyNetwork_AddMaxPoolingLayer(intermediary, 3);
+	PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
+	PyNetwork_AddMaxPoolingLayer(intermediary, 3);
 	//PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
 	//PyNetwork_AddMaxPoolingLayer(intermediary, 3);
 	PyNetwork_AddFlattenLayer(intermediary);
