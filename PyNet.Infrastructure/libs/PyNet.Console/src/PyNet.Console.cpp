@@ -4,10 +4,12 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "PyNet.Models/Activation.h"
+#include "Activations/Activation.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace PyNet::Infrastructure;
+using namespace PyNet::Infrastructure::Activations;
 
 void GetData(string folderPath, string fileName, vector<double*>& inputs) {
 
@@ -86,12 +88,18 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 
 int main()
 {
-	auto intermediary = PyNetwork_Initialise(false, false);
-	PyNetwork_AddLayer(intermediary, 784, PyNet::Models::ActivationFunctionType::Logistic, 0.8);
-	PyNetwork_AddLayer(intermediary, 500, PyNet::Models::ActivationFunctionType::Logistic, 0.5);
-	PyNetwork_AddLayer(intermediary, 129, PyNet::Models::ActivationFunctionType::Logistic, 0.5);
-	PyNetwork_AddLayer(intermediary, 10, PyNet::Models::ActivationFunctionType::Logistic, 0.5);
-	PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
+	auto intermediary = PyNetwork_Initialise(LogLevel::INFO, false);
+	PyNetwork_AddInputLayer(intermediary, 28, 28, 1.0);
+	PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
+	PyNetwork_AddMaxPoolingLayer(intermediary, 3);
+	//PyNetwork_AddConvolutionLayer(intermediary, 3, ActivationFunctionType::Relu);
+	//PyNetwork_AddMaxPoolingLayer(intermediary, 3);
+	PyNetwork_AddFlattenLayer(intermediary);
+	PyNetwork_AddDenseLayer(intermediary, 500, ActivationFunctionType::Logistic, 0.8);
+	PyNetwork_AddDenseLayer(intermediary, 129, ActivationFunctionType::Logistic, 0.8);
+	PyNetwork_AddDenseLayer(intermediary, 10, ActivationFunctionType::Logistic, 0.8);
+	//PyNetwork_AddSoftmaxLayer(intermediary);
+	//PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
 
 
 #ifdef _WIN32
@@ -113,7 +121,16 @@ int main()
 
 	GetData(folderPath, trainingExamplesFileName, inputs);
 	GetLabels(folderPath, trainingLabelsFileName, labels);
-	PyNetwork_Train(intermediary, inputs.data(), labels.data(), 10, 5, 0.01, 0, 10);
+
+	auto settings = make_unique<Settings>();
+	settings->BaseLearningRate = 0.01;
+	settings->BatchSize = 1;
+	settings->Epochs = 1;
+	settings->Momentum = 0.7;
+	settings->NumberOfExamples = 10;
+	settings->StartExampleNumber = 0;
+
+	PyNetwork_Train(intermediary, inputs.data(), labels.data(), settings.get());
 	PyNetwork_Run(intermediary, inputs[0]);
 	PyNetwork_Destruct(intermediary);
 

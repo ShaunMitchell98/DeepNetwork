@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <any>
 #include "ItemContainer.h"
-
+#include <concepts>
 /*
  * The MIT License (MIT)
  *
@@ -30,6 +30,11 @@
  * SOFTWARE.
  */
 
+template<typename T>
+concept Shared = requires(T a) {
+    {a} -> std::convertible_to<shared_ptr<typename T::element_type>>;
+};
+
 using namespace std;
 
 namespace PyNet::DI {
@@ -50,7 +55,7 @@ namespace PyNet::DI {
         }
 
         template <class RequiredType>
-        unique_ptr<RequiredType> GetUnique()
+        unique_ptr<RequiredType> GetUnique() const
         {
             auto& item = _container->GetItem<RequiredType>();
 
@@ -60,11 +65,11 @@ namespace PyNet::DI {
             item.Marker = false;
 
             auto result = unique_ptr<RequiredType>(temp);
-            return move(result);
+            return result;
         }
 
         template <class RequiredType>
-        shared_ptr<RequiredType> GetShared()
+        shared_ptr<RequiredType> GetShared() const
         {
             auto& item = _container->GetItem<RequiredType>();
 
@@ -83,6 +88,16 @@ namespace PyNet::DI {
             }
          
             return item.GetShared();
+        }
+
+        template <Shared T>
+        T Get() {
+            return GetShared<typename T::element_type>();
+        }
+
+        template <class T>
+        T Get(...) {
+            return GetUnique<typename T::element_type>();
         }
     };
 }

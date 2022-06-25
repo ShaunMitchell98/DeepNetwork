@@ -1,19 +1,24 @@
 #include "NetworkRunner.h"
+#include "Layers/InputLayer.h"
 
-namespace PyNet::Infrastructure {
-    
-	double* NetworkRunner::Run(double* inputLayer) {
+namespace PyNet::Infrastructure 
+{    
+	shared_ptr<Matrix> NetworkRunner::Run(shared_ptr<Matrix> input) 
+	{
+		auto inputLayer = static_cast<InputLayer*>(_pyNetwork->Layers.front().get());
+		inputLayer->SetInput(input);
 
-		    _pyNetwork->Layers[0]->Set(_pyNetwork->GetInputSize(), inputLayer);
+		shared_ptr<Matrix> output = input;
 
-			for (size_t i = 0; i < _pyNetwork->Weights.size(); i++) {
-				_dropoutRunner->ApplyDropout(*_pyNetwork->Layers[i]);
-				_layerPropagator->PropagateLayer(*_pyNetwork->Weights[i], *_pyNetwork->Layers[i], *_pyNetwork->Biases[i], *_pyNetwork->Layers[i + 1]);
-			}
-
-			_layerNormaliser->NormaliseLayer(_pyNetwork->GetOutputLayer());
-
-			return _pyNetwork->GetOutputLayer().GetAddress(0);
+		for (const auto& layer : _pyNetwork->Layers) 
+		{
+			_dropoutRunner->ApplyDropout(*output, layer->DropoutRate);
+			output = layer->Apply(move(output));
 		}
+
+		output = _softMax->Apply(output);
+
+		return output;
+	}
 }
 	

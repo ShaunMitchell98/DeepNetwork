@@ -1,14 +1,18 @@
 #include "QuadraticLoss.h"
+#include <format>
 
-namespace PyNet::Infrastructure {
-
-	double QuadraticLoss::CalculateLoss(Models::Vector& expected, Models::Vector& actual) {
-
+namespace PyNet::Infrastructure 
+{
+	double QuadraticLoss::CalculateLoss(const Matrix& expected, const Matrix& actual) const 
+	{
 		auto difference = expected - actual;
-		return 0.5 * (*difference | *difference);
+		auto loss =  0.5 * (*difference | *difference);
+		_logger->LogInfo("Loss is {}", make_format_args(loss));
+		return loss;
 	}
 
-	std::unique_ptr<Models::Vector> QuadraticLoss::CalculateDerivative(Models::Vector& expected, Models::Vector& actual) {
+	unique_ptr<Matrix> QuadraticLoss::CalculateDerivative(const Matrix& expected, const Matrix& actual) const
+	{
 		return actual - expected;
 	}
 }

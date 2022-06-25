@@ -1,20 +1,27 @@
 #pragma once
 
 #include "PyNet.Models/Loss.h"
+#include "PyNet.Models/ILogger.h"
 #include "Headers.h"
 
+using namespace PyNet::Models;
+
 namespace PyNet::Infrastructure {
-	class EXPORT QuadraticLoss : public Models::Loss {
+	class EXPORT QuadraticLoss : public Loss {
+	private:
+	shared_ptr<ILogger> _logger;
 	public:
 
-		static auto factory() {
-			return new QuadraticLoss();
+		QuadraticLoss(shared_ptr<ILogger> logger) {
+			_logger = logger;
 		}
 
-		typedef PyNet::Models::Loss base;
+		static auto factory(shared_ptr<ILogger> logger) {
+			return new QuadraticLoss(logger);
+		}
 
-		double CalculateLoss(Models::Vector& expected, Models::Vector& actual) override;
-		std::unique_ptr<Models::Vector> CalculateDerivative(Models::Vector& expected, Models::Vector& actual) override;
+		double CalculateLoss(const Matrix& expected, const Matrix& actual) const override;
+		unique_ptr<Matrix> CalculateDerivative(const Matrix& expected, const Matrix& actual) const override;
 		~QuadraticLoss() override = default;
 	};
 }

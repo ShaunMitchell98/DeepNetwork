@@ -17,7 +17,7 @@ namespace PyNet::Infrastructure {
 
 		EXPORT int PyNetwork_Load(void* input, const char* filePath) {
 
-			auto reader = XmlReader::Create(filePath);
+		/*	auto reader = XmlReader::Create(filePath);
 			auto context = static_cast<Context*>(input);
 			auto pyNetwork = context->GetShared<PyNetwork>();
 			auto adjustmentCalculator = context->GetShared<AdjustmentCalculator>();
@@ -51,12 +51,13 @@ namespace PyNet::Infrastructure {
 				}
 			}
 
-			return pyNetwork->GetOutputLayer().GetRows();
+			return pyNetwork->GetOutputLayer().GetRows();*/
+			return 0;
 		}
 
 		EXPORT void PyNetwork_Save(void* input, const char* filePath) {
 
-			auto writer = XmlWriter::Create(filePath);
+		/*	auto writer = XmlWriter::Create(filePath);
 			auto context = static_cast<Context*>(input);
 			auto pyNetwork = context->GetShared<PyNetwork>();
 
@@ -79,7 +80,7 @@ namespace PyNet::Infrastructure {
 
 			writer->EndElement();
 
-			writer->EndElement();
+			writer->EndElement();*/
 		}
 	}
 }

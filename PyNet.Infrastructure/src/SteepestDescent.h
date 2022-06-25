@@ -2,31 +2,32 @@
 
 #include <memory>
 #include <vector>
-#include "PyNet.Models/Matrix.h"
-#include "PyNet.DI/Context.h"
-#include "AdjustmentCalculator.h"
 #include "TrainingAlgorithm.h"
 #include "Headers.h"
+#include "Settings.h"
+#include "PyNet.Models/ILogger.h"
 
-using namespace PyNet::DI;
+using namespace PyNet::Infrastructure::Layers;
 
 namespace PyNet::Infrastructure {
 
 	class EXPORT SteepestDescent : public TrainingAlgorithm
 	{
 	private:
-		shared_ptr<Context> _context;
-		shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
-		SteepestDescent(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator) :_context(context), _adjustmentCalculator(adjustmentCalculator) {}
+		shared_ptr<Settings> _settings;
+		shared_ptr<ILogger> _logger;
+
+		SteepestDescent(shared_ptr<Settings> settings, shared_ptr<ILogger> logger) :
+			_settings(settings), _logger(logger) {}
 	public:
 
-		static auto factory(shared_ptr<Context> context, shared_ptr<AdjustmentCalculator> adjustmentCalculator) {
-			return new SteepestDescent{ context, adjustmentCalculator };
+		static auto factory(shared_ptr<Settings> settings, shared_ptr<ILogger> logger) {
+			return new SteepestDescent{ settings, logger };
 		}
 
 		typedef TrainingAlgorithm base;
 
-		void UpdateWeights(vector<unique_ptr<Matrix>>& weightMatrices, vector<unique_ptr<Vector>>& biases, double learningRate, bool reverse = false) override;
+		void UpdateWeights(vector<TrainableLayer*> layers, double learningRate, bool reverse = false) const override;
 		~SteepestDescent() override = default;
 	};
 

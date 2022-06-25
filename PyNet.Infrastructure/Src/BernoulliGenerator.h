@@ -1,12 +1,11 @@
 #pragma once
 
-#include "PyNet.Models/Vector.h"
-#include "PyNet.DI/Context.h"
-#include "Settings.h"
+#include "PyNet.Models/Matrix.h"
+#include <ranges>
+#include "Headers.h"
 #include <memory>
 
 using namespace std;
-using namespace PyNet::DI;
 using namespace PyNet::Models;
 
 namespace PyNet::Infrastructure {
@@ -14,18 +13,15 @@ namespace PyNet::Infrastructure {
 	/// <summary>
 	/// Generates a vector using the Bernoulli distribution.
 	/// </summary>
-	class BernoulliGenerator{
+	class EXPORT BernoulliGenerator{
 	private:
-		shared_ptr<Context> _context;
-		shared_ptr<Settings> _settings;
 
-		BernoulliGenerator(shared_ptr<Context> context, shared_ptr<Settings> settings) : _context(context), _settings(settings) {}
 	public:
 
-		auto static factory(shared_ptr<Context> context, shared_ptr<Settings> settings) {
-			return new BernoulliGenerator(context, settings);
+		auto static factory() {
+			return new BernoulliGenerator();
 		}
 
-		unique_ptr<Vector> GetBernoulliVector(const Vector& input) const;
+		unique_ptr<Matrix> GetBernoulliVector(const Matrix& input, double probability) const;
 	};
 }

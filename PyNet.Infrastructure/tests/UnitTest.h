@@ -1,31 +1,36 @@
 #pragma once
 
-#include <Setup.h>
+#include "Settings.h"
+#include "ContainerFixture.h"
+#include <gtest/gtest.h>
+#include <memory>
+
+using namespace std;
 
 namespace PyNet::Infrastructure::Tests {
 
-	class UnitTest
+	class UnitTest : public ::testing::Test
 	{
 	private:
-		std::shared_ptr<PyNet::DI::Context> _context;
-	public:
+		shared_ptr<Context> _context;
 
-		UnitTest() {
-			_context = std::move(GetContext(true, false));
+	protected:
+
+		void SetUp() override 
+		{
+			_context = ContainerFixture::Initialise();
 		}
 
 		template<class T>
-		std::unique_ptr<T> GetUniqueService() {
+		unique_ptr<T> GetUniqueService() 
+		{
 			return _context->GetUnique<T>();
 		}
 
 		template<class T>
-		std::shared_ptr<T> GetSharedService() {
+		shared_ptr<T> GetSharedService()
+		{
 			return _context->GetShared<T>();
 		}
 	};
 }
-
-
-
-

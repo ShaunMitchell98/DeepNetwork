@@ -1,38 +1,59 @@
 #include <time.h>
 #include "Logger.h"
 #include <memory>
-#include <chrono>
 
-namespace PyNet::Infrastructure {
-
-	void Logger::LogMessageWithoutDate(std::string_view message) const {
-
-		if (_enabled) {
-			auto stream = std::ofstream(_fileName, std::ios_base::app);
-			stream << message;
-			stream.close();
+namespace PyNet::Infrastructure 
+{
+	void Logger::LogDebugMatrix(const Matrix& matrix, format_args args) const
+	{
+		if (_settings->LogLevel <= LogLevel::DEBUG) 
+		{
+			LogMessage(matrix.ToString(), args);
+			LogMessageWithoutPreamble("\n");
 		}
 	}
 
-	void Logger::LogMessage(std::string_view message) const {
-		if (_enabled) {
+	void Logger::LogDebug(const string_view message, format_args args) const
+	{
+		LogInternal(message, args, LogLevel::DEBUG);
+	}
 
-			auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-			auto stream = std::ofstream(_fileName, std::ios_base::app);
-			stream << std::ctime(&time);
-			stream << message;
-			stream.close();
+
+	void Logger::LogInfo(const string_view message, format_args args) const
+	{
+		LogInternal(message, args, LogLevel::INFO, 10);
+	}
+
+	void Logger::LogError(const string_view message, format_args args) const
+	{
+		LogInternal(message, args, LogLevel::ERROR);
+	}
+
+	void Logger::LogInternal(const string_view message, format_args args, LogLevel logLevel, int logInterval) const 
+	{
+		if (_settings->LogLevel <= logLevel && _trainingState->ExampleNumber % logInterval == 0)
+		{
+			LogMessage(message, args);
+			LogMessageWithoutPreamble("\n");
 		}
 	}
 
-	void Logger::LogLine(std::string_view message) const {
-		LogMessage(message);
-		LogMessageWithoutDate("\n");
+	void Logger::LogMessageWithoutPreamble(string_view message) const
+	{
+		auto stream = ofstream(_fileName, ios_base::app);
+		stream << message;
+		stream.close();
 	}
 
-	void Logger::LogVector(const Vector& v) const {
-		if (_enabled) {
-			LogMessage(v.ToString());
-		}
+	void Logger::LogMessage(const string_view message, format_args args) const
+	{
+		auto stream = ofstream(_fileName, ios_base::app);
+
+		stream << fixed;
+		auto temp = vformat(message, args);
+
+		auto output = format("Epoch: {}, Example Number: {}, {}", _trainingState->Epoch, _settings->StartExampleNumber + _trainingState->ExampleNumber, temp);
+		stream << output;
+		stream.close();
 	}
 }

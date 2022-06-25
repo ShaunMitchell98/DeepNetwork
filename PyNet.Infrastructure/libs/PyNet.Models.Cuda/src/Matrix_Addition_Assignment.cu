@@ -39,7 +39,7 @@ void internalMatrixAdditionAssignment(double* A, double* B, int rows, int cols) 
     cudaDeviceSynchronize();
 }
 
-void matrix_addition_assignment(vector<double> A, const vector<double>& B, int Arows, int Acols) {
+void matrix_addition_assignment(vector<double>& A, const vector<double>& B, int Arows, int Acols) {
 
     CudaArray<double> d_A(A.size());
     CudaArray<double> d_B(B.size());

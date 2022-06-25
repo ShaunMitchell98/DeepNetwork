@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PyNet.Models/Vector.h"
+#include "PyNet.Models/Matrix.h"
 #include "Settings.h"
 #include "BernoulliGenerator.h"
 #include <memory>
@@ -30,8 +30,7 @@ namespace PyNet::Infrastructure {
 		/// Applies dropout to the given vector.
 		/// </summary>
 		/// <param name="input">A vector</param>
-		/// <returns>A dropped vector</returns>
-		void ApplyDropout(Vector& input) const;
+		void ApplyDropout(Matrix& input, double rate) const;
 	};
 
 }

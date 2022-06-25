@@ -7,9 +7,5 @@ include_directories( ./include/PyNet.Models ./src )
 add_library(PyNet.Models STATIC 
 	./include/PyNet.Models/ILogger.h
 	./include/PyNet.Models/Loss.h
-	./include/PyNet.Models/Activation.h
 	./include/PyNet.Models/Matrix.h
-	./src/Matrix.cpp
-	./include/PyNet.Models/Vector.h
-	./src/Vector.cpp
-	./include/PyNet.Models/Logistic.h)
+	./src/Matrix.cpp)

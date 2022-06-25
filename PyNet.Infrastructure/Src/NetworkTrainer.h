@@ -1,15 +1,16 @@
 #pragma once
 #include <memory>
 #include <string>
-#include "AdjustmentCalculator.h"
+#include <map>
 #include "PyNet.DI/Context.h"
 #include "NetworkRunner.h"
-#include "GradientCalculator.h"
+#include "BackPropagator.h"
 #include "TrainingAlgorithm.h"
-#include "PyNet.Models/ILogger.h"
 #include "PyNetwork.h"
 #include "PyNet.Models/Loss.h"
-#include "VariableLearningSettings.h"
+#include "VLService.h"
+#include "Settings.h"
+#include "TrainingState.h"
 #include "Headers.h"
 
 using namespace PyNet::DI;
@@ -22,34 +23,37 @@ namespace PyNet::Infrastructure {
 
 	private:
 
-		shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
 		shared_ptr<Context> _context;
-		shared_ptr<NetworkRunner> _networkRunner;
-		shared_ptr<GradientCalculator> _gradientCalculator;
+		unique_ptr<NetworkRunner> _networkRunner;
+		unique_ptr<BackPropagator> _backPropagator;
 		shared_ptr<TrainingAlgorithm> _trainingAlgorithm;
-		shared_ptr<ILogger> _logger;
 		shared_ptr<PyNetwork> _pyNetwork;
 		shared_ptr<Loss> _loss;
-		unique_ptr<VariableLearningSettings> _vlSettings;
+		unique_ptr<VLService> _vlService;
+		shared_ptr<Settings> _settings;
+		shared_ptr<TrainingState> _trainingState;
+		int _batchNumber;
+		double _learningRate;
+		double _totalLossForCurrentEpoch;
 
-		NetworkTrainer(shared_ptr<AdjustmentCalculator> adjustmentCalculator, shared_ptr<Context> context,
-			shared_ptr<NetworkRunner> networkRunner, shared_ptr<GradientCalculator> gradientCalculator,
-			shared_ptr<TrainingAlgorithm> trainingAlgirithm, shared_ptr<ILogger> logger, shared_ptr<PyNetwork> pyNetwork,
-			shared_ptr<Loss> loss) : _adjustmentCalculator(adjustmentCalculator),
-		_context(context), _networkRunner(networkRunner), _gradientCalculator(gradientCalculator), _trainingAlgorithm(trainingAlgirithm),
-			_logger(logger), _pyNetwork(pyNetwork), _loss(loss) {}
+		NetworkTrainer(shared_ptr<Context> context,
+			unique_ptr<NetworkRunner> networkRunner, unique_ptr<BackPropagator> backPropagator,
+			shared_ptr<TrainingAlgorithm> trainingAlgirithm, shared_ptr<PyNetwork> pyNetwork,
+			shared_ptr<Loss> loss, shared_ptr<Settings> settings, unique_ptr<VLService> vlService, shared_ptr<TrainingState> trainingState) :
+		_context(context), _networkRunner(move(networkRunner)), _backPropagator(move(backPropagator)), _trainingAlgorithm(trainingAlgirithm),
+			_pyNetwork(pyNetwork), _loss(loss), _settings(settings), _vlService(move(vlService)), _trainingState(trainingState), _batchNumber{ 1 }, _learningRate{ 0 }, _totalLossForCurrentEpoch{ 0.0 } {}
+
+		void TrainOnExample(shared_ptr<Matrix> input, const Matrix& expectedOutput, vector<TrainableLayer*> trainableLayers);
 
 	public:
 
-		static auto factory(shared_ptr<AdjustmentCalculator> adjustmentCalculator, shared_ptr<Context> context,
-			shared_ptr<NetworkRunner> networkRunner, shared_ptr<GradientCalculator> gradientCalculator, shared_ptr<TrainingAlgorithm> trainingAlgorithm,
-			shared_ptr<ILogger> logger, shared_ptr<PyNetwork> pyNetwork, shared_ptr<Loss> loss) {
-			return new NetworkTrainer(adjustmentCalculator, context, networkRunner, gradientCalculator, trainingAlgorithm, logger, pyNetwork, loss);
+		static auto factory(shared_ptr<Context> context,
+			unique_ptr<NetworkRunner> networkRunner, unique_ptr<BackPropagator> backPropagator, shared_ptr<TrainingAlgorithm> trainingAlgorithm,
+			shared_ptr<PyNetwork> pyNetwork, shared_ptr<Loss> loss, shared_ptr<Settings> settings, unique_ptr<VLService> vlService, shared_ptr<TrainingState> trainingState) {
+			return new NetworkTrainer(context, move(networkRunner), move(backPropagator), trainingAlgorithm, pyNetwork, loss, settings, move(vlService),
+				trainingState);
 		}
 
-		double* TrainNetwork(double** inputLayers, double** expectedOutputs, int numberOfExamples, int batchSize, double baseLearningRate,
-			double momentum, int epochs);
-
-		void SetVLSettings(double errorThreshold, double lrDecrease, double lrIncrease);
+		void TrainNetwork(vector<pair<shared_ptr<Matrix>, shared_ptr<Matrix>>> trainingPairs);
 	};
 }

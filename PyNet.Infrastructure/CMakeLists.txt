@@ -5,7 +5,7 @@ find_package(CUDAToolkit)
 IF (CUDAToolkit_FOUND)
   project(PyNet.Infrastructure LANGUAGES CXX CUDA)
 ELSE()
-  project(PyNet.Infrastructure)
+  project(PyNet.Infrastructure LANGUAGES C CXX)
 ENDIF()
 
 # specify the C++ standard
@@ -16,12 +16,14 @@ set(C_STANDARD C17)
 
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set (CMAKE_POLICY_DEFAULT_CMP0025 NEW)
 
 # include files
 include_directories( ./include 
 	./libs/PyNet.Models/include
 	./libs/PyNet.Models.Cpu/include
 	./libs/PyNet.DI/include
+	./build/gtest/src/gtest/googletest/include
 	 ./tests
 	 ./src
 	./libs/di/src
@@ -29,7 +31,6 @@ include_directories( ./include
 	IF (CUDAToolkit_FOUND)
   		./libs/PyNet.Models.Cuda/include
 	ENDIF()
-#	"C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/include"
 )
 
 # target
@@ -41,8 +42,6 @@ add_library(PyNet.Infrastructure SHARED
 	./src/AdjustmentCalculator.cpp 
 	./src/InfrastructureModule.h
 	./src/Intermediary.h
-	./src/LayerPropagator.h
-	./src/LayerPropagator.cpp 
 	./src/Logger.h
 	./src/Logger.cpp 
 	./src/SteepestDescent.h
@@ -51,14 +50,15 @@ add_library(PyNet.Infrastructure SHARED
 	./src/PyNetwork_Functions.cpp
 	./src/QuadraticLoss.h
 	./src/QuadraticLoss.cpp
-	./src/Setup.h
+	./src/Startup.h
+	./src/Startup.cpp
 	./src/XmlWriter.h
 	./src/XmlWriter.cpp
 	./src/XmlReader.h
 	./src/XmlReader.cpp
 	./src/TrainingAlgorithm.h
-	./src/GradientCalculator.h
-	./src/GradientCalculator.cpp
+	./src/BackPropagator.h
+	./src/BackPropagator.cpp
 	./src/NetworkRunner.h
 	./src/NetworkRunner.cpp
 	./src/NetworkTrainer.h
@@ -67,6 +67,25 @@ add_library(PyNet.Infrastructure SHARED
 	./src/Xml_Functions.cpp
 	./src/BernoulliGenerator.h
 	./src/BernoulliGenerator.cpp
+	./src/Layers/Layer.h
+	./src/Layers/DenseLayer.h
+	./src/Layers/ConvolutionalLayer.h
+	./src/Layers/LayerModule.h
+	./src/Layers/MaxPoolingLayer.h
+	./src/Layers/InputLayer.h
+	./src/Layers/FlattenLayer.h
+	./src/Layers/TrainableLayer.h
+	./src/ReceptiveFieldProvider.h
+	./src/MatrixPadder.h
+	./src/Activations/Activation.h
+	./src/Activations/Logistic.h
+	./src/Activations/Relu.h
+	./src/Activations/ActivationModule.h
+	./src/Layers/SoftmaxLayer.h
+	./src/VLService.h
+	./src/VLService.cpp
+	./src/TrainingState.h
+	./include/LogLevel.h
 	./src/DropoutRunner.h
 	./src/DropoutRunner.cpp
 )
@@ -81,9 +100,12 @@ add_subdirectory( ./libs/PyNet.Models )
 add_subdirectory( ./libs/PyNet.Models.Cpu )
 add_subdirectory( ./libs/PyNet.DI)
 add_subdirectory( ./libs/PyNet.Console )
+add_subdirectory( ./libs/PyNet.Models.Cpu/tests )
 
+add_subdirectory( ./tests)
 
 IF (CUDAToolkit_FOUND)
+	add_subdirectory( ./libs/PyNet.Models.Cuda/tests )
 	target_link_libraries( PyNet.Infrastructure PyNet.Models.Cuda )
 ENDIF()
 
@@ -92,12 +114,4 @@ target_link_libraries( PyNet.Infrastructure PyNet.Models.Cpu )
 target_link_libraries( PyNet.Infrastructure PyNet.DI )
 target_link_libraries(PyNet.Console PyNet.Infrastructure )
 
-#add_library(PyNet.Infrastructure.Tests SHARED
-#		./tests/LayerPropagatorTests.cpp
-#	./tests/SteepestDescentTests.cpp
-#	./tests/PyNetworkTests.cpp
-#	./tests/UnitTest.h
-#)
-
-#target_link_libraries(PyNet.Infrastructure.Tests PyNet.Infrastructure)
-#link_directories("C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/UnitTest/lib/x64/Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib")
+enable_testing()

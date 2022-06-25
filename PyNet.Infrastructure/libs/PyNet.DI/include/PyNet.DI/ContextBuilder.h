@@ -29,9 +29,8 @@ namespace PyNet::DI {
             RegisterInstance(_context, InstanceMode::Shared);
         }
 
-        // Add an already instantiated object to the context
         template <class InstanceType>
-        ContextBuilder& RegisterInstance(shared_ptr<InstanceType> instance, InstanceMode instanceMode)
+        void RegisterInstance(shared_ptr<InstanceType> instance, InstanceMode instanceMode) const
         {
             if (instance == nullptr)
                 throw runtime_error(string("Trying to add nullptr instance for type: ") + typeid(InstanceType).name());
@@ -44,15 +43,12 @@ namespace PyNet::DI {
             if (instanceMode == InstanceMode::Shared) {
                 item.SetInstance(instance);
             }
-
-            return *this;
         }
 
         template <typename InstanceType>
-        unique_ptr<ItemRegistrar<InstanceType>> RegisterType(InstanceMode instanceMode = InstanceMode::Shared)
+        unique_ptr<ItemRegistrar<InstanceType>> RegisterType(InstanceMode instanceMode = InstanceMode::Shared) const
         {
-            auto registrar = make_unique<ItemRegistrar<InstanceType>>(type_index(typeid(InstanceType)), *_container);
-            return move(registrar);
+            return make_unique<ItemRegistrar<InstanceType>>(type_index(typeid(InstanceType)), *_container);
         }
 
         shared_ptr<Context> Build() {

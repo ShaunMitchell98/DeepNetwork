@@ -1,20 +1,23 @@
 #pragma once
 #include <compare>
 #include <memory>
-#include "LayerPropagator.h"
 #include "Settings.h"
 #include "PyNet.DI/Module.h"
 #include "QuadraticLoss.h"
-#include "LayerNormaliser.h"
 #include "Logger.h"
 #include "AdjustmentCalculator.h"
 #include "SteepestDescent.h"
-#include "GradientCalculator.h"
+#include "BackPropagator.h"
 #include "PyNetwork.h"
 #include "NetworkRunner.h"
 #include "NetworkTrainer.h"
 #include "BernoulliGenerator.h"
+#include "MatrixPadder.h"
 #include "DropoutRunner.h"
+#include "ReceptiveFieldProvider.h"
+#include "VLService.h"
+#include "VariableLearningSettings.h"
+#include "TrainingState.h"
 
 using namespace PyNet::Models;
 using namespace PyNet::DI;
@@ -23,31 +26,31 @@ using namespace std;
 namespace PyNet::Infrastructure {
 
 	class InfrastructureModule : public Module {
-
-	private:
+		private:
 		shared_ptr<Settings> _settings;
-
 	public:
 
-		InfrastructureModule(shared_ptr<Settings> settings) : _settings{ settings } {}
+		InfrastructureModule(shared_ptr<Settings> settings) : _settings(settings) {}
 
-		void Load(ContextBuilder& builder) override {
+		void Load(const ContextBuilder& builder) const override {
 				
 			builder.RegisterType<QuadraticLoss>()->As<Loss>();
-			
-			builder.RegisterType<LayerNormaliser>()->AsSelf();
+
+			builder.RegisterType<VariableLearningSettings>()->AsSelf();
+
+			builder.RegisterType<VLService>()->AsSelf();
 
 			builder.RegisterInstance<Settings>(_settings, InstanceMode::Shared);
 
+			builder.RegisterType<TrainingState>()->AsSelf();
+
 			builder.RegisterType<Logger>()->As<ILogger>();
-				
-			builder.RegisterType<LayerPropagator>()->AsSelf();
 				
 			builder.RegisterType<AdjustmentCalculator>()->AsSelf();
 
 			builder.RegisterType<SteepestDescent>()->As<TrainingAlgorithm>();
 
-			builder.RegisterType<GradientCalculator>()->AsSelf();
+			builder.RegisterType<BackPropagator>()->AsSelf();
 
 			builder.RegisterType<PyNetwork>()->AsSelf();
 
@@ -58,6 +61,10 @@ namespace PyNet::Infrastructure {
 			builder.RegisterType<BernoulliGenerator>()->AsSelf();
 
 			builder.RegisterType<DropoutRunner>()->AsSelf();
+
+			builder.RegisterType<MatrixPadder>()->AsSelf();
+
+			builder.RegisterType<ReceptiveFieldProvider>()->AsSelf();
 		}
 	};
 }

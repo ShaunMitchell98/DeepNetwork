@@ -2,49 +2,50 @@
 #include "WeightMatrixGenerator.h"
 #include <stdexcept>
 #include <string>
+#include <format>
 
 namespace PyNet::Models {
 
 	void Matrix::Initialise(size_t rows, size_t cols, bool generateWeights) {
 
 		if (Rows > 0) {
-				Values.resize(rows * cols);
-			}
-			else {
-				Values = std::vector<double>(rows * cols);
-			}
+			Values.resize(rows * cols);
+		}
+		else {
+			Values = std::vector<double>(rows * cols);
+		}
 
-			Rows = rows;
-			Cols = cols;
+		Rows = rows;
+		Cols = cols;
 
-			if (generateWeights) {
-				GenerateRandomWeights(Values.data(), rows * cols);
-			}
+		if (generateWeights) {
+			GenerateRandomWeights(Values.data(), rows * cols);
+		}
 	}
 
 	double& Matrix::operator()(size_t row, size_t col) {
-		if (row >= GetRows()) {
-			throw "Row out of bounds";
+		if (row > GetRows()) {
+			throw format("Row out of bounds. Requested row {} out of {}\n", row, GetRows());
 		}
 		else if (col > GetCols()) {
-			throw "Col out of bounds";
+			throw format("Col out of bounds. Requested col {} out of {}\n", col, GetCols());
 		}
 
-		return GetValues()[row * GetCols() + col];
+		return GetValues()[(row-1) * GetCols() + (col-1)];
 	}
 
 	const double& Matrix::operator()(size_t row, size_t col) const {
-		if (row >= GetRows()) {
-			throw "Row out of bounds";
+		if (row > GetRows()) {
+			throw format("Row out of bounds. Requested row {} out of {}\n", row, GetRows());
 		}
 		else if (col > GetCols()) {
-			throw "Col out of bounds";
+			throw format("Col out of bounds. Requested col {} out of {}\n", col, GetCols());
 		}
 
-		return GetCValues()[row * GetCols() + col];
+		return GetCValues()[(row -1) * GetCols() + (col - 1)];
 	}
 
-	void Matrix::Load(std::string_view value) {
+	void Matrix::Load(string_view value) {
 
 			string currentValue;
 			int expectedColNumber = 0;
@@ -86,8 +87,8 @@ namespace PyNet::Models {
 		string text;
 		char buffer[30];
 
-		for (auto row = 0; row < Rows; row++) {
-			for (auto col = 0; col < Cols; col++) {
+		for (auto row = 1; row <= Rows; row++) {
+			for (auto col = 1; col <= Cols; col++) {
 				auto value = (*this)(row, col);
 				sprintf(buffer, "%.20f", value);
 				text += buffer;
@@ -100,13 +101,15 @@ namespace PyNet::Models {
 			text += "\n";
 		}
 
-		return move(text);
+		return text;
 	}
 
 	void Matrix::Set(size_t rows, size_t cols, const double* values) {
 
 		Rows = rows;
 		Cols = cols;
+
+		Values.clear();
 
 		for (size_t i = 0; i < Rows; i++) {
 			for (size_t j = 0; j < Cols; j++) {

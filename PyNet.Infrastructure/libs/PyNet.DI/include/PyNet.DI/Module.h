@@ -6,6 +6,6 @@ namespace PyNet::DI {
 
 	class Module {
 	public:
-		virtual void Load(ContextBuilder& builder) = 0;
+		virtual void Load(const ContextBuilder& builder) const = 0;
 	};
 }
