@@ -1,6 +1,7 @@
 #include "UnitTest.h"
 #include "PyNet.Models.Cpu/CpuMatrix.h"
 #include "../Src/Layers/InputLayer.h"
+#include "../Src/Activations/Relu.h"
 #include "Layers/FakeLayer.h"
 #include "../Src/NetworkTrainer.h"
 
@@ -25,6 +26,9 @@ namespace PyNet::Infrastructure::Tests
 		auto inputLayer = GetUniqueService<InputLayer>();
 		inputLayer->Initialise(5, 1);
 
+		auto activation1 = GetUniqueService<Relu>();
+		inputLayer->SetActivation(move(activation1));
+
 		pyNetwork->Layers.push_back(move(inputLayer));
 
 		auto fakeLayer = GetUniqueService<FakeLayer>();
@@ -32,6 +36,9 @@ namespace PyNet::Infrastructure::Tests
 		auto fakeValue = 5.0;
 
 		fakeLayer->SetValue(fakeValue);
+
+		auto activation2 = GetUniqueService<Relu>();
+		fakeLayer->SetActivation(move(activation2));
 
 		pyNetwork->Layers.push_back(move(fakeLayer));
 

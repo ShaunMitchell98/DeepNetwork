@@ -1,6 +1,7 @@
 #include "UnitTest.h"
 #include <gtest/gtest.h>
 #include "BackPropagator.h"
+#include "Activations/Relu.h"
 #include "Layers/InputLayer.h"
 #include "Layers/FakeLayer.h"
 
@@ -17,6 +18,12 @@ namespace PyNet::Infrastructure::Tests
 
 		auto inputLayer = GetUniqueService<InputLayer>();
 		auto fakeLayer = GetUniqueService<FakeLayer>();
+
+		auto activation1 = GetUniqueService<Relu>();
+		auto activation2 = GetUniqueService<Relu>();
+
+		inputLayer->SetActivation(move(activation1));
+		fakeLayer->SetActivation(move(activation2));
 
 		pyNetwork->Layers.push_back(move(inputLayer));
 		pyNetwork->Layers.push_back(move(fakeLayer));

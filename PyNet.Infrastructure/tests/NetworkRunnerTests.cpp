@@ -29,7 +29,7 @@ namespace PyNet::Infrastructure::Tests
 
 		auto fakeLayer = GetUniqueService<FakeLayer>();
 
-		auto fakeValue = 5.0;
+		auto fakeValue = 0.2;
 
 		fakeLayer->SetValue(fakeValue);
 
