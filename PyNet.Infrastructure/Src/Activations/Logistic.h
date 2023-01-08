@@ -23,28 +23,21 @@ namespace PyNet::Infrastructure::Activations {
 
 		shared_ptr<Matrix> Apply(shared_ptr<Matrix> input) override {
 
-			//Input = input;
-			//return (*((-*Input)->Exp()) + 1)->Reciprocal();
-
-			//_logger->LogLine("Logistic Input is: ");
-			//_logger->LogMatrix(*input);
+			_logger->LogDebug("Logistic Input is: ");
+			_logger->LogDebugMatrix(*input);
 
 			Output = input;
-
-			//_logger->LogLine("Logistic Copied input is: ");
-			//_logger->LogMatrix(*Output);
 
 			for (int i = 1; i <= input->GetRows(); i++)
 			{
 				for (auto j = 1; j <= input->GetCols(); j++)
 				{
-
 					(*Output)(i, j) = 1 / (1 + exp(-(*input)(i, j)));
 				}
 			}
 
-			//_logger->LogLine("Logistic Output is: ");
-			//_logger->LogMatrix(*Output);
+			_logger->LogDebug("Logistic Output is: ");
+			_logger->LogDebugMatrix(*Output);
 
 			return Output;
 		}

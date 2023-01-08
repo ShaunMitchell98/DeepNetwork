@@ -17,13 +17,6 @@ class PyNetwork:
         self.lib.PyNetwork_AddDenseLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_double]
         self.lib.PyNetwork_AddDenseLayer.restype = ctypes.c_void_p
 
-        self.lib.PyNetwork_AddConvolutionLayer.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int]
-        self.lib.PyNetwork_AddConvolutionLayer.restype = ctypes.c_void_p
-
-        self.lib.PyNetwork_AddMaxPoolingLayer.argtypes = [ctypes.c_void_p, ctypes.c_int]
-
-        self.lib.PyNetwork_AddFlattenLayer.argtypes = [ctypes.c_void_p]
-
        # self.lib.PyNetwork_AddSoftmaxLayer.argtypes = [ctypes.c_void_p]
 
         self.lib.PyNetwork_Run.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double)]
@@ -53,19 +46,8 @@ class PyNetwork:
         self.lib.PyNetwork_AddDenseLayer(self.obj, count, activationFunctionType, dropoutRate)
         self.outputNumber = count
 
-    def add_convolution_layer(self, filterSize: int, activationFunctionType: int):
-        self.lib.PyNetwork_AddConvolutionLayer(self.obj, filterSize, activationFunctionType)
-        self.outputNumber = filterSize
-
-    def add_max_pooling_layer(self, filterSize: int):
-        self.lib.PyNetwork_AddMaxPoolingLayer(self.obj, filterSize)
-        self.outputNumber = filterSize
-
     #def add_softmax_layer(self):
     #    self.lib.PyNetwork_AddSoftmaxLayer(self.obj)
-
-    def add_flatten_layer(self):
-        self.lib.PyNetwork_AddFlattenLayer(self.obj)
 
     def run(self, input_layer: np.ndarray) -> np.ndarray:
         results = self.lib.PyNetwork_Run(self.obj, input_layer.ctypes.data_as(ctypes.POINTER(ctypes.c_double)))

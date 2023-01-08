@@ -12,9 +12,7 @@
 #include "NetworkRunner.h"
 #include "NetworkTrainer.h"
 #include "BernoulliGenerator.h"
-#include "MatrixPadder.h"
 #include "DropoutRunner.h"
-#include "ReceptiveFieldProvider.h"
 #include "VLService.h"
 #include "VariableLearningSettings.h"
 #include "TrainingState.h"
@@ -61,10 +59,6 @@ namespace PyNet::Infrastructure {
 			builder.RegisterType<BernoulliGenerator>()->AsSelf();
 
 			builder.RegisterType<DropoutRunner>()->AsSelf();
-
-			builder.RegisterType<MatrixPadder>()->AsSelf();
-
-			builder.RegisterType<ReceptiveFieldProvider>()->AsSelf();
 		}
 	};
 }

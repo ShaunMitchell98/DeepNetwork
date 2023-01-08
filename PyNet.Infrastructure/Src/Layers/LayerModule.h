@@ -3,9 +3,6 @@
 #include "PyNet.DI/Module.h"
 #include "InputLayer.h"
 #include "DenseLayer.h"
-#include "ConvolutionalLayer.h"
-#include "MaxPoolingLayer.h"
-#include "FlattenLayer.h"
 #include "SoftmaxLayer.h"
 
 using namespace PyNet::DI;
@@ -22,15 +19,6 @@ namespace PyNet::Infrastructure::Layers {
 				->AsSelf();
 
 			builder.RegisterType<DenseLayer>()
-				->AsSelf();
-
-			builder.RegisterType<ConvolutionalLayer>()
-				->AsSelf();
-
-			builder.RegisterType<MaxPoolingLayer>()
-				->AsSelf();
-
-			builder.RegisterType<FlattenLayer>()
 				->AsSelf();
 
 			builder.RegisterType<SoftmaxLayer>()

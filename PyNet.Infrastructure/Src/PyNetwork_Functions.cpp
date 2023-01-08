@@ -7,9 +7,6 @@
 #include "RunMode.h"
 #include "Layers/InputLayer.h"
 #include "Layers/DenseLayer.h"
-#include "Layers/ConvolutionalLayer.h"
-#include "Layers/MaxPoolingLayer.h"
-#include "Layers/FlattenLayer.h"
 #include "Activations/Logistic.h"
 #include "Activations/Relu.h"
 #include "Layers/SoftmaxLayer.h"
@@ -83,74 +80,6 @@ namespace PyNet::Infrastructure {
 
 		pyNetwork->Layers.push_back(move(denseLayer));
 	}
-
-	EXPORT void PyNetwork_AddConvolutionLayer(void* input, int filterSize, ActivationFunctionType activationFunctionType) {
-		auto intermediary = static_cast<Intermediary*>(input);
-		auto context = intermediary->GetContext();
-
-		auto pyNetwork = context->GetShared<PyNetwork>();
-
-		auto rows = pyNetwork->Layers.back()->GetRows();
-		auto cols = pyNetwork->Layers.back()->GetCols();
-		
-		auto convolutionalLayer = context->GetUnique<ConvolutionalLayer>();
-		convolutionalLayer->Initialise(filterSize, rows, cols);
-
-		if (activationFunctionType == ActivationFunctionType::Logistic)
-		{
-			auto logistic = context->GetUnique<Logistic>();
-			logistic->Initialise(rows, cols);
-			convolutionalLayer->SetActivation(move(logistic));
-		}
-		if (activationFunctionType == ActivationFunctionType::Relu)
-		{
-			auto relu = context->GetUnique<Relu>();
-			relu->Initialise(rows, cols);
-			convolutionalLayer->SetActivation(move(relu));
-		}
-		
-		pyNetwork->Layers.push_back(move(convolutionalLayer));
-	}
-
-	EXPORT void PyNetwork_AddMaxPoolingLayer(void* input, int filterSize) {
-		auto intermediary = static_cast<Intermediary*>(input);
-		auto context = intermediary->GetContext();
-
-		auto pyNetwork = context->GetShared<PyNetwork>();
-
-		auto rows = pyNetwork->Layers.back()->GetRows();
-		auto cols = pyNetwork->Layers.back()->GetCols();
-		
-		auto maxPoolingLayer = context->GetUnique<MaxPoolingLayer>();
-		maxPoolingLayer->Initialise(filterSize, rows, cols);
-		pyNetwork->Layers.push_back(move(maxPoolingLayer));
-	}
-
-	EXPORT void PyNetwork_AddFlattenLayer(void* input) {
-		auto intermediary = static_cast<Intermediary*>(input);
-		auto context = intermediary->GetContext();
-		auto pyNetwork = context->GetShared<PyNetwork>();
-
-		auto rows = pyNetwork->Layers.back()->GetRows();
-		auto cols = pyNetwork->Layers.back()->GetCols();
-		
-		auto flattenLayer = context->GetUnique<FlattenLayer>();
-		flattenLayer->Initialise(rows, cols);
-		pyNetwork->Layers.push_back(move(flattenLayer));
-	}
-
-	//EXPORT void PyNetwork_AddSoftmaxLayer(void* input) {
-	//	auto intermediary = static_cast<Intermediary*>(input);
-	//	auto context = intermediary->GetContext();
-
-	//	auto pyNetwork = context->GetShared<PyNetwork>();
-	//	auto softmaxLayer = context->GetUnique<SoftmaxLayer>();
-
-	//	auto rows = pyNetwork->Layers.back()->GetRows();
-
-	//	softmaxLayer->Initialise(rows, 1);
-	//	pyNetwork->Layers.push_back(move(softmaxLayer));
-	//}
 
 	EXPORT const double* PyNetwork_Run(void* input, double* inputLayer) {
 

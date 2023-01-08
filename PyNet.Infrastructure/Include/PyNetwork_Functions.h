@@ -17,14 +17,6 @@ namespace PyNet::Infrastructure {
 
 		EXPORT void PyNetwork_AddDenseLayer(void* input, int count, ActivationFunctionType activationFunctionType, double dropoutRate);
 
-		EXPORT void PyNetwork_AddConvolutionLayer(void* input, int filterSize, ActivationFunctionType activationFunctionType);
-
-		EXPORT void PyNetwork_AddMaxPoolingLayer(void* input, int filterSize);
-
-		EXPORT void PyNetwork_AddFlattenLayer(void* input);
-
-		//EXPORT void PyNetwork_AddSoftmaxLayer(void* input);
-
 		EXPORT const double* PyNetwork_Run(void* input, double* inputLayer);
 
 		EXPORT void PyNetwork_SetVariableLearning(void* input, double errorThreshold, double lrDecrease, double lrIncrease);

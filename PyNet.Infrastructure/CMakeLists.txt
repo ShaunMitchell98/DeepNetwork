@@ -69,14 +69,9 @@ add_library(PyNet.Infrastructure SHARED
 	./src/BernoulliGenerator.cpp
 	./src/Layers/Layer.h
 	./src/Layers/DenseLayer.h
-	./src/Layers/ConvolutionalLayer.h
 	./src/Layers/LayerModule.h
-	./src/Layers/MaxPoolingLayer.h
 	./src/Layers/InputLayer.h
-	./src/Layers/FlattenLayer.h
 	./src/Layers/TrainableLayer.h
-	./src/ReceptiveFieldProvider.h
-	./src/MatrixPadder.h
 	./src/Activations/Activation.h
 	./src/Activations/Logistic.h
 	./src/Activations/Relu.h
