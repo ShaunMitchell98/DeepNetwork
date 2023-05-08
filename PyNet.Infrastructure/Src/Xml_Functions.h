@@ -1,16 +1,6 @@
 #pragma once
-#include <memory>
-#include <fstream>
-#include "XmlReader.h"
-#include "XmlWriter.h"
-#include "PyNet.DI/Context.h"
-#include "AdjustmentCalculator.h"
-#include "PyNetwork.h"
-#include "Headers.h"
 
-using namespace PyNet::DI;
-using namespace PyNet::Models;
-using namespace std;
+#include "Headers.h"
 
 namespace PyNet::Infrastructure {
 	extern "C" {
@@ -55,32 +45,6 @@ namespace PyNet::Infrastructure {
 			return 0;
 		}
 
-		EXPORT void PyNetwork_Save(void* input, const char* filePath) {
-
-		/*	auto writer = XmlWriter::Create(filePath);
-			auto context = static_cast<Context*>(input);
-			auto pyNetwork = context->GetShared<PyNetwork>();
-
-			writer->StartElement("Configuration");
-			writer->StartElement("Weights");
-			for (auto i = 0; i < pyNetwork->Weights.size(); i++) {
-				writer->StartElement("Weight");
-				writer->WriteString(pyNetwork->Weights[i]->ToString());
-				writer->EndElement();
-			}
-
-			writer->EndElement();
-
-			writer->StartElement("Biases");
-			for (auto i = 0; i < pyNetwork->Biases.size(); i++) {
-				writer->StartElement("Bias");
-				writer->WriteString(pyNetwork->Biases[i]->ToString());
-				writer->EndElement();
-			}
-
-			writer->EndElement();
-
-			writer->EndElement();*/
-		}
+		EXPORT void PyNetwork_Save(void* input, const char* filePath);
 	}
 }

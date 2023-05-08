@@ -92,5 +92,20 @@ namespace PyNet::Infrastructure::Layers
 			DLoss_dBiasSum = _adjustmentCalculator->CalculateBiasAdjustment(dLoss_dBias(dLoss_dOutput), DLoss_dBiasSum);
 			_adjustmentCalculator->CalculateWeightAdjustment(*dLoss_dWeightValue, *DLoss_dWeightSum);
 		}
+
+		void Serialize(XmlWriter& writer) const override
+		{
+			writer.StartElement("Type");
+			writer.WriteString(typeid(DenseLayer).name());
+			writer.EndElement();
+
+			writer.StartElement("Weights");
+			writer.WriteString(Weights->ToString());
+			writer.EndElement();
+
+			writer.StartElement("Biases");
+			writer.WriteString(to_string(Bias));
+			writer.EndElement();
+		}
 	};
 }

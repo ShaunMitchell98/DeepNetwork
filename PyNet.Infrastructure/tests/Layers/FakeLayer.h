@@ -55,5 +55,9 @@ namespace PyNet::Infrastructure::Tests::Layers
 
 			return output;
 		}
+
+		void Serialize(XmlWriter& writer) const
+		{
+		}
 	};
 }

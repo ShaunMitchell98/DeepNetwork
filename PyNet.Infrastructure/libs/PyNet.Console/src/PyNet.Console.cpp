@@ -1,4 +1,5 @@
 #include "PyNetwork_Functions.h"
+#include "Xml_Functions.h"
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -127,7 +128,7 @@ int main()
 
 	PyNetwork_Train(intermediary, inputs.data(), labels.data(), settings.get());
 	PyNetwork_Run(intermediary, inputs[0]);
+	PyNetwork_Save(intermediary, "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\Network.xml");
 	PyNetwork_Destruct(intermediary);
-
 }
 	

@@ -6,10 +6,10 @@ namespace PyNet::Infrastructure {
 		_stream = ofstream(filePath.data(), ios_base::app);
 	}
 
-	std::unique_ptr<XmlWriter> XmlWriter::Create(string_view filePath) {
+	unique_ptr<XmlWriter> XmlWriter::Create(string_view filePath) {
 		auto network = make_unique<XmlWriter>(filePath);
 		network->WriteDeclaration();
-		return std::move(network);
+		return move(network);
 	}
 
 	void XmlWriter::WriteDeclaration() {
@@ -28,7 +28,7 @@ namespace PyNet::Infrastructure {
 	}
 
 	void XmlWriter::EndElement() {
-		auto name = _openElements.top();
+		auto& name = _openElements.top();
 		_stream << "</";
 		_stream << name;
 		_stream << ">\n";

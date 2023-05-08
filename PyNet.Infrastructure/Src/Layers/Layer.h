@@ -2,9 +2,12 @@
 
 #include <memory>
 #include "../Activations/Activation.h"
+#include "XmlWriter.h"
 #include "PyNet.Models/Matrix.h"
+#include <type_traits>
 
 using namespace PyNet::Models;
+using namespace PyNet::Infrastructure;
 using namespace PyNet::Infrastructure::Activations;
 
 namespace PyNet::Infrastructure::Layers {
@@ -25,6 +28,7 @@ namespace PyNet::Infrastructure::Layers {
 
 		virtual shared_ptr<Matrix> ApplyInternal(shared_ptr<Matrix> input) = 0;
 		virtual unique_ptr<Matrix> dLoss_dInput(const Matrix& dLoss_dOutput) const = 0;
+		virtual void Serialize(XmlWriter& writer) const = 0;
 		virtual ~Layer() = default;
 
 		void SetActivation(unique_ptr<Activation> activation)
