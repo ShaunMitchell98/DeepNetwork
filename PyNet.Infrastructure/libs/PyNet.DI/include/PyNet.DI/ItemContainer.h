@@ -15,7 +15,7 @@ namespace PyNet::DI {
     {
     private:
 
-        map<type_index, IItem*> _items;
+        map<string, IItem*> _items;
 
     public:
 
@@ -34,7 +34,7 @@ namespace PyNet::DI {
         template<class RequiredType>
         Item<RequiredType>& Add() 
         {
-            auto key = type_index(typeid(RequiredType));
+            auto key = typeid(RequiredType).name();
             auto item = new Item<RequiredType>();
             _items.insert({ key, item  });
             return *item;
@@ -43,11 +43,18 @@ namespace PyNet::DI {
         template <class RequiredType>
         Item<RequiredType>& GetItem()
         {
-            auto it = _items.find(type_index(typeid(RequiredType)));
+            auto name = string(typeid(RequiredType).name());
+            return GetItem<RequiredType>(name);
+        }
+
+        template <class RequiredType>
+        Item<RequiredType>& GetItem(string& typeName)
+        {
+            auto it = _items.find(typeName);
 
             if (it == _items.end())
             {
-                throw runtime_error(string("No type ") + typeid(RequiredType).name() + " has been registered with the Container.");
+                throw runtime_error(string("No type ") + typeName + " has been registered with the Container.");
             }
 
             return *static_cast<Item<RequiredType>*>(it->second);

@@ -107,5 +107,20 @@ namespace PyNet::Infrastructure::Layers
 			writer.WriteString(to_string(Bias));
 			writer.EndElement();
 		}
+
+		void Deserialize(XmlReader& reader) override
+		{
+			if (reader.FindNode("Weights"))
+			{
+				Weights->Load(reader.ReadContent());
+			}
+
+			if (reader.FindNode("Biases"))
+			{
+				Bias = stod(reader.ReadContent());
+			}
+
+			Initialise(Weights->GetRows(), Weights->GetCols());
+		}
 	};
 }

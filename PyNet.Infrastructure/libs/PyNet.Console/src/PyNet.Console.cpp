@@ -130,5 +130,8 @@ int main()
 	PyNetwork_Run(intermediary, inputs[0]);
 	PyNetwork_Save(intermediary, "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\Network.xml");
 	PyNetwork_Destruct(intermediary);
+
+	auto intermediary2 = PyNetwork_Initialise(LogLevel::INFO, false);
+	PyNetwork_Load(intermediary2, "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\Network.xml");
 }
 	

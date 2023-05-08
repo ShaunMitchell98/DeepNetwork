@@ -25,6 +25,7 @@ namespace PyNet::Infrastructure {
 
 	void XmlWriter::WriteString(string_view value) {
 		_stream << value;
+		_stream << "\n";
 	}
 
 	void XmlWriter::EndElement() {

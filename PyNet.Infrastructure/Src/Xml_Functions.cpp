@@ -14,6 +14,34 @@ using namespace std;
 
 namespace PyNet::Infrastructure
 {
+	EXPORT int PyNetwork_Load(void* input, const char* filePath)
+	{
+		auto reader = XmlReader::Create(filePath);
+		auto intermediary = static_cast<Intermediary*>(input);
+		auto context = intermediary->GetContext();
+		auto pyNetwork = context->GetShared<PyNetwork>();
+
+		if (reader->FindNode("Configuration"))
+		{
+			if (reader->FindNode("Layers"))
+			{
+				while (reader->FindNode("Layer"))
+				{
+					if (reader->FindNode("Type"))
+					{
+						auto typeName = reader->ReadContent();
+						auto layer = context->GetUnique<Layer>(typeName);
+						layer->Deserialize(*reader);
+						pyNetwork->Layers.push_back(move(layer));
+						reader->PopNode();
+					}
+				}
+			}
+		}
+
+		return pyNetwork->Layers.back()->GetRows();
+	}
+
 	EXPORT void PyNetwork_Save(void* input, const char* filePath)
 	{
 		auto writer = XmlWriter::Create(filePath);

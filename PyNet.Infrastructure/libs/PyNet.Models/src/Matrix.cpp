@@ -53,18 +53,19 @@ namespace PyNet::Models {
 			int currentColNumber = 0;
 			Values = std::vector<double>();
 
-			for (auto ch : value) {
+			for (auto& ch : value) {
 
-				if (ch != ',' && ch != '\n') {
+				if (ch != ',' && ch != ' ' && ch != ';') {
 					currentValue += ch;
 				}
-				else {
+				else if (ch == ',')
+				{
 					Values.push_back(stod(currentValue));
 					currentValue.erase();
 					currentColNumber++;
 				}
 
-				if (ch == '\n') {
+				else if (ch == ';') {
 
 					if (expectedColNumber == 0) {
 						expectedColNumber = currentColNumber;
@@ -79,7 +80,7 @@ namespace PyNet::Models {
 			}
 
 			Rows = currentRowNumber;
-			Cols = expectedColNumber;
+			Cols = expectedColNumber + 1;
 	}
 
 	string Matrix::ToString() const {
@@ -93,12 +94,13 @@ namespace PyNet::Models {
 				sprintf(buffer, "%.20f", value);
 				text += buffer;
 
-				if (col != Cols - 1) {
+				if (col != Cols - 1)
+				{
 					text += ", ";
 				}
 			}
 
-			text += "\n";
+			text += ";";
 		}
 
 		return text;

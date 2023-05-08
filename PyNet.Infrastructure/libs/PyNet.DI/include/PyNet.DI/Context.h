@@ -57,8 +57,14 @@ namespace PyNet::DI {
         template <class RequiredType>
         unique_ptr<RequiredType> GetUnique() const
         {
-            auto& item = _container->GetItem<RequiredType>();
+            auto name = string(typeid(RequiredType).name());
+            return GetUnique<RequiredType>(name);
+        }
 
+        template <class RequiredType>
+        unique_ptr<RequiredType> GetUnique(string& typeName) const
+        {
+            auto& item = _container->GetItem<RequiredType>(typeName);
             item.Marker = true;
             any cast = any(*this);
             auto temp = static_cast<RequiredType*>(item.GetInstance(cast));
@@ -71,7 +77,14 @@ namespace PyNet::DI {
         template <class RequiredType>
         shared_ptr<RequiredType> GetShared() const
         {
-            auto& item = _container->GetItem<RequiredType>();
+            auto name = string(typeid(RequiredType).name());
+            return GetShared<RequiredType>(name);
+        }
+
+        template <class RequiredType>
+        shared_ptr<RequiredType> GetShared(string& typeName) const
+        {
+            auto& item = _container->GetItem<RequiredType>(typeName);
 
             shared_ptr<RequiredType> sharedPtr;
 
@@ -80,13 +93,14 @@ namespace PyNet::DI {
                 auto cast = any(*this);
                 sharedPtr = item.GenerateInstance(cast);
 
-                if (item.Marker) {
+                if (item.Marker)
+                {
                     throw runtime_error(string("Cyclic dependecy while instantiating type: ") + typeid(RequiredType).name());
                 }
 
                 return sharedPtr;
             }
-         
+
             return item.GetShared();
         }
 

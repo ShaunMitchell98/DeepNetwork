@@ -51,7 +51,7 @@ namespace PyNet::Infrastructure {
 		string line;
 
 		bool condition = true;
-		auto current = _openElements.top();
+		auto& current = _openElements.top();
 		auto targetValue = "</" + current + ">";
 
 		while (condition) {
@@ -59,7 +59,6 @@ namespace PyNet::Infrastructure {
 
 			if (targetValue != line) {
 				content += line;
-				content += '\n';
 			}
 			else {
 				condition = false;
@@ -69,5 +68,10 @@ namespace PyNet::Infrastructure {
 		_openElements.pop();
 
 		return content;
+	}
+
+	void XmlReader::PopNode() 
+	{
+		_openElements.pop();
 	}
 }

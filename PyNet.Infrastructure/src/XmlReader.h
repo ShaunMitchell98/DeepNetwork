@@ -16,5 +16,6 @@ namespace PyNet::Infrastructure {
 		static unique_ptr<XmlReader> Create(string_view filePath);
 		bool FindNode(string_view value);
 		string ReadContent();
+		void PopNode();
 	};
 };

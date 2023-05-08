@@ -43,11 +43,37 @@ namespace PyNet::Infrastructure::Layers
 			return dLoss_dOutput.Copy();
 		}
 
-		void Serialize(XmlWriter& writer) const 
+		void Serialize(XmlWriter& writer) const override
 		{
 			writer.StartElement("Type");
 			writer.WriteString(typeid(InputLayer).name());
 			writer.EndElement();
+
+			writer.StartElement("Rows");
+			writer.WriteString(to_string(Input->GetRows()));
+			writer.EndElement();
+
+			writer.StartElement("Cols");
+			writer.WriteString(to_string(Input->GetCols()));
+			writer.EndElement();
+		}
+
+		void Deserialize(XmlReader& reader) override 
+		{
+			size_t rows = 0;
+			size_t cols = 0;
+
+			if (reader.FindNode("Rows"))
+			{
+				rows = stod(reader.ReadContent());
+			}
+
+			if (reader.FindNode("Cols")) 
+			{
+				cols = stod(reader.ReadContent());
+			}
+
+			Initialise(rows, cols);
 		}
 	};
 }
