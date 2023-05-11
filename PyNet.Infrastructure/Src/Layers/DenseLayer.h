@@ -3,11 +3,13 @@
 #include "PyNet.Models/Matrix.h"
 #include "TrainableLayer.h"
 #include "AdjustmentCalculator.h"
+#include "Activations/Logistic.h"
 #include "PyNet.Models/ILogger.h"
 #include <numeric>
 #include <memory>
 
 using namespace std;
+using namespace PyNet::Infrastructure::Activations;
 
 namespace PyNet::Infrastructure::Layers
 {
@@ -16,6 +18,7 @@ namespace PyNet::Infrastructure::Layers
 	private:
 		shared_ptr<AdjustmentCalculator> _adjustmentCalculator;
 		shared_ptr<ILogger> _logger;
+		shared_ptr<Context> _context;
 
 		unique_ptr<Matrix> dLoss_dWeight(const Matrix& dLoss_dOutput) const 
 		{
@@ -30,13 +33,13 @@ namespace PyNet::Infrastructure::Layers
 	public:
 
 		DenseLayer(shared_ptr<AdjustmentCalculator> adjustmentCalculator, unique_ptr<Matrix> weights, unique_ptr<Matrix> dLoss_dWeightSum,
-			unique_ptr<Matrix> input, unique_ptr<Matrix> output, shared_ptr<ILogger> logger) : _adjustmentCalculator{ adjustmentCalculator }, 
-			TrainableLayer(move(dLoss_dWeightSum), move(weights), move(input), move(output)), _logger(logger){}
+			unique_ptr<Matrix> input, unique_ptr<Matrix> output, shared_ptr<ILogger> logger, shared_ptr<Context> context) : _adjustmentCalculator{ adjustmentCalculator }, 
+			TrainableLayer(move(dLoss_dWeightSum), move(weights), move(input), move(output)), _logger(logger), _context(context){}
 
 		static auto factory(shared_ptr<AdjustmentCalculator> adjustmentCalculator, unique_ptr<Matrix> weights, unique_ptr<Matrix> dLoss_dWeightSum,
-		unique_ptr<Matrix> input, unique_ptr<Matrix> output, shared_ptr<ILogger> logger) 
+		unique_ptr<Matrix> input, unique_ptr<Matrix> output, shared_ptr<ILogger> logger, shared_ptr<Context> context) 
 		{
-			return new DenseLayer(adjustmentCalculator, move(weights), move(dLoss_dWeightSum), move(input), move(output), logger);
+			return new DenseLayer(adjustmentCalculator, move(weights), move(dLoss_dWeightSum), move(input), move(output), logger, context);
 		}
 
 		void Initialise(size_t rows, size_t cols)
@@ -99,6 +102,14 @@ namespace PyNet::Infrastructure::Layers
 			writer.WriteString(typeid(DenseLayer).name());
 			writer.EndElement();
 
+			writer.StartElement("DropoutRate");
+			writer.WriteString(to_string(DropoutRate));
+			writer.EndElement();
+
+			writer.StartElement("Activation");
+			//writer.WriteString();
+			writer.EndElement();
+
 			writer.StartElement("Weights");
 			writer.WriteString(Weights->ToString());
 			writer.EndElement();
@@ -110,6 +121,11 @@ namespace PyNet::Infrastructure::Layers
 
 		void Deserialize(XmlReader& reader) override
 		{
+			if (reader.FindNode("DropoutRate"))
+			{
+				DropoutRate = stod(reader.ReadContent());
+			}
+
 			if (reader.FindNode("Weights"))
 			{
 				Weights->Load(reader.ReadContent());
@@ -121,6 +137,11 @@ namespace PyNet::Infrastructure::Layers
 			}
 
 			Initialise(Weights->GetRows(), Weights->GetCols());
+
+			auto logistic = _context->GetUnique<Logistic>();
+			logistic->Initialise(Weights->GetRows(), 1);
+			SetActivation(move(logistic));
+			DropoutRate = 0.9;
 		}
 	};
 }

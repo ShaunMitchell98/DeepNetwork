@@ -89,15 +89,15 @@ void GetLabels(string folderPath, string fileName, vector<double*>& labels) {
 
 int main()
 {
-	auto intermediary = PyNetwork_Initialise(LogLevel::INFO, false);
-	PyNetwork_AddInputLayer(intermediary, 784, 1, 1.0);
-	PyNetwork_AddDenseLayer(intermediary, 500, ActivationFunctionType::Logistic, 0.8);
-	PyNetwork_AddDenseLayer(intermediary, 129, ActivationFunctionType::Logistic, 0.8);
-	PyNetwork_AddDenseLayer(intermediary, 10, ActivationFunctionType::Logistic, 0.8);
-	//PyNetwork_AddSoftmaxLayer(intermediary);
-	//PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
-
-
+//	auto intermediary = PyNetwork_Initialise(LogLevel::INFO, false);
+//	PyNetwork_AddInputLayer(intermediary, 784, 1, 1.0);
+//	PyNetwork_AddDenseLayer(intermediary, 500, ActivationFunctionType::Logistic, 0.8);
+//	PyNetwork_AddDenseLayer(intermediary, 129, ActivationFunctionType::Logistic, 0.8);
+//	PyNetwork_AddDenseLayer(intermediary, 10, ActivationFunctionType::Logistic, 0.8);
+//	//PyNetwork_AddSoftmaxLayer(intermediary);
+//	//PyNetwork_SetVariableLearning(intermediary, 0.04, 0.7, 1.05);
+//
+//
 #ifdef _WIN32
 	string folderPath = "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\PyNet.Infrastructure\\tests\\Resources\\";
 #else
@@ -125,13 +125,16 @@ int main()
 	settings->Momentum = 0.7;
 	settings->NumberOfExamples = 10;
 	settings->StartExampleNumber = 0;
-
-	PyNetwork_Train(intermediary, inputs.data(), labels.data(), settings.get());
-	PyNetwork_Run(intermediary, inputs[0]);
-	PyNetwork_Save(intermediary, "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\Network.xml");
-	PyNetwork_Destruct(intermediary);
+//
+//	PyNetwork_Train(intermediary, inputs.data(), labels.data(), settings.get());
+//	PyNetwork_Run(intermediary, inputs[0]);
+//	PyNetwork_Save(intermediary, "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\Network.xml");
+//	PyNetwork_Destruct(intermediary);
 
 	auto intermediary2 = PyNetwork_Initialise(LogLevel::INFO, false);
 	PyNetwork_Load(intermediary2, "C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\Network.xml");
+
+    PyNetwork_Train(intermediary2, inputs.data(), labels.data(), settings.get());
+	PyNetwork_Run(intermediary2, inputs[0]);
 }
 	

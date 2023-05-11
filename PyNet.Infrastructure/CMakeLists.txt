@@ -94,6 +94,7 @@ ENDIF()
 add_subdirectory( ./libs/PyNet.Models )
 add_subdirectory( ./libs/PyNet.Models.Cpu )
 add_subdirectory( ./libs/PyNet.DI)
+add_subdirectory( ./libs/PyNet.DI/tests )
 add_subdirectory( ./libs/PyNet.Console )
 add_subdirectory( ./libs/PyNet.Models.Cpu/tests )
 

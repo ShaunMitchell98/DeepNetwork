@@ -4,8 +4,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <any>
-#include "ItemContainer.h"
-#include <concepts>
+#include "ServiceProvider.h"
 /*
  * The MIT License (MIT)
  *
@@ -30,11 +29,6 @@
  * SOFTWARE.
  */
 
-template<typename T>
-concept Shared = requires(T a) {
-    {a} -> std::convertible_to<shared_ptr<typename T::element_type>>;
-};
-
 using namespace std;
 
 namespace PyNet::DI {
@@ -42,51 +36,47 @@ namespace PyNet::DI {
     class Context
     {
     private:
-        shared_ptr<ItemContainer> _container;
+        shared_ptr<ServiceProvider> _serviceProvider;
     public:
-        Context(shared_ptr<ItemContainer> container) : _container{ container } {}
+        Context(shared_ptr<ServiceProvider> serviceProvider) : _serviceProvider{ serviceProvider } {}
 
-        void MakeReferencesWeak() {
-            _container->MakeReferencesWeak();
+        static auto factory(shared_ptr<ServiceProvider> serviceProvider) {
+            return new Context{ serviceProvider };
         }
 
-        static auto factory(shared_ptr<ItemContainer> container) {
-            return new Context{ container };
-        }
-
-        template <class RequiredType>
-        unique_ptr<RequiredType> GetUnique() const
+        template <class ServiceType>
+        unique_ptr<ServiceType> GetUnique() const
         {
-            auto name = string(typeid(RequiredType).name());
-            return GetUnique<RequiredType>(name);
+            auto name = string(typeid(ServiceType).name());
+            return GetUnique<ServiceType>(name);
         }
 
-        template <class RequiredType>
-        unique_ptr<RequiredType> GetUnique(string& typeName) const
+        template <class ServiceType>
+        unique_ptr<ServiceType> GetUnique(string& typeName) const
         {
-            auto& item = _container->GetItem<RequiredType>(typeName);
+            auto& item = _serviceProvider->GetService<ServiceType>(typeName);
             item.Marker = true;
             any cast = any(*this);
-            auto temp = static_cast<RequiredType*>(item.GetInstance(cast));
+            auto temp = static_cast<ServiceType*>(item.GetInstance(cast));
             item.Marker = false;
 
-            auto result = unique_ptr<RequiredType>(temp);
+            auto result = unique_ptr<ServiceType>(temp);
             return result;
         }
 
-        template <class RequiredType>
-        shared_ptr<RequiredType> GetShared() const
+        template <class ServiceType>
+        shared_ptr<ServiceType> GetShared() const
         {
-            auto name = string(typeid(RequiredType).name());
-            return GetShared<RequiredType>(name);
+            auto name = string(typeid(ServiceType).name());
+            return GetShared<ServiceType>(name);
         }
 
-        template <class RequiredType>
-        shared_ptr<RequiredType> GetShared(string& typeName) const
+        template <class ServiceType>
+        shared_ptr<ServiceType> GetShared(string& typeName) const
         {
-            auto& item = _container->GetItem<RequiredType>(typeName);
+            auto& item = _serviceProvider->GetItem<ServiceType>(typeName);
 
-            shared_ptr<RequiredType> sharedPtr;
+            shared_ptr<ServiceType> sharedPtr;
 
             if (!item.HasInstance() && !item.Marker)
             {
@@ -95,7 +85,7 @@ namespace PyNet::DI {
 
                 if (item.Marker)
                 {
-                    throw runtime_error(string("Cyclic dependecy while instantiating type: ") + typeid(RequiredType).name());
+                    throw runtime_error(string("Cyclic dependency while instantiating type: ") + typeid(ServiceType).name());
                 }
 
                 return sharedPtr;

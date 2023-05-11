@@ -74,6 +74,7 @@ namespace PyNet::Infrastructure::Layers
 			}
 
 			Initialise(rows, cols);
+			DropoutRate = 1;
 		}
 	};
 }

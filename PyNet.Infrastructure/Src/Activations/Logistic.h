@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Activation.h"
+#include "PyNet.Models/ILogger.h"
 #include <memory>
 
 namespace PyNet::Infrastructure::Activations {

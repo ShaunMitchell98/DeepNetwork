@@ -24,7 +24,7 @@ batch_sizes: list[int] = [1]
 learning_rates: list[float] = [0.05]
 momenta: list[float] = [0.7]
 epochs: list[int] = [1]
-numbers: list[int] = [50000]
+numbers: list[int] = [25000]
 dropoutRates: list[float] = [0.9]
 
 for learning_rate in learning_rates:
@@ -37,11 +37,12 @@ for learning_rate in learning_rates:
                         logLevel: int = LogLevel.INFO
 
                         network = PyNetwork(logLevel, False)
+                        network.load("C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\Network.xml")
                         #network.SetVariableLearning(0.04, 0.7, 1.05)
-                        network.add_input_layer(784, 1, 1.0)
-                        network.add_dense_layer(500, ActivationFunctionType.LOGISTIC, 0.9)
-                        network.add_dense_layer(129, ActivationFunctionType.LOGISTIC, 0.9)
-                        network.add_dense_layer(10, ActivationFunctionType.LOGISTIC, 0.9)
+                        #network.add_input_layer(784, 1, 1.0)
+                        #network.add_dense_layer(500, ActivationFunctionType.LOGISTIC, 0.9)
+                       # network.add_dense_layer(129, ActivationFunctionType.LOGISTIC, 0.9)
+                        #network.add_dense_layer(10, ActivationFunctionType.LOGISTIC, 0.9)
 
                         startNumber = 0
                         endNumber = 200
@@ -71,6 +72,8 @@ for learning_rate in learning_rates:
 
                             startNumber = startNumber + 200
                             endNumber = endNumber + 200
+
+                       #  network.save('C:\\Users\\Shaun Mitchell\\source\\repos\\PyNet\\Network.xml')
 
                         network.destruct()
 

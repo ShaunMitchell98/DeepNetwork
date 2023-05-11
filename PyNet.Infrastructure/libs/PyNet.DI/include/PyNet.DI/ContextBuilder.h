@@ -8,8 +8,7 @@
 #include <type_traits>
 #include <iostream>
 #include "Context.h"
-#include "ItemContainer.h"
-#include "Item.h"
+#include "ServiceCollection.h"
 #include "InstanceMode.h"
 #include "ItemRegistrar.h"
 
@@ -19,13 +18,13 @@ namespace PyNet::DI {
     class ContextBuilder {
 
     private:
-        shared_ptr<ItemContainer> _container;
+        unique_ptr<ServiceCollection> _serviceCollection;
         shared_ptr<Context> _context;
 
     public:
 
-        ContextBuilder() : _container{ make_shared<ItemContainer>()} {
-            _context = make_shared<Context>(_container);
+        ContextBuilder() : _serviceCollection{ make_unique<ServiceCollection>()} {
+            _context = make_shared<Context>(_serviceCollection);
             RegisterInstance(_context, InstanceMode::Shared);
         }
 
@@ -35,25 +34,18 @@ namespace PyNet::DI {
             if (instance == nullptr)
                 throw runtime_error(string("Trying to add nullptr instance for type: ") + typeid(InstanceType).name());
 
-            auto& item = _container->Add<InstanceType>();
-
-            if (item.HasInstance())
-                throw runtime_error(std::string("Instance already in Context for type: ") + typeid(InstanceType).name());
-
-            if (instanceMode == InstanceMode::Shared) {
-                item.SetInstance(instance);
-            }
+            auto& item = _serviceCollection->Add<InstanceType>(instance);
         }
 
         template <typename InstanceType>
         unique_ptr<ItemRegistrar<InstanceType>> RegisterType(InstanceMode instanceMode = InstanceMode::Shared) const
         {
-            return make_unique<ItemRegistrar<InstanceType>>(type_index(typeid(InstanceType)), *_container);
+            return make_unique<ItemRegistrar<InstanceType>>(*_serviceCollection);
         }
 
-        shared_ptr<Context> Build() {
-            auto& item = _container->GetItem<Context>();
-            return item.GetShared();
+        shared_ptr<ServiceProvider> Build() {
+
+            return make_shared<ServiceProvider>(_serviceCollection->Descriptors);
         }
     };
 }
